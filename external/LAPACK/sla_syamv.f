@@ -1,26 +1,26 @@
-*> \brief \b SLA_SYAMV
+*> \brief \b SLA_SYAMV computes a matrix-vector product using a symmetric indefinite matrix to calculate error bounds.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLA_SYAMV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syamv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syamv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syamv.f"> 
+*> Download SLA_SYAMV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syamv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syamv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syamv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLA_SYAMV( UPLO, N, ALPHA, A, LDA, X, INCX, BETA, Y,
 *                             INCY )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               ALPHA, BETA
 *       INTEGER            INCX, INCY, LDA, N, UPLO
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), X( * ), Y( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -88,7 +88,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is REAL array of DIMENSION ( LDA, n ).
+*>          A is REAL array, dimension ( LDA, n ).
 *>           Before entry, the leading m by n part of the array A must
 *>           contain the matrix of coefficients.
 *>           Unchanged on exit.
@@ -148,12 +148,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYcomputational
 *
@@ -177,10 +175,9 @@
       SUBROUTINE SLA_SYAMV( UPLO, N, ALPHA, A, LDA, X, INCX, BETA, Y,
      $                      INCY )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       REAL               ALPHA, BETA
@@ -230,7 +227,7 @@
          INFO = 10
       END IF
       IF( INFO.NE.0 )THEN
-         CALL XERBLA( 'SSYMV ', INFO )
+         CALL XERBLA( 'SLA_SYAMV', INFO )
          RETURN
       END IF
 *

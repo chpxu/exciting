@@ -3,11 +3,12 @@ module autormt
    Use errors_warnings, only: terminate_if_false
    use precision, only: dp
    use predefined_rgkmax, only: get_predefined_rgkmax
+   use asserts, only: assert
 
    implicit none 
    private
-   public :: get_inital_rmt_rgkmax, &
-             scale_rmt, & 
+   public :: get_initial_rmt_rgkmax, &
+             scale_rmt_lattice, & 
              optimal_rmt
 
    contains
@@ -16,12 +17,12 @@ module autormt
       !> \[ 
       !>    \text{R}_{i} = 1 + 0.25 |\text{Z}_{i}|^{1/3}
       !> \]
-      !> where \(Z_i\) is the atomic number of the \(i\)-th species. 
+      !> where \(\text{Z}_{i}\) is the atomic number of the \(i\)-th species. 
       !> 
       !> REVISION HISTORY:
       !> Created March 2005 (JKD)
       !> Changed the formula, September 2006 (JKD)
-      function get_inital_rmt_formula(spzn_is) result(rmt_is)
+      function get_initial_rmt_formula(spzn_is) result(rmt_is)
          !> Atomic number   
          real(dp), intent(in) :: spzn_is 
          !> Scaling factor to calculate initial muffin-tin radii
@@ -31,12 +32,12 @@ module autormt
 
          rmt_is =  1.0_dp + atomic_nr_scale * idnint(Abs(spzn_is))**(1.0_dp/3.0_dp)
       
-      end function get_inital_rmt_formula
+      end function get_initial_rmt_formula
 
       !> For a given species, gets the initial value for the calculation of the muffin-tin radii.
       !> These initial values are rgkmax values that, for the given species, give a certain predefined 
       !> error in the energy (precision).
-      function get_inital_rmt_rgkmax(spzn_is) result(rmt_is)
+      function get_initial_rmt_rgkmax(spzn_is) result(rmt_is)
          !> Atomic number of given species  
          real(dp), intent(in) :: spzn_is 
          !> Initial muffin-tin radius
@@ -49,22 +50,56 @@ module autormt
          write(z_label,'(I3)') idnint(Abs(spzn_is))
          call terminate_if_false(mpiglobal, rmt_is /= -1.0_dp ,"(Error (autormt): initial muffin-tin& 
                                  & radius for given atomic number"// trim(z_label) // " does not exist.")
-      end function get_inital_rmt_rgkmax
+      end function get_initial_rmt_rgkmax
 
-      !> Scales the given initial muffin-tin radii in \(\text{rmt}\). 
+      !> Scales the given initial muffin-tin radii in `rmt` using `fixed_rmt`.
+      !> The scaling factor is obtained from the given fixed muffin-tin radius `fixed_rmt` and its
+      !> given initial muffin-tin value (initial muffin-tin values are obtained from
+      !> [[get_initial_rmt_rgkmax(function)]] or [[get_initial_rmt_formula(function)]]).
+      !> \[ 
+      !>    \text{scaling_factor} = \text{fixed_rmt} / \text{initial_rmt_fixedrmt}
+      !> \]
+      subroutine scale_rmt_fixedrmt(rmt, fixed_rmt, idx_fixedrmt, nspecies) 
+         !> Muffin-tin radii
+         real(dp), intent(inout) :: rmt(:)
+         !> Value of fixed muffin-tin radius
+         real(dp), intent(in) :: fixed_rmt
+         !> Index for the species with fixed rmt
+         integer, intent(in) :: idx_fixedrmt
+         !> Number of species
+         integer, intent(in) :: nspecies
+
+         ! Scaling factor 
+         real(dp) :: scaling_factor
+         ! Initial muffin-tin value of the species with fixed rmt  
+         real(dp) :: initial_rmt_fixedrmt
+
+         initial_rmt_fixedrmt = rmt(idx_fixedrmt)
+
+         call assert((fixed_rmt > 0.0_dp), &
+                     message='Value for fixed rmt has to be greater than zero.')
+         call assert((idx_fixedrmt > 0) .and. (idx_fixedrmt < nspecies), &
+                     message='The species index has to be larger than zero and lower or equal to the total number of species.')
+         
+         scaling_factor = fixed_rmt / initial_rmt_fixedrmt 
+         rmt(1:nspecies) = rmt(1:nspecies) * scaling_factor
+         rmt(idx_fixedrmt) = fixed_rmt
+      end subroutine 
+
+      !> Scales the given initial muffin-tin radii in `rmt`. 
       !> Given the atomic positions and the lattice vectors, a supercell is constructed by translating the unit cell 
       !> and by adding the atomic positions to all translations. 
       !> Next, it computes the distance of the atoms of the unit cell and their neighbours of the translated cells. 
-      !> The given initial muffin-tin radii in \(\text{rmt}\) are then all scaled by the calculated minimal distance. 
-      !> The \(\text{rmt}\) values can also be further scaled by a global factor, where the maximal value can 
-      !> be \(\text{scale_global_rmt} = 1 \), such that that the clostest muffin-tin radii touch.
-      subroutine scale_rmt(rmt, lattice_vect, atomic_positions, scale_global_rmt, nspecies, natoms)
+      !> The given initial muffin-tin radii in `rmt` are then all scaled by the calculated minimal distance. 
+      !> The `rmt` values can also be further scaled by a global factor, where the maximal value can 
+      !> be `autormtscaling` = 1, such that that the closest muffin-tin radii touch.
+      subroutine scale_rmt_lattice(rmt, lattice_vect, atomic_positions, autormtscaling, nspecies, natoms)
          !> Number of species
          integer, intent(in) :: nspecies
          !> Number of atoms for each species
          integer, intent(in) :: natoms(nspecies)
          !> Governs distance between muffin-tin spheres. If equal to one, closest muffin-tins touch.
-         real(dp), intent(in) :: scale_global_rmt
+         real(dp), intent(in) :: autormtscaling
          !> Lattice vectors 
          real(dp), intent(in):: lattice_vect(3,3)
          !> Atomic positions 
@@ -109,7 +144,7 @@ module autormt
                end do
             end do
          end do
-         s = s * scale_global_rmt
+         s = s * autormtscaling
          ! scale all radii
          do is = 1, nspecies
             ! limit number of decimal digits
@@ -120,21 +155,23 @@ module autormt
  
       end subroutine
 
-      !> Automatically determines the optimal muffin-tin radii. For a given species, calculates the initial value
-      !> for the muffin-tin radius and then scales them, in such a way that the 
-      !> clostest muffin-tin radii in the unit cell touch.  
-      !> The value which then can further govern the distance between the muffin-tins is stored in 
-      !> scale_global_rmt. When \(\text{scale_global_rmt} = 1\), the closest muffin-tins will continue to touch. If it is smaller
-      !> the interstitial region enlarges. 
-      subroutine optimal_rmt(rmt, spzn, lattice_vect, atomic_positions, scale_global_rmt, natoms, nspecies, init_rad_version)
+      !> Automatically determines the optimal muffin-tin radii. For a given species, either calculates the initial value
+      !> for the muffin-tin radius (`init_rad_version` = 0, see function [[get_initial_rmt_formula(function)]]) or uses a predefined rgkmax-value as the 
+      !> initial muffin-tin radius (`init_rad_version` = 1, see function [[get_initial_rmt_rgkmax(function)]]).
+      !> If `idx_fixedrmt` is present, the initial muffin-tin radii are scaled using the fixed muffin-tin radius
+      !> and the initial muffin-tin radius of the species with index `idx_fixedrmt`.
+      !> If `idx_fixedrmt` is not present, the muffin-tin radii are scaled in such a way that the closest muffin-tin radii 
+      !> in the unit cell touch. The value which then can further govern the distance between the muffin-tins is stored in `autormtscaling`. 
+      !> When `autormtscaling` = 1, the closest muffin-tins will continue to touch. If it is smaller the interstitial region enlarges. 
+      subroutine optimal_rmt(rmt, spzn, lattice_vect, atomic_positions, autormtscaling, natoms, nspecies, init_rad_version, idx_fixedrmt)
          !> Number of species
          integer, intent(in):: nspecies
          !> Number of atoms for each species
          integer, intent(in) :: natoms(nspecies)
          !> Scaling factor
-         real(dp), intent(in) :: scale_global_rmt
+         real(dp), intent(in) :: autormtscaling
          !> Lattice vectors column wise
-         real(dp), intent(in):: lattice_vect(3,3)
+         real(dp), intent(in):: lattice_vect(3, 3)
          !> Atomic positions 
          real(dp), intent(in) :: atomic_positions(:, :, :) 
          !> Atomic number for each species  
@@ -143,21 +180,36 @@ module autormt
          real(dp), intent(inout) :: rmt(:)
          !> Case for initial muffin-tin radii     
          integer, intent(in) :: init_rad_version
+         !> Index for the species with fixed rmt
+         integer, optional, intent(in) :: idx_fixedrmt
 
          integer :: is
+         real(dp) :: fixed_rmt 
+         
+         call assert((init_rad_version == 0) .or. (init_rad_version == 1), & 
+                     message='Error(autormt): Invalid case for initial muffin-tin radii')
+
+         if (present(idx_fixedrmt)) then 
+            fixed_rmt = rmt(idx_fixedrmt)
+         end if 
 
          ! Get initial muffin-tin radii
          select case (init_rad_version) 
             case(0)
-               rmt(1:nspecies) = [(get_inital_rmt_formula((spzn(is))), is = 1, nspecies)]   
+               rmt(1:nspecies) = [(get_initial_rmt_formula((spzn(is))), is = 1, nspecies)] 
             case(1)
-               rmt(1:nspecies) = [(get_inital_rmt_rgkmax((spzn(is))), is = 1, nspecies)]
+               rmt(1:nspecies) = [(get_initial_rmt_rgkmax((spzn(is))), is = 1, nspecies)]
          end select
-     
-         ! Scale muffin-tin radii 
-         call scale_rmt(rmt, lattice_vect, atomic_positions, scale_global_rmt, nspecies, natoms)
-      
+
+         ! Scale muffin-tin radii
+         if (present(idx_fixedrmt)) then 
+            call scale_rmt_fixedrmt(rmt, fixed_rmt, idx_fixedrmt, nspecies)
+         else 
+            call scale_rmt_lattice(rmt, lattice_vect, atomic_positions, autormtscaling, nspecies, natoms)
+         end if 
+
       end subroutine optimal_rmt 
+
 
 end module autormt
 

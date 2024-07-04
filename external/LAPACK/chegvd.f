@@ -1,26 +1,26 @@
-*> \brief \b CHEGST
+*> \brief \b CHEGVD
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHEGVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chegvd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chegvd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chegvd.f"> 
+*> Download CHEGVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chegvd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chegvd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chegvd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CHEGVD( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK,
 *                          LWORK, RWORK, LRWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, ITYPE, LDA, LDB, LIWORK, LRWORK, LWORK, N
@@ -30,7 +30,7 @@
 *       REAL               RWORK( * ), W( * )
 *       COMPLEX            A( LDA, * ), B( LDB, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -220,12 +220,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexHEeigen
 *
@@ -249,10 +247,9 @@
       SUBROUTINE CHEGVD( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK,
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -363,9 +360,9 @@
       CALL CHEGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
       CALL CHEEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK, LRWORK,
      $             IWORK, LIWORK, INFO )
-      LOPT = MAX( REAL( LOPT ), REAL( WORK( 1 ) ) )
-      LROPT = MAX( REAL( LROPT ), REAL( RWORK( 1 ) ) )
-      LIOPT = MAX( REAL( LIOPT ), REAL( IWORK( 1 ) ) )
+      LOPT = INT( MAX( REAL( LOPT ), REAL( WORK( 1 ) ) ) )
+      LROPT = INT( MAX( REAL( LROPT ), REAL( RWORK( 1 ) ) ) )
+      LIOPT = INT( MAX( REAL( LIOPT ), REAL( IWORK( 1 ) ) ) )
 *
       IF( WANTZ .AND. INFO.EQ.0 ) THEN
 *

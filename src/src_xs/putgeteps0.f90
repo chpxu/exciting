@@ -2,7 +2,7 @@ module putgeteps0
   use modmpi
   use m_getunit, only: getunit
   use m_genfilname
-  use precision, only: sp, dp
+  use precision, only: i32, long_int, dp
 
   implicit none
 
@@ -29,11 +29,11 @@ module putgeteps0
       use modmpi, only: terminate_if_false
 
       !> q-point index from reduced q-point set
-      integer(sp), intent(in) :: iq
+      integer(i32), intent(in) :: iq
       !> q-point in cartesian coordinates
       real(dp), intent(in) :: qvec(3) 
       !> Frequency index
-      integer(sp), intent(in) ::  iw
+      integer(i32), intent(in) ::  iw
       !> Frequency
       real(dp), intent(in) :: w
       !> Body of RPA epsilon matrix 
@@ -52,13 +52,13 @@ module putgeteps0
       !> Filename
       character(256) :: filename
       !> File unit
-      integer(sp) :: un
+      integer(i32) :: un
       !> I/O status
-      integer(sp) ::  stat
+      integer(i32) ::  stat
       !> Record length 
-      integer(sp) ::  reclen
+      integer(long_int) ::  reclen
       !> Number of (G+q)-points for current q-point
-      integer(sp) :: numgq
+      integer(i32) :: numgq
       !> Local debug mode
       logical :: debug_local
 
@@ -84,7 +84,7 @@ module putgeteps0
       inquire (iolength=reclen) iq, qvec, numgq, iw, w,&
             & eps0hd, eps0wg, eps0
 
-      ! Open with recl=1, so that record length is determined 
+      ! Open with recl=1, so that record length is determined
       open(unit=un, file=trim(filename), form='unformatted',&
         & action='write', access='direct', recl=reclen, iostat=stat)
       
@@ -142,11 +142,11 @@ module putgeteps0
       use modmpi, only: terminate_if_false
 
       !> q-point index from reduced q-point set
-      integer(sp), intent(in) :: iq
+      integer(i32), intent(in) :: iq
       !> q-point in cartesian coordinates
       real(dp), intent(in) :: qvec(3) 
       !> Frequency index
-      integer(sp), intent(in) ::  iw
+      integer(i32), intent(in) ::  iw
       !> Frequency
       real(dp), intent(in) :: w
       !> Body of RPA epsilon matrix 
@@ -161,13 +161,13 @@ module putgeteps0
       !> Filename
       character(256) :: filename
       !> File unit
-      integer(sp) :: un
+      integer(i32) :: un
       !> I/O status
-      integer(sp) ::  stat
+      integer(i32) ::  stat
       !> Record length 
-      integer(sp) ::  reclen
+      integer(long_int) ::  reclen
       !> Number of (G+q)-points for current q-point
-      integer(sp) :: numgq
+      integer(i32) :: numgq
       !> Local debug mode
       logical :: debug_local
 
@@ -243,11 +243,11 @@ module putgeteps0
       
       !> q-point index from reduced q-vector set if xs%reduceq = "true",
       !> else from non-reduced set
-      integer(sp), intent(in) :: iq
+      integer(i32), intent(in) :: iq
       !> q-point in cartesian coordinates
       real(dp), intent(in) :: qvec(3) 
       !> Frequency index
-      integer(sp), intent(in) ::  iw
+      integer(i32), intent(in) ::  iw
       !> Frequency
       real(dp), intent(in) :: w
       !> Body of RPA epsilon matrix 
@@ -261,22 +261,22 @@ module putgeteps0
       !> Debug mode
       logical, intent(in), optional :: debug
       !> Number of (G+q)-points for current q-point
-      integer(sp) :: numgq
+      integer(i32) :: numgq
       !> Routine name
       character(*), parameter :: thisnam = 'geteps0_zero_q'
       !> Filename
       character(256):: filename
       !> File unit
-      integer(sp) :: un
+      integer(i32) :: un
       !> I/O status
-      integer(sp) ::  stat
+      integer(i32) ::  stat
       !> Record length 
-      integer(sp) ::  reclen      !> Number of (G+q)-points for current q-point as read from file
-      integer(sp) :: numgq_read
+      integer(long_int) ::  reclen      !> Number of (G+q)-points for current q-point as read from file
+      integer(i32) :: numgq_read
       !> q-point index as read from file
-      integer(sp) :: iq_read
+      integer(i32) :: iq_read
       !> Frequency index  as read from file
-      integer(sp) :: iw_read
+      integer(i32) :: iw_read
       !> q-point in cartesian coordinates as read from file
       real(dp) :: qvec_read(3)
       !> Frequency as read from file
@@ -393,11 +393,11 @@ module putgeteps0
 
       !> q-point index from reduced q-vector set if xs%reduceq = "true",
       !> else from non-reduced set
-      integer(sp), intent(in) :: iq
+      integer(i32), intent(in) :: iq
       !> q-point in cartesian coordinates
       real(dp), intent(in) :: qvec(3) 
       !> Frequency index
-      integer(sp), intent(in) ::  iw
+      integer(i32), intent(in) ::  iw
       !> Frequency
       real(dp), intent(in) :: w
       !> Body of RPA epsilon matrix 
@@ -408,23 +408,23 @@ module putgeteps0
       logical, intent(in), optional :: debug
 
       !> Number of (G+q)-points for current q-point
-      integer(sp) :: numgq
+      integer(i32) :: numgq
       !> Routine name
       character(*), parameter :: thisnam = 'geteps0_finite_q'
       !> Filename
       character(256):: filename
       !> File unit
-      integer(sp) :: un
+      integer(i32) :: un
       !> I/O status
-      integer(sp) ::  stat
+      integer(i32) ::  stat
       !> Record length 
-      integer(sp) ::  reclen
+      integer(long_int) ::  reclen
       !> Number of (G+q)-points for current q-point as read from file
-      integer(sp) :: numgq_read
+      integer(i32) :: numgq_read
       !> q-point index as read from file
-      integer(sp) :: iq_read
+      integer(i32) :: iq_read
       !> Frequency index  as read from file
-      integer(sp) :: iw_read
+      integer(i32) :: iw_read
       !> q-point in cartesian coordinates as read from file
       real(dp) :: qvec_read(3)
       !> Frequency as read from file

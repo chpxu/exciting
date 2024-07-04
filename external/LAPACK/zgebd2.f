@@ -1,25 +1,25 @@
-*> \brief \b ZGEBD2
+*> \brief \b ZGEBD2 reduces a general matrix to bidiagonal form using an unblocked algorithm.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGEBD2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgebd2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgebd2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgebd2.f"> 
+*> Download ZGEBD2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgebd2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgebd2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgebd2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGEBD2( M, N, A, LDA, D, E, TAUQ, TAUP, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -27,7 +27,7 @@
 *       DOUBLE PRECISION   D( * ), E( * )
 *       COMPLEX*16         A( LDA, * ), TAUP( * ), TAUQ( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -100,7 +100,7 @@
 *>
 *> \param[out] TAUQ
 *> \verbatim
-*>          TAUQ is COMPLEX*16 array dimension (min(M,N))
+*>          TAUQ is COMPLEX*16 array, dimension (min(M,N))
 *>          The scalar factors of the elementary reflectors which
 *>          represent the unitary matrix Q. See Further Details.
 *> \endverbatim
@@ -127,12 +127,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GEcomputational
 *
@@ -189,10 +187,9 @@
 *  =====================================================================
       SUBROUTINE ZGEBD2( M, N, A, LDA, D, E, TAUQ, TAUP, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -247,7 +244,7 @@
             ALPHA = A( I, I )
             CALL ZLARFG( M-I+1, ALPHA, A( MIN( I+1, M ), I ), 1,
      $                   TAUQ( I ) )
-            D( I ) = ALPHA
+            D( I ) = DBLE( ALPHA )
             A( I, I ) = ONE
 *
 *           Apply H(i)**H to A(i:m,i+1:n) from the left
@@ -266,7 +263,7 @@
                ALPHA = A( I, I+1 )
                CALL ZLARFG( N-I, ALPHA, A( I, MIN( I+2, N ) ), LDA,
      $                      TAUP( I ) )
-               E( I ) = ALPHA
+               E( I ) = DBLE( ALPHA )
                A( I, I+1 ) = ONE
 *
 *              Apply G(i) to A(i+1:m,i+1:n) from the right
@@ -291,7 +288,7 @@
             ALPHA = A( I, I )
             CALL ZLARFG( N-I+1, ALPHA, A( I, MIN( I+1, N ) ), LDA,
      $                   TAUP( I ) )
-            D( I ) = ALPHA
+            D( I ) = DBLE( ALPHA )
             A( I, I ) = ONE
 *
 *           Apply G(i) to A(i+1:m,i:n) from the right
@@ -310,7 +307,7 @@
                ALPHA = A( I+1, I )
                CALL ZLARFG( M-I, ALPHA, A( MIN( I+2, M ), I ), 1,
      $                      TAUQ( I ) )
-               E( I ) = ALPHA
+               E( I ) = DBLE( ALPHA )
                A( I+1, I ) = ONE
 *
 *              Apply H(i)**H to A(i+1:m,i+1:n) from the left

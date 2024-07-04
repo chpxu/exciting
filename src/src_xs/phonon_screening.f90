@@ -206,21 +206,21 @@ contains
     end subroutine gen_phonon_hamiltonian
 
     !> Reads from file the phonon screened Coulomb interaction W_{GG'}(q,nu)
-    !> and the phonon frequencies for all q-vectors and all modes.
+    !> and the phonon frequencies for given set of q-vectors and all modes.
     subroutine init_phonon_hamiltonian(n_phonon_modes, n_atoms_spec, n_gq, &
                                        qvecs, scieffg_ph, freq_ph)
         use modinput, only: input
         use constants, only: zzero
-        use phonon_screening_file_interface, only: qe_read_phonon, &
-                                           read_W_ph, exc_read_phonon
+        use putgeteps0, only: geteps0_finite_q
+        use phonon_screening_file_interface, only: qe_read_phonon, exc_read_phonon
 
         !> Number of phonon modes
         integer(sp), intent(in) :: n_phonon_modes
         !> Number atoms per species
         integer(sp), intent(in) :: n_atoms_spec(:)
-        !> Number of (G+q)-vectors for reduced q-vectors
+        !> Number of (G+q)-vectors for  q-vectors
         integer(sp), intent(in) :: n_gq(:)
-        !> Reduced set of q-vectors
+        !> Set of q-vectors
         real(dp), intent(in) :: qvecs(:, :)
 
         !> Phonon frequencies for all modes and all q-vectors
@@ -229,40 +229,38 @@ contains
         !> for all q-vectors for and all phonon modes
         complex(dp), intent(out) :: scieffg_ph(:, :, :, :)
 
-        !> Number of reduced q-vectors
-        integer(sp) :: nqptr
+        !> Number of q-vectors
+        integer(sp) :: nqpt
         !> filename
         character(len=40) :: fname
         !> String to number
         character(256) :: strnum
-        !> Running index reduced q-vectors
-        integer(sp) :: iqr
-        !> Running index non-reduced q-vectors
-        integer(sp) :: iqrnr
+        !> Running index q-vectors
+        integer(sp) :: iq
         !> Running index phonon modes
         integer(sp) :: imode
 
         scieffg_ph = zzero
 
-        nqptr = size(n_gq)
+        nqpt = size(n_gq)
 
         ! Read phonon frequencies. Check if file comes from QE or exciting
         fname = input%xs%phonon_screening%phonon_file
         if (input%xs%phonon_screening%file_type == "quantum_espresso") then
-            call qe_read_phonon(freq_ph=freq_ph, natoms=n_atoms_spec, fname=fname)
+            call qe_read_phonon(alat_qe = input%xs%phonon_screening%alat_qe, qvecs_in = qvecs, freq_ph=freq_ph, natoms=n_atoms_spec, fname=fname)
         elseif (input%xs%phonon_screening%file_type == "exciting") then
             call exc_read_phonon(freq_ph=freq_ph, natoms=n_atoms_spec, fname=fname)
         end if
 
-        do iqr = 1, nqptr
+        do iq = 1, nqpt
 
             ! Read phonon screened Coulomb interaction
-            write (strnum, '(I5.5)') iqr
+            write (strnum, '(I5.5)') iq
             fname = "WPH/wph_Q"//trim(strnum)//".OUT"
             do imode = 1, n_phonon_modes
-                call read_W_ph(fname, iqr, qvecs(:, iqr), imode, &
-                               freq_ph(imode, iqr), &
-                               scieffg_ph(1:n_gq(iqr), 1:n_gq(iqr), imode, iqr))
+                call geteps0_finite_q(fname=fname,iq=iq, qvec=qvecs(:, iq), iw=imode, &
+                               w=freq_ph(imode, iq), &
+                               eps0=scieffg_ph(1:n_gq(iq), 1:n_gq(iq), imode, iq))
             end do
 
         end do
@@ -277,7 +275,7 @@ contains
     subroutine phonon_screening_main
 
         use constants, only: zzero
-        use modxs, only: ngq, qpari, qparf, vgqc
+        use modxs, only: ngq, qpari, qparf, vgqc, ngqmax, tgqmaxg
         use mod_qpoint, only: nqpt, vqc
         use mod_atoms, only: natmtot, natoms, spmass, atposc
         use mod_lattice, only: omega
@@ -286,8 +284,16 @@ contains
         use exciting_mpi, only: xmpi_bcast
         use modmpi, only: mpiglobal
         use phonon_screening_file_interface, only: qe_read_eps_inf_zstar, qe_read_phonon, &
-        & write_W_ph, exc_read_eps_inf_zstar, exc_read_phonon
+        &  exc_read_eps_inf_zstar, exc_read_phonon
         use math_utils, only: all_zero
+        use mod_Gvector, only: vgc, ivg
+        use xs_file_interface, only: write_gq_vectors, write_q_vectors
+        use os_utils, only: make_directory_command
+        use putgeteps0, only: puteps0_finite_q
+        use mod_kpointset, only: Gk_set, k_set, generate_k_vectors, generate_Gk_vectors, G_set, generate_G_vectors
+        use mod_lattice, only: bvec
+        use mod_Gvector, only: intgv 
+
         !> phonon frequencies
         real(dp), allocatable    :: freq_ph(:, :)
         !> phonon eigenvectors
@@ -314,11 +320,37 @@ contains
         !> for one q_point and one phonon mode
         complex(dp), allocatable   ::  W_ph(:, :)
 
+        !> OS command
+        character(256) :: os_command
+        !> q-vectors
+        type(k_set) :: q_set
+        !> G-vectors for generation of (G+q)-vectors
+        type(G_set) :: gset
+        !> (G+q)-vectors
+        type(Gk_set) :: gq_set
+        
+        ! Generate q- and (G+q)-vectors and write to file 
+        call generate_G_vectors(gset, bvec, intgv, input%groundstate%gmaxvr)
+    
+        call generate_k_vectors(q_set, bvec, input%xs%ngridq, &
+                    [0._dp, 0._dp, 0._dp],.false., .false.)
+        call generate_Gk_vectors(gq_set,q_set, gset,input%xs%gqmax)
+
+        os_command = make_directory_command('GQPOINTS_PH_SCR')
+        call system(trim(adjustl(os_command)))
+        
+        if(mpiglobal%is_root) then
+            call write_q_vectors('QPOINTS_PH_SCR.OUT',q_set%vklnr, q_set%vkcnr, gq_set%ngknr(1,:))
+
+            do iq = 1, q_set%nkptnr
+                call write_gq_vectors('GQPOINTS_PH_SCR', iq, gq_set%vgknrl(:,:,1,iq), gq_set%vgknrc(:,:,1,iq),gq_set%ngknr(1,iq))
+            end do
+        end if
         n_phonon_modes = 3*natmtot
 
-        !Allocate arrays on all procs and set zero
-        allocate (freq_ph(n_phonon_modes, nqpt))
-        allocate (evec_ph(3, natmtot, n_phonon_modes, nqpt))
+        !allocate arrays on all procs and set zero
+        allocate (freq_ph(n_phonon_modes, q_set%nkptnr))
+        allocate (evec_ph(3, natmtot, n_phonon_modes, q_set%nkptnr))
         allocate (eps_infty(3, 3))
         allocate (zstar(3, 3, natmtot))
 
@@ -330,7 +362,7 @@ contains
             if (input%xs%phonon_screening%file_type == "quantum_espresso") then
                 call qe_read_eps_inf_zstar(natoms, zstar_fname, &
                                            eps_infty, zstar)
-                call qe_read_phonon(natoms, phonon_fname, freq_ph, evec_ph)
+                call qe_read_phonon(input%xs%phonon_screening%alat_qe, q_set%vkcnr, natoms, phonon_fname, freq_ph, evec_ph)
             elseif (input%xs%phonon_screening%file_type == "exciting") then
                 call exc_read_eps_inf_zstar(natoms, zstar_fname, &
                                             eps_infty, zstar)
@@ -339,24 +371,24 @@ contains
 
         end if
 
-        Call xmpi_bcast(mpiglobal, eps_infty)
-        Call xmpi_bcast(mpiglobal, zstar)
-        Call xmpi_bcast(mpiglobal, freq_ph)
-        Call xmpi_bcast(mpiglobal, evec_ph)
+        call xmpi_bcast(mpiglobal, eps_infty)
+        call xmpi_bcast(mpiglobal, zstar)
+        call xmpi_bcast(mpiglobal, freq_ph)
+        call xmpi_bcast(mpiglobal, evec_ph)
 
         ! Direction in reciprocal space which was used to
         ! evaluate the polar phonons at Gamma. In Quantum Espresso, this is
         ! the direction from the second q-vector in the list to Gamma
-        qdir = vqc(1:3, 2)/norm2(vqc(:, 2))
+        qdir = q_set%vkcnr(:, 2)/norm2(q_set%vkcnr(:, 2))
 
-        ! Distribute reduced q-points
-        call genparidxran('q', nqpt)
+        ! Distribute q-points
+        call genparidxran('q', q_set%nkptnr)
 
         do iq = qpari, qparf
 
-            !Allocate final quantity W_{GG'} for given phonon mode and qpoint
+            !allocate final quantity W_{GG'} for given phonon mode and qpoint
             if (allocated(W_ph)) deallocate (W_ph)
-            allocate (W_ph(ngq(iq), ngq(iq)))
+            allocate (W_ph(gq_set%ngknr(1,iq),gq_set%ngknr(1,iq)))
 
             !Output file
             write (strnum, "(I5.5)") iq
@@ -365,21 +397,22 @@ contains
             do imode = 1, n_phonon_modes
                 W_ph = zzero
 
-                ! If phonon frequency is too small just put zero
+                ! if phonon frequency is too small just put zero
                 if (.not. all_zero(freq_ph(imode, iq), freq_tol)) then
 
                     !Compute final quantity W_{GG'} for given phonon mode and qpoint
-                    call gen_phonon_screening(qdir, vgqc(:, :ngq(iq), iq), eps_infty, zstar, &
+                    call gen_phonon_screening(qdir, gq_set%vgkc(:, :gq_set%ngknr(1,iq),1, iq), eps_infty, zstar, &
                                     & freq_ph(imode, iq), evec_ph(:, :, imode, iq), nkpt, omega, natoms, spmass, atposc, W_ph)
 
                 end if
 
-                call write_W_ph(wph_fname, iq, vqc(:, iq), imode, &
-                                freq_ph(imode, iq), W_ph)
+                call puteps0_finite_q(fname=wph_fname,iq=iq,qvec= q_set%vkcnr(:, iq),iw= imode, &
+                                w=freq_ph(imode, iq), eps0=W_ph)
             end do
         end do
 
     end subroutine phonon_screening_main
+
 
     !> Computes Fourier coeff. screened Coulomb int. due to phonons in polar materials
     !> For non-polar materials: All coefficients vanish due to
@@ -484,7 +517,7 @@ contains
             call calc_coupling_fourier(prefac, qdir, pol_vec(:, igq), eps_infty, coupl_fourier(igq))
         end do
 
-        ! Build 2/freq_ph*W_{GG'} for given q-point and phonon mode
+        ! Build 2/freq_ph*W_{GG'} for a given q-point and phonon mode
         ! Extension by 2/freq_ph corresponds to static screening
         ! Inclusion of dynamics using a weight in (0,1) when constructing phonon
         ! BSE-Hamiltonian in gen_phonon_hamiltonian

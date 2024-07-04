@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZSYTRI2X + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsytri2x.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zsytri2x.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsytri2x.f"> 
+*> Download ZSYTRI2X + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsytri2x.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zsytri2x.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsytri2x.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZSYTRI2X( UPLO, N, A, LDA, IPIV, WORK, NB, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N, NB
@@ -28,7 +28,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX*16         A( LDA, * ), WORK( N+NB+1,* )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -87,7 +87,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension (N+NNB+1,NNB+3)
+*>          WORK is COMPLEX*16 array, dimension (N+NB+1,NB+3)
 *> \endverbatim
 *>
 *> \param[in] NB
@@ -108,22 +108,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16SYcomputational
 *
 *  =====================================================================
       SUBROUTINE ZSYTRI2X( UPLO, N, A, LDA, IPIV, WORK, NB, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -213,7 +210,7 @@
       INFO = 0
 *
 *  Splitting Workspace
-*     U01 is a block (N,NB+1) 
+*     U01 is a block (N,NB+1)
 *     The first element of U01 is in WORK(1,1)
 *     U11 is a block (NB+1,NB+1)
 *     The first element of U11 is in WORK(N+1,1)
@@ -229,12 +226,12 @@
         CALL ZTRTRI( UPLO, 'U', N, A, LDA, INFO )
 *
 *       inv(D) and inv(D)*inv(U)
-* 
+*
         K=1
         DO WHILE ( K .LE. N )
          IF( IPIV( K ).GT.0 ) THEN
 *           1 x 1 diagonal NNB
-             WORK(K,INVD) = 1/  A( K, K )
+             WORK(K,INVD) = ONE / A( K, K )
              WORK(K,INVD+1) = 0
             K=K+1
          ELSE
@@ -246,8 +243,8 @@
              D = T*( AK*AKP1-ONE )
              WORK(K,INVD) = AKP1 / D
              WORK(K+1,INVD+1) = AK / D
-             WORK(K,INVD+1) = -AKKP1 / D  
-             WORK(K+1,INVD) = -AKKP1 / D  
+             WORK(K,INVD+1) = -AKKP1 / D
+             WORK(K+1,INVD) = -AKKP1 / D
             K=K+2
          END IF
         END DO
@@ -263,7 +260,7 @@
               NNB=CUT
            ELSE
               COUNT = 0
-*             count negative elements, 
+*             count negative elements,
               DO I=CUT+1-NNB,CUT
                   IF (IPIV(I) .LT. 0) COUNT=COUNT+1
               END DO
@@ -273,7 +270,7 @@
 
            CUT=CUT-NNB
 *
-*          U01 Block 
+*          U01 Block
 *
            DO I=1,CUT
              DO J=1,NNB
@@ -336,7 +333,7 @@
                 I=I+2
              END IF
            END DO
-*    
+*
 *       U11**T*invD1*U11->U11
 *
         CALL ZTRMM('L','U','T','U',NNB, NNB,
@@ -346,7 +343,7 @@
             DO J=I,NNB
               A(CUT+I,CUT+J)=WORK(U11+I,J)
             END DO
-         END DO         
+         END DO
 *
 *          U01**T*invD*U01->A(CUT+I,CUT+J)
 *
@@ -380,7 +377,7 @@
        END DO
 *
 *        Apply PERMUTATIONS P and P**T: P * inv(U**T)*inv(D)*inv(U) *P**T
-*  
+*
             I=1
             DO WHILE ( I .LE. N )
                IF( IPIV(I) .GT. 0 ) THEN
@@ -390,9 +387,9 @@
                ELSE
                  IP=-IPIV(I)
                  I=I+1
-                 IF ( (I-1) .LT. IP) 
+                 IF ( (I-1) .LT. IP)
      $                  CALL ZSYSWAPR( UPLO, N, A, LDA, I-1 ,IP )
-                 IF ( (I-1) .GT. IP) 
+                 IF ( (I-1) .GT. IP)
      $                  CALL ZSYSWAPR( UPLO, N, A, LDA, IP ,I-1 )
               ENDIF
                I=I+1
@@ -406,12 +403,12 @@
          CALL ZTRTRI( UPLO, 'U', N, A, LDA, INFO )
 *
 *       inv(D) and inv(D)*inv(U)
-* 
+*
         K=N
         DO WHILE ( K .GE. 1 )
          IF( IPIV( K ).GT.0 ) THEN
 *           1 x 1 diagonal NNB
-             WORK(K,INVD) = 1/  A( K, K )
+             WORK(K,INVD) = ONE / A( K, K )
              WORK(K,INVD+1) = 0
             K=K-1
          ELSE
@@ -423,8 +420,8 @@
              D = T*( AK*AKP1-ONE )
              WORK(K-1,INVD) = AKP1 / D
              WORK(K,INVD) = AK / D
-             WORK(K,INVD+1) = -AKKP1 / D  
-             WORK(K-1,INVD+1) = -AKKP1 / D  
+             WORK(K,INVD+1) = -AKKP1 / D
+             WORK(K-1,INVD+1) = -AKKP1 / D
             K=K-2
          END IF
         END DO
@@ -440,7 +437,7 @@
               NNB=N-CUT
            ELSE
               COUNT = 0
-*             count negative elements, 
+*             count negative elements,
               DO I=CUT+1,CUT+NNB
                   IF (IPIV(I) .LT. 0) COUNT=COUNT+1
               END DO
@@ -507,7 +504,7 @@
                 I=I-2
              END IF
            END DO
-*    
+*
 *       L11**T*invD1*L11->L11
 *
         CALL ZTRMM('L',UPLO,'T','U',NNB, NNB,
@@ -526,7 +523,7 @@
 *
          CALL ZGEMM('T','N',NNB,NNB,N-NNB-CUT,ONE,A(CUT+NNB+1,CUT+1)
      $             ,LDA,WORK,N+NB+1, ZERO, WORK(U11+1,1), N+NB+1)
-       
+
 *
 *        L11 =  L11**T*invD1*L11 + U01**T*invD*U01
 *
@@ -564,7 +561,7 @@
        END DO
 *
 *        Apply PERMUTATIONS P and P**T: P * inv(U**T)*inv(D)*inv(U) *P**T
-* 
+*
             I=N
             DO WHILE ( I .GE. 1 )
                IF( IPIV(I) .GT. 0 ) THEN

@@ -1,5 +1,4 @@
 subroutine gv2xmt_spin(is, ia,grhoin, vx, v2xsr)
-! i!USES:
 use modinput
 use mod_Gvector
 use mod_muffin_tin
@@ -39,7 +38,7 @@ do i=1, 3
   call dgemm('N', 'N', lmmaxvr, nr, lmmaxvr, 1.d0, rbshtvr, lmmaxvr, gv2xsrmt(:, :, i), &
    lmmaxvr, 0.d0, gv2xsri(:,:,i), lmmaxvr)    
 end do
-gv2x(:, 1:nr)=gv2xsri(:, 1:nr,1) +gv2xsri(:, 1:nr,2) +gv2xsri(:, 1:nr,3) !* &
+gv2x(:, 1:nr)=gv2xsri(:, 1:nr,1) +gv2xsri(:, 1:nr,2) +gv2xsri(:, 1:nr,3) 
 vx(:,1:nr)=vx(:,1:nr)-gv2x(:,1:nr)
 
 return

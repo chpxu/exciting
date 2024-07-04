@@ -1,29 +1,29 @@
-*> \brief \b SLARTGS
+*> \brief \b SLARTGS generates a plane rotation designed to introduce a bulge in implicit QR iteration for the bidiagonal SVD problem.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLARTGS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slartgs.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slartgs.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slartgs.f"> 
+*> Download SLARTGS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slartgs.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slartgs.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slartgs.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLARTGS( X, Y, SIGMA, CS, SN )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL                    CS, SIGMA, SN, X, Y
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -78,22 +78,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE SLARTGS( X, Y, SIGMA, CS, SN )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       REAL                    CS, SIGMA, SN, X, Y
@@ -107,6 +104,9 @@
 *     ..
 *     .. Local Scalars ..
       REAL                    R, S, THRESH, W, Z
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLARTGP
 *     ..
 *     .. External Functions ..
       REAL                    SLAMCH

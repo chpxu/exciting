@@ -74,6 +74,9 @@ Loosening w.r.t. to Defaults
      INFO.OUT |DOS at Fermi energy (states/Ha/cell) 1.e-05
  PBE-arpack_packed-Al
      INFO.OUT |DOS at Fermi energy (states/Ha/cell) 1.e-05
+ PBE_SOL-BN 
+     INFO.OUT | Total energy  1.e-7
+
 
 Additional Test Notes
 --------------------------

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGEESX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgeesx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgeesx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgeesx.f"> 
+*> Download DGEESX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgeesx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgeesx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgeesx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DGEESX( JOBVS, SORT, SELECT, SENSE, N, A, LDA, SDIM,
 *                          WR, WI, VS, LDVS, RCONDE, RCONDV, WORK, LWORK,
 *                          IWORK, LIWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBVS, SENSE, SORT
 *       INTEGER            INFO, LDA, LDVS, LIWORK, LWORK, N, SDIM
@@ -37,7 +37,7 @@
 *       LOGICAL            SELECT
 *       EXTERNAL           SELECT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -90,7 +90,7 @@
 *>
 *> \param[in] SELECT
 *> \verbatim
-*>          SELECT is procedure) LOGICAL FUNCTION of two DOUBLE PRECISION arguments
+*>          SELECT is a LOGICAL FUNCTION of two DOUBLE PRECISION arguments
 *>          SELECT must be declared EXTERNAL in the calling subroutine.
 *>          If SORT = 'S', SELECT is used to select eigenvalues to sort
 *>          to the top left of the Schur form.
@@ -267,12 +267,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGEeigen
 *
@@ -281,10 +279,9 @@
      $                   WR, WI, VS, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                   IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SENSE, SORT
@@ -385,7 +382,7 @@
 *
             CALL DHSEQR( 'S', JOBVS, N, 1, N, A, LDA, WR, WI, VS, LDVS,
      $             WORK, -1, IEVAL )
-            HSWORK = WORK( 1 )
+            HSWORK = INT( WORK( 1 ) )
 *
             IF( .NOT.WANTVS ) THEN
                MAXWRK = MAX( MAXWRK, N + HSWORK )
@@ -583,7 +580,9 @@
                      IF( N.GT.I+1 )
      $                  CALL DSWAP( N-I-1, A( I, I+2 ), LDA,
      $                              A( I+1, I+2 ), LDA )
-                     CALL DSWAP( N, VS( 1, I ), 1, VS( 1, I+1 ), 1 )
+                     IF( WANTVS ) THEN
+                       CALL DSWAP( N, VS( 1, I ), 1, VS( 1, I+1 ), 1 )
+                     END IF
                      A( I, I+1 ) = A( I+1, I )
                      A( I+1, I ) = ZERO
                   END IF

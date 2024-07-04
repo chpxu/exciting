@@ -1,25 +1,25 @@
-*> \brief \b ZGETF2
+*> \brief \b ZGETF2 computes the LU factorization of a general m-by-n matrix using partial pivoting with row interchanges (unblocked algorithm).
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGETF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgetf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgetf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgetf2.f"> 
+*> Download ZGETF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgetf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgetf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgetf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGETF2( M, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -27,7 +27,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -96,22 +96,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GEcomputational
 *
 *  =====================================================================
       SUBROUTINE ZGETF2( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -167,7 +164,7 @@
 *
 *     Compute machine safe minimum
 *
-      SFMIN = DLAMCH('S') 
+      SFMIN = DLAMCH('S')
 *
       DO 10 J = 1, MIN( M, N )
 *

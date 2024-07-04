@@ -1,25 +1,25 @@
-*> \brief \b ZROT
+*> \brief \b ZROT applies a plane rotation with real cosine and complex sine to a pair of complex vectors.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZROT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zrot.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zrot.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zrot.f"> 
+*> Download ZROT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zrot.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zrot.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zrot.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZROT( N, CX, INCX, CY, INCY, C, S )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INCX, INCY, N
 *       DOUBLE PRECISION   C
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16         CX( * ), CY( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -58,7 +58,7 @@
 *> \param[in] INCX
 *> \verbatim
 *>          INCX is INTEGER
-*>          The increment between successive values of CY.  INCX <> 0.
+*>          The increment between successive values of CX.  INCX <> 0.
 *> \endverbatim
 *>
 *> \param[in,out] CY
@@ -91,22 +91,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZROT( N, CX, INCX, CY, INCY, C, S )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, INCY, N

@@ -1,26 +1,26 @@
-*> \brief \b SSYGST
+*> \brief \b SSYGVD
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYGVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssygvd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssygvd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssygvd.f"> 
+*> Download SSYGVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssygvd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssygvd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssygvd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYGVD( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK,
 *                          LWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, ITYPE, LDA, LDB, LIWORK, LWORK, N
@@ -29,7 +29,7 @@
 *       INTEGER            IWORK( * )
 *       REAL               A( LDA, * ), B( LDB, * ), W( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -198,12 +198,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYeigen
 *
@@ -227,10 +225,9 @@
       SUBROUTINE SSYGVD( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK,
      $                   LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -333,8 +330,8 @@
       CALL SSYGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
       CALL SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK, LIWORK,
      $             INFO )
-      LOPT = MAX( REAL( LOPT ), REAL( WORK( 1 ) ) )
-      LIOPT = MAX( REAL( LIOPT ), REAL( IWORK( 1 ) ) )
+      LOPT = INT( MAX( REAL( LOPT ), REAL( WORK( 1 ) ) ) )
+      LIOPT = INT( MAX( REAL( LIOPT ), REAL( IWORK( 1 ) ) ) )
 *
       IF( WANTZ .AND. INFO.EQ.0 ) THEN
 *

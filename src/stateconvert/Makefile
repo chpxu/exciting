@@ -4,8 +4,8 @@ bin:stateconvertbin
 
 stateconvertbin:: ../../build/make.inc 
 	../../build/utilities/mkmf -t ./template -f -m Makefile.mkmf -p stateconvert \
-	./ ../portstate.F90   \
-	 ../ioarray.F90   \
+	./ ../writers/portstate.F90   \
+	 ../writers/ioarray.F90   \
 	 ../mod_misc.F90   \
 	 ../versions_gt.F90   \
 	&& $(MAKE) -f Makefile.mkmf stateconvert \

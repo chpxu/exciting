@@ -39,7 +39,7 @@ Subroutine potcoul
       Complex (8), Allocatable :: zvclir (:)
 
       if (associated(input%groundstate%sirius) .and. sirius_options%use_v_hartree) then
-        call generate_coulomb_potential_sirius(lmmaxvr, nrmtmax, natmmax, ngrtot, rhoir, vmad, vclmt, vclir)
+        call generate_coulomb_potential_sirius(lmmaxvr, nrmtmax, natmmax, ngrid, rhoir, vmad, vclmt, vclir)
         return
       end if
 

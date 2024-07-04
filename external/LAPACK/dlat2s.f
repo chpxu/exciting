@@ -1,25 +1,25 @@
-*> \brief \b DLAT2S
+*> \brief \b DLAT2S converts a double-precision triangular matrix to a single-precision triangular matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAT2S + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlat2s.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlat2s.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlat2s.f"> 
+*> Download DLAT2S + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlat2s.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlat2s.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlat2s.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAT2S( UPLO, N, A, LDA, SA, LDSA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, LDSA, N
@@ -28,7 +28,7 @@
 *       REAL               SA( LDSA, * )
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -40,7 +40,7 @@
 *>
 *> RMAX is the overflow for the SINGLE PRECISION arithmetic
 *> DLAS2S checks that all the entries of A are between -RMAX and
-*> RMAX. If not the convertion is aborted and a flag is raised.
+*> RMAX. If not the conversion is aborted and a flag is raised.
 *>
 *> This is an auxiliary routine so there is no argument checking.
 *> \endverbatim
@@ -99,22 +99,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE DLAT2S( UPLO, N, A, LDA, SA, LDSA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -137,6 +134,9 @@
       LOGICAL            LSAME
       EXTERNAL           SLAMCH, LSAME
 *     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          REAL
+*     ..
 *     .. Executable Statements ..
 *
       RMAX = SLAMCH( 'O' )
@@ -149,7 +149,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = REAL( A( I, J ) )
    10       CONTINUE
    20    CONTINUE
       ELSE
@@ -160,7 +160,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = REAL( A( I, J ) )
    30       CONTINUE
    40    CONTINUE
       END IF

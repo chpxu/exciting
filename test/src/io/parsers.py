@@ -3,31 +3,15 @@ Wrapper module to expose exciting parsers
 
 For other codes, please replace with your own parser module/s.
 """
-import sys
 import os
 import warnings
 from typing import Union
+import subprocess
 
 from excitingtools.parser_utils.grep_parser import grep
 
-from ..runner.profile import compiler_enum_map, Compiler
+from ..runner.profile import compiler_version_identifier_map, Compiler
 from ..tester.failure import Failure, Failure_code
-
-
-def install_excitingtools():
-    """
-    Install excitingtools to provide the exciting parsers
-    """
-    import subprocess
-
-    if 'excitingtools' in sys.modules:
-        return
-    else:
-        print("Running pip install for exciting_tools. "
-              "See <EXCITINGROOT>/test/tools/parsers.py for more info")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", "../tools/exciting_tools/"])
-        # Restart script such that package is found following installation
-        os.execv(sys.executable, [sys.executable] + sys.argv)
 
 try:
     __import__('excitingtools')
@@ -36,11 +20,11 @@ except ModuleNotFoundError:
     message = """excitingtools must be installed for the test suite to run.
 To install excitingtools, from the test directory, type:
 
-  pip3 install -e ../tools/exciting_tools
+  python3 -m pip install ../tools/exciting_tools
 
 excitingtools can be uninstalled by typing:
 
-  pip3 uninstall excitingtools  
+  pip uninstall excitingtools  
     """
     warnings.warn(message)
 finally:
@@ -97,7 +81,8 @@ def get_exciting_root() -> Union[str, None]:
 
 def get_compiler_type() -> Union[Compiler, None]:
     """
-    Get the compiler used to build exciting from the make.inc file
+    Get the compiler command used to build exciting from the make.inc file 
+    and determines the version via cmd line.
 
     Uses relative directories => Assumes test suite always ran from
     the test directory
@@ -106,14 +91,18 @@ def get_compiler_type() -> Union[Compiler, None]:
     """
     exciting_root = get_exciting_root()
     make_inc = os.path.join(exciting_root, 'build/make.inc')
-    result = grep('F90', make_inc).splitlines()
+    result = grep('F90', make_inc, options = {'w': ' '}).splitlines()
 
     for line in result:
         file_comment = line[0] == '#'
+        f77_line = 'F77' in line 
 
-        if not file_comment:
-            for compiler in compiler_enum_map.keys():
-                if compiler in line.lower():
-                    return compiler_enum_map[compiler]
+        if not file_comment and not f77_line:
+            compiler_version_cmd_str = line.split()[2] + " --version"
+            compiler_version_output = subprocess.check_output(compiler_version_cmd_str, shell=True).decode()
+
+            for compiler_id in compiler_version_identifier_map.keys():
+                if compiler_id in compiler_version_output:
+                    return compiler_version_identifier_map[compiler_id]
 
     return None

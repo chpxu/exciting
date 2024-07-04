@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DSYTRI2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsytri2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dsytri2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsytri2.f"> 
+*> Download DSYTRI2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsytri2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dsytri2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsytri2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DSYTRI2( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, LWORK, N
@@ -28,14 +28,14 @@
 *       INTEGER            IPIV( * )
 *       DOUBLE PRECISION   A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> DSYTRI2 computes the inverse of a DOUBLE PRECISION hermitian indefinite matrix
+*> DSYTRI2 computes the inverse of a DOUBLE PRECISION symmetric indefinite matrix
 *> A using the factorization A = U*D*U**T or A = L*D*L**T computed by
 *> DSYTRF. DSYTRI2 sets the LEADING DIMENSION of the workspace
 *> before calling DSYTRI2X that actually computes the inverse.
@@ -62,7 +62,7 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is DOUBLE PRECISION array, dimension (LDA,N)
-*>          On entry, the NB diagonal matrix D and the multipliers
+*>          On entry, the block diagonal matrix D and the multipliers
 *>          used to obtain the factor U or L as computed by DSYTRF.
 *>
 *>          On exit, if INFO = 0, the (symmetric) inverse of the original
@@ -82,7 +82,7 @@
 *> \param[in] IPIV
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
-*>          Details of the interchanges and the NB structure of D
+*>          Details of the interchanges and the block structure of D
 *>          as determined by DSYTRF.
 *> \endverbatim
 *>
@@ -96,11 +96,11 @@
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
 *>          WORK is size >= (N+NB+1)*(NB+3)
-*>          If LDWORK = -1, then a workspace query is assumed; the routine
+*>          If LWORK = -1, then a workspace query is assumed; the routine
 *>           calculates:
 *>              - the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array,
-*>              - and no error message related to LDWORK is issued by XERBLA.
+*>              - and no error message related to LWORK is issued by XERBLA.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -115,22 +115,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleSYcomputational
 *
 *  =====================================================================
       SUBROUTINE DSYTRI2( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -153,7 +150,7 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DSYTRI2X
+      EXTERNAL           DSYTRI, DSYTRI2X, XERBLA
 *     ..
 *     .. Executable Statements ..
 *
@@ -163,7 +160,7 @@
       UPPER = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
 *     Get blocksize
-      NBMAX = ILAENV( 1, 'DSYTRF', UPLO, N, -1, -1, -1 )
+      NBMAX = ILAENV( 1, 'DSYTRI2', UPLO, N, -1, -1, -1 )
       IF ( NBMAX .GE. N ) THEN
          MINSIZE = N
       ELSE
@@ -192,7 +189,7 @@
       END IF
       IF( N.EQ.0 )
      $   RETURN
-      
+
       IF( NBMAX .GE. N ) THEN
          CALL DSYTRI( UPLO, N, A, LDA, IPIV, WORK, INFO )
       ELSE

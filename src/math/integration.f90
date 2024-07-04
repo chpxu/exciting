@@ -9,6 +9,9 @@ module integration
   private
   public :: ODESolver_RungeKutta4thOrder
 
+  !> Default tolerance
+  real(dp), parameter :: tol_default = 1e-6_dp
+
   contains 
 
   !> Runge-Kutta of 4th order to calculate \( x(t+\Delta t) \)
@@ -38,54 +41,58 @@ module integration
   !>     k_4 = S^{-1}H(t+\Delta t)\left[| x(t) \rangle + k_3\Delta t \right].
   !>  \]
   subroutine ODESolver_RungeKutta4thOrder( time_step, alpha, &
-    & H, H_past, S, x )
+    & H, H_past, S, x, tol )
     !> Time step
     real(dp), intent(in)          :: time_step
     !> Complex prefactor
     complex(dp), intent(in)       :: alpha
-    !> Hamiltonian matrix at time \( t \) 
+    !> Hamiltonian matrix at time \( t \): must be hermitian
     complex(dp), intent(in)       :: H(:, :)
-    !> Hamiltonian matrix at time \( t - \Delta t \)  
+    !> Hamiltonian matrix at time \( t - \Delta t \): must be hermitian
     complex(dp), intent(in)       :: H_past(:, :)
-    !> Overlap matrix
+    !> Overlap matrix: must be positive definite
     complex(dp), intent(in)       :: S(:, :)
     !> Vectors to evolve
     complex(dp), intent(inout)    :: x(:, :)
+    !> Tolerance for checking if the matrices are hermitian and positive definite
+    real(dp), intent(in), optional :: tol
   
     integer                       :: i, info
     integer                       :: dim, n_vectors
     complex(dp)                   :: prefactor
     complex(dp), allocatable      :: k(:, :, :), y(:, :), H_aux(:, :), S_aux(:, :)
+    real(dp)                      :: tolerance
   
   
     dim = size( H, 1 )
     n_vectors = size( x, 2 )
+    tolerance = tol_default
+    if( present(tol) ) tolerance = tol
     ! Sanity checks
     ! Check if H and H_past are hermitian
-    call assert( is_hermitian( H ), 'H is not hermitian' )
-    call assert( is_hermitian( H_past ), 'H_past is not hermitian' )
+    call assert( is_hermitian( H, tolerance ), 'H is not hermitian' )
+    call assert( is_hermitian( H_past, tolerance ), 'H_past is not hermitian' )
     ! Check if H, H_past and x have compatible size
     call assert( size( H, 1 ) == size( x, 1 ), 'H and x have incompatible sizes.' )
     call assert( size( H_past, 1 ) == size( x, 1 ), 'H_past and x have incompatible sizes.' )
     ! Check if S is positive definite
-    call assert( is_positive_definite( S ), 'S is not positive definite' )
+    call assert( is_positive_definite( S, tolerance ), 'S is not positive definite' )
     ! Check if S and x have compatible size
     call assert( size( S, 1 ) == size( x, 1 ), 'S and x have incompatible sizes.' )
   
     ! Allocate  
-    allocate( k(dim, n_vectors, 4), y(dim, n_vectors) )
-    allocate( H_aux(dim, dim), S_aux(dim, dim) )
+    allocate( k(dim, n_vectors, 4) )
+    allocate( y, source=x )
+    allocate( H_aux, source=H )
+    allocate( S_aux, source=S )
   
     ! Initiliaze
     prefactor = time_step/alpha
-    y = x
-    S_aux = S
-    H_aux = H
   
     ! Obtain k_1, ..., k_4
     do i = 1, 4
       ! k(:, :, i) = prefactor*H_aux*y, H_aux must be hermitian
-      call hermitian_matrix_multiply( H_aux, prefactor*y, k(:, :, i) )
+      call hermitian_matrix_multiply( H_aux, prefactor*y, k(:, :, i), tol=tolerance )
       ! Obtain (S^(-1))*k(:, :, i) for positive definite S (k will store the solution)
       call ZPOSV( 'U', dim, n_vectors, S_aux, dim, k(:, :, i), dim, info )
       ! Restores S_aux to its original value, after being modified by ZPOSV

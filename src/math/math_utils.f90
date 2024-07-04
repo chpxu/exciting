@@ -4,7 +4,7 @@ module math_utils
   use, intrinsic :: ISO_C_BINDING
 
   use precision, only: sp, dp
-  use constants, only: pi, zzero, zone, zi, fourpi
+  use constants, only: pi, zzero, zone, zi, fourpi, twopi
   use asserts, only: assert
   use seed_generation, only: set_seed
 
@@ -25,7 +25,7 @@ module math_utils
             permanent, &
             mod1, &
             random_order, &
-            round_down, &
+            round_towards_zero, &
             calculate_all_vector_distances, &
             calculate_all_vector_differences, &
             outer_sum, &
@@ -34,6 +34,7 @@ module math_utils
             is_positive_definite, &
             fractional_part, &
             integer_part, &
+            random_units, &
             plane_wave_in_spherical_harmonics, &
             get_degeneracies
 
@@ -65,11 +66,15 @@ module math_utils
 
   !>  Check if two arrays are close, within an absolute tolerance
   interface all_close
-    module procedure all_close_rank0_real_dp, all_close_rank1_real_dp, &
-                   & all_close_rank2_real_dp, all_close_rank3_real_dp,&
-                     all_close_rank0_complex_dp,&
-                   & all_close_rank1_complex_dp, all_close_rank2_complex_dp,&
-                   all_close_rank3_complex_dp, all_close_rank4_complex_dp
+    module procedure all_close_rank0_real_sp, all_close_rank1_real_sp, &
+                     all_close_rank2_real_sp, all_close_rank3_real_sp, &
+                     all_close_rank4_real_sp, &
+                     all_close_rank0_real_dp, all_close_rank1_real_dp, &
+                     all_close_rank2_real_dp, all_close_rank3_real_dp, &
+                     all_close_rank4_real_dp, &
+                     all_close_rank0_complex_dp, all_close_rank1_complex_dp, &
+                     all_close_rank2_complex_dp, all_close_rank3_complex_dp, &
+                     all_close_rank4_complex_dp
   end interface all_close
 
   !>  Check if an array is zero, to within an absolute tolerance
@@ -473,8 +478,140 @@ contains
 !
 ! Check if two scalars, vectors or matrices are close to each other element wise
 ! with respect to a certain tolerance
-  
-  
+
+
+  !> Check if two real scalars \( a \) and \( b \) are equal,
+  !> where equal is defined as \( |a - b| \leq abs\_tol \).
+  logical function all_close_rank0_real_sp(a, b, tol)
+    !> Input array
+    real(sp), intent(in) :: a
+    !> Reference array
+    real(sp), intent(in) :: b
+    !> Absolute tolerance for input and reference to be considered equal
+    real(sp), intent(in), optional :: tol
+
+    !> Local absolute tolerance
+    real(sp) :: tol_
+
+    tol_ = default_tol
+    if (present(tol)) tol_ = tol
+
+    all_close_rank0_real_sp = abs(a - b) <= tol_
+  end function all_close_rank0_real_sp
+
+
+  !> Check if two real rank-1 arrays \( \mathbf{a} \) and \( \mathbf{b} \)
+  !> are equal, where equal is defined as
+  !> \( |a_i - b_i| \leq abs\_tol,  \forall i \).
+  !> As such, the tolerance is checked elementwise.
+  logical function all_close_rank1_real_sp(a, b, tol)
+    !> Input array
+    real(sp), intent(in) :: a(:)
+    !> Reference array
+    real(sp), intent(in) :: b(:)
+    !> Absolute tolerance for input and reference to be considered equal
+    real(sp), intent(in), optional :: tol
+
+    !> Local absolute tolerance
+    real(sp) :: tol_
+
+    call assert(size(a) == size(b), &
+      & 'all_close_rank1_real_sp: size of input arrays differs.')
+
+    tol_ = default_tol
+    if (present(tol)) tol_ = tol
+
+    all_close_rank1_real_sp = all(abs(a - b) <= tol_)
+  end function all_close_rank1_real_sp
+
+
+  !> Check if two real rank-2 arrays \( \mathbf{a} \) and \( \mathbf{b} \)
+  !> are equal, where equal is defined as
+  !> \( |a_{ij} - b_{ij}| \leq abs\_tol,  \forall i,j \).
+  !> As such, the tolerance is checked elementwise.
+  logical function all_close_rank2_real_sp(a, b, tol)
+    !> Input array
+    real(sp), intent(in) :: a(:,:)
+    !> Reference array
+    real(sp), intent(in) :: b(:,:)
+    !> Absolute tolerance for input and reference to be considered equal
+    real(sp), intent(in), optional :: tol
+
+    !> Local absolute tolerance
+    real(sp) :: tol_
+
+    call assert(size(a) == size(b), &
+      & 'all_close_rank2_real_sp: size of input arrays differs.')
+
+    call assert(all(shape(a) == shape(b)), &
+      & 'all_close_rank2_real_sp: shape of input arrays differs.')
+
+    tol_ = default_tol
+    if (present(tol)) tol_ = tol
+
+    all_close_rank2_real_sp = all(abs(a - b) <= tol_)
+  end function all_close_rank2_real_sp
+
+
+  !> Check if two real rank-3 arrays \( \mathbf{a} \) and \( \mathbf{b} \)
+  !> are equal, where equal is defined as
+  !> \( |a_{ijk} - b_{ijk}| \leq abs\_tol,  \forall i,j,k \).
+  !> As such, the tolerance is checked elementwise.
+  logical function all_close_rank3_real_sp(a, b, tol)
+
+    !> Input array
+    real(sp), intent(in) :: a(:, :, :)
+    !> Reference array
+    real(sp), intent(in) :: b(:, :, :)
+    !> Absolute tolerance for input and reference to be considered equal
+    real(sp), intent(in), optional :: tol
+
+    !> Local absolute tolerance
+    real(sp) :: tol_
+
+    call assert(size(a) == size(b), &
+      & 'all_close_rank3_real_sp: size of input arrays differs.')
+
+    call assert(all(shape(a) == shape(b)), &
+      & 'all_close_rank3_real_sp: shape of input arrays differs.')
+
+    tol_ = default_tol
+    if (present(tol)) tol_ = tol
+
+    all_close_rank3_real_sp = all(abs(a - b) <= tol_)
+
+  end function all_close_rank3_real_sp
+
+
+  !> Check if two real rank-4 arrays \( \mathbf{a} \) and \( \mathbf{b} \)
+  !> are equal, where equal is defined as
+  !> \( |a_{ijk} - b_{ijk}| \leq abs\_tol,  \forall i,j,k \).
+  !> As such, the tolerance is checked elementwise.
+  logical function all_close_rank4_real_sp(a, b, tol)
+
+    !> Input array
+    real(sp), intent(in) :: a(:, :, :, :)
+    !> Reference array
+    real(sp), intent(in) :: b(:, :, :, :)
+    !> Absolute tolerance for input and reference to be considered equal
+    real(sp), intent(in), optional :: tol
+
+    !> Local absolute tolerance
+    real(sp) :: tol_
+
+    call assert(size(a) == size(b), &
+      & 'all_close_rank4_real_sp: size of input arrays differs.')
+
+    call assert(all(shape(a) == shape(b)), &
+      & 'all_close_rank4_real_sp: shape of input arrays differs.')
+
+    tol_ = default_tol
+    if (present(tol)) tol_ = tol
+
+    all_close_rank4_real_sp = all(abs(a - b) <= tol_)
+
+  end function all_close_rank4_real_sp
+    
   !> Check if two real scalars \( a \) and \( b \) are equal,
   !> where equal is defined as \( |a - b| \leq abs\_tol \).
   logical function all_close_rank0_real_dp(a, b, tol)
@@ -576,6 +713,36 @@ contains
     all_close_rank3_real_dp = all(abs(a - b) <= tol_)
 
   end function all_close_rank3_real_dp
+
+
+  !> Check if two real rank-4 arrays \( \mathbf{a} \) and \( \mathbf{b} \)
+  !> are equal, where equal is defined as
+  !> \( |a_{ijk} - b_{ijk}| \leq abs\_tol,  \forall i,j,k \).
+  !> As such, the tolerance is checked elementwise.
+  logical function all_close_rank4_real_dp(a, b, tol)
+
+    !> Input array
+    real(dp), intent(in) :: a(:, :, :, :)
+    !> Reference array
+    real(dp), intent(in) :: b(:, :, :, :)
+    !> Absolute tolerance for input and reference to be considered equal
+    real(dp), intent(in), optional :: tol
+
+    !> Local absolute tolerance
+    real(dp) :: tol_
+
+    call assert(size(a) == size(b), &
+      & 'all_close_rank4_real_dp: size of input arrays differs.')
+
+    call assert(all(shape(a) == shape(b)), &
+      & 'all_close_rank4_real_dp: shape of input arrays differs.')
+
+    tol_ = default_tol
+    if (present(tol)) tol_ = tol
+
+    all_close_rank4_real_dp = all(abs(a - b) <= tol_)
+
+  end function all_close_rank4_real_dp
 
 
   !> Check if two complex scalars \( a \) and \( b \)
@@ -1250,15 +1417,19 @@ contains
 
 ! random_order
 
-  !> Return an integer vector of length N with all numbers between 1 and N randomly ordered.
-  function random_order(N) result (p)
+    !> Return an integer vector of length N with all numbers between 1 and N randomly ordered.
+  function random_order(N, N_out) result(p)
     !> length of the permutation
     integer, intent(in) :: N
+    !> Length of the out put array
+    integer, intent(in), optional :: N_out
 
-    integer :: p(N)
+    integer, allocatable :: p(:)
 
-    integer :: j, k
+    integer :: j, k 
     real(sp) :: u
+
+    allocate(p(N))
 
     p = 0
     do j = 1, N
@@ -1267,21 +1438,26 @@ contains
       p(j) = p(k)
       p(k) = j
     end do
+
+    if (present(N_out)) then
+      call assert(N_out <= N, 'N_out > N.')
+      p = p(: N_out)
+    end if
   end function random_order
 
-! round down
+! round towards zero
 
-  !> Rounds a real number down to the nth decimal place, e.g.
+  !> Rounds a real number towards zero to the nth decimal place, e.g.
   !>
-  !> If n is greater than 0, then number is rounded down to the specified number of decimal places.
-  !> 1123.234523 -> 1123.234 for n = 3.
+  !> If n is greater than 0, then the number is rounded towards zero to the specified number of decimal places.
+  !> 1123.234523 -> 1123.234 for n = 3, and -1123.234523 -> -1123.234 for n = 3.
   !>
-  !> If n is 0, then number is rounded down to the nearest integer.
-  !> -2123.77963 -> -2123 for n = 0
+  !> If n is 0, then the number is truncated, i.e., rounded towards zero to the nearest integer.
+  !> 2123.77963 -> 2123 for n = 0, and -2123.77963 -> -2123 for n = 0.
   !>
-  !> If n is less than 0, then number is rounded down to the left of the decimal point.
-  !> 2123.77963 -> 2100 for n = -2.
-  elemental function round_down(x, n) result(x_rounded)
+  !> If n is less than 0, then the number is rounded towards zero to the left of the decimal point.
+  !> 2123.77963 -> 2100 for n = -2, and -2123.77963 -> -2100 for n = -2.
+  elemental function round_towards_zero(x, n) result(x_rounded)
     !> Real number to round down
     real(dp), intent(in) :: x
     !> Number of decimal digits to round down to
@@ -1289,7 +1465,7 @@ contains
 
     real(dp) :: x_rounded
     x_rounded = dble(int(x*(10.0_dp**n)))/(10.0_dp**n)
-  end function round_down
+  end function round_towards_zero
 
   !> Given two sets of vectors with the same dimension, calculate the Eucledian distances between all vectors of the sets.
   subroutine calculate_all_vector_distances(vector_set1, vector_set2, all_vector_distances)
@@ -1299,7 +1475,6 @@ contains
     real(dp), intent(out), contiguous :: all_vector_distances(:, :)
 
     integer :: i, j, k, l, m, n
-    real(dp) :: vector2(3)
 
     k = size(vector_set1, 1)
     l = size(vector_set1, 2)
@@ -1309,12 +1484,13 @@ contains
     call assert(k == m, 'vector_set1 and vector_set2 have not the same number of rows.')
     call assert(all(shape(all_vector_distances) == [l, n]), "all_vector_distances has the wrong shape.")
 
+    !$OMP parallel do shared(vector_set1, vector_set2, all_vector_distances) private(i)
     do j = 1, n
-      vector2 = vector_set2(:, j)
       do i = 1, l
-        all_vector_distances(i, j) = norm2(vector_set1(:, i) - vector2)
+        all_vector_distances(i, j) = norm2(vector_set1(:, i) - vector_set2(:, j))
       end do
     end do
+    !$OMP end parallel do
 
   end subroutine calculate_all_vector_distances
 
@@ -1336,12 +1512,16 @@ contains
     call assert(k == m, 'vector_set1 and vector_set2 have not the same number of rows.')
     call assert(all(shape(all_vector_differences) == [k, l, n]), 'all_vector_differences has not the correct shape.')
 
+    !$OMP parallel default(shared) private(vector2, i)
+    !$OMP do
     do j = 1, n
       vector2 = vector_set2(:, j)
       do i = 1, l
         all_vector_differences(:, i, j) = vector_set1(:, i) - vector2
       end do
     end do
+    !$OMP end do
+    !$OMP end parallel
 
   end subroutine calculate_all_vector_differences
 
@@ -1454,16 +1634,22 @@ contains
 
   !> Check if a hermitian matrix is positive-definite. This is done by checking
   !> if all the eigenvalues are positive
-  logical function is_positive_definite( A )
+  logical function is_positive_definite( A, tol )
     !> Matrix to be checked
     complex(dp), intent(in)   :: A(:, :)
+    !> Tolerance
+    real(dp), intent(in), optional :: tol
 
     integer                   :: dim, info, lwork
     real(dp), allocatable     :: rwork(:), eigenvalues(:)
     complex(dp), allocatable  :: A_copy(:, :), work(:)
     character(200)            :: error_msg
+    real(dp)                  :: tolerance 
 
-    call assert( is_hermitian(A), 'A is not hermitian' )
+    tolerance = default_tol
+    if( present(tol) ) tolerance = tol
+
+    call assert( is_hermitian( A, tolerance ), 'A is not hermitian' )
     ! TODO Issue #25: Lapack wrapper for ZHEEV needed
     dim = size( A, 1 )
     allocate( A_copy(dim, dim), eigenvalues(dim), rwork(3*dim-2) )
@@ -1480,7 +1666,7 @@ contains
     call ZHEEV( 'N', 'U', dim, A_copy, dim, eigenvalues, work, lwork, rwork, info )
     write(error_msg,*) 'Error(is_positive_definite): ZHEEV returned info = ', info
     call assert( info==0, error_msg )
-    is_positive_definite = all( eigenvalues > 0._dp )
+    is_positive_definite = all( eigenvalues > tolerance )
   end function
 
 
@@ -1624,6 +1810,19 @@ contains
     X = reshape(X_in, [M * N])
     I_out = reshape(integer_part_scalar(X, C, tol_), [M, N])
   end function integer_part_matrix
+
+  !> Setup a complex array filled with numbers of lengths 1 (L2 norm) but a random phase.
+  function random_units(n) result(rand_units)
+    integer, intent(in) :: n
+
+    complex(dp) :: rand_units(n)
+    real(dp) :: rand_phases(n)
+
+    call random_number(rand_phases)
+    
+    rand_phases = twopi * rand_phases
+    rand_units = cmplx(cos(rand_phases), sin(rand_phases), dp)
+  end function   
 
   !> Get the spherical harmonics expansion of a plane wave.
   !>

@@ -1,26 +1,26 @@
-*> \brief \b DGSVJ0
+*> \brief \b DGSVJ0 pre-processor for the routine dgesvj.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGSVJ0 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgsvj0.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgsvj0.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgsvj0.f"> 
+*> Download DGSVJ0 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgsvj0.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgsvj0.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgsvj0.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
 *                          SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, NSWEEP
 *       DOUBLE PRECISION   EPS, SFMIN, TOL
@@ -30,7 +30,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), SVA( N ), D( N ), V( LDV, * ),
 *      $                   WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -117,7 +117,7 @@
 *> \param[in] MV
 *> \verbatim
 *>          MV is INTEGER
-*>          If JOBV .EQ. 'A', then MV rows of V are post-multipled by a
+*>          If JOBV = 'A', then MV rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then MV is not referenced.
 *> \endverbatim
@@ -125,9 +125,9 @@
 *> \param[in,out] V
 *> \verbatim
 *>          V is DOUBLE PRECISION array, dimension (LDV,N)
-*>          If JOBV .EQ. 'V' then N rows of V are post-multipled by a
+*>          If JOBV = 'V' then N rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
-*>          If JOBV .EQ. 'A' then MV rows of V are post-multipled by a
+*>          If JOBV = 'A' then MV rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then V is not referenced.
 *> \endverbatim
@@ -136,8 +136,8 @@
 *> \verbatim
 *>          LDV is INTEGER
 *>          The leading dimension of the array V,  LDV >= 1.
-*>          If JOBV = 'V', LDV .GE. N.
-*>          If JOBV = 'A', LDV .GE. MV.
+*>          If JOBV = 'V', LDV >= N.
+*>          If JOBV = 'A', LDV >= MV.
 *> \endverbatim
 *>
 *> \param[in] EPS
@@ -157,7 +157,7 @@
 *>          TOL is DOUBLE PRECISION
 *>          TOL is the threshold for Jacobi rotations. For a pair
 *>          A(:,p), A(:,q) of pivot columns, the Jacobi rotation is
-*>          applied only if DABS(COS(angle(A(:,p),A(:,q)))) .GT. TOL.
+*>          applied only if DABS(COS(angle(A(:,p),A(:,q)))) > TOL.
 *> \endverbatim
 *>
 *> \param[in] NSWEEP
@@ -175,25 +175,23 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          LWORK is the dimension of WORK. LWORK .GE. M.
+*>          LWORK is the dimension of WORK. LWORK >= M.
 *> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0 : successful exit.
-*>          < 0 : if INFO = -i, then the i-th argument had an illegal value
+*>          = 0:  successful exit.
+*>          < 0:  if INFO = -i, then the i-th argument had an illegal value
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -218,10 +216,9 @@
       SUBROUTINE DGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
      $                   SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, NSWEEP
@@ -236,9 +233,8 @@
 *  =====================================================================
 *
 *     .. Local Parameters ..
-      DOUBLE PRECISION   ZERO, HALF, ONE, TWO
-      PARAMETER          ( ZERO = 0.0D0, HALF = 0.5D0, ONE = 1.0D0,
-     $                   TWO = 2.0D0 )
+      DOUBLE PRECISION   ZERO, HALF, ONE
+      PARAMETER          ( ZERO = 0.0D0, HALF = 0.5D0, ONE = 1.0D0)
 *     ..
 *     .. Local Scalars ..
       DOUBLE PRECISION   AAPP, AAPP0, AAPQ, AAQQ, APOAQ, AQOAP, BIG,
@@ -254,7 +250,7 @@
       DOUBLE PRECISION   FASTR( 5 )
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DABS, DMAX1, DBLE, MIN0, DSIGN, DSQRT
+      INTRINSIC          DABS, MAX, DBLE, MIN, DSIGN, DSQRT
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DDOT, DNRM2
@@ -263,7 +259,8 @@
       EXTERNAL           IDAMAX, LSAME, DDOT, DNRM2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DCOPY, DLASCL, DLASSQ, DROTM, DSWAP
+      EXTERNAL           DAXPY, DCOPY, DLASCL, DLASSQ, DROTM, DSWAP,
+     $                   XERBLA
 *     ..
 *     .. Executable Statements ..
 *
@@ -281,7 +278,7 @@
          INFO = -5
       ELSE IF( ( RSVEC.OR.APPLV ) .AND. ( MV.LT.0 ) ) THEN
          INFO = -8
-      ELSE IF( ( RSVEC.AND.( LDV.LT.N ) ).OR. 
+      ELSE IF( ( RSVEC.AND.( LDV.LT.N ) ).OR.
      $         ( APPLV.AND.( LDV.LT.MV ) ) ) THEN
          INFO = -10
       ELSE IF( TOL.LE.EPS ) THEN
@@ -330,7 +327,7 @@
 *     Jacobi SVD algorithm SGESVJ. For sweeps i=1:SWBAND the procedure
 *     ......
 
-      KBL = MIN0( 8, N )
+      KBL = MIN( 8, N )
 *[TP] KBL is a tuning parameter that defines the tile size in the
 *     tiling of the p-q loops of pivot pairs. In general, an optimal
 *     value of KBL depends on the matrix dimensions and on the
@@ -342,7 +339,7 @@
       BLSKIP = ( KBL**2 ) + 1
 *[TP] BLKSKIP is a tuning parameter that depends on SWBAND and KBL.
 
-      ROWSKIP = MIN0( 5, KBL )
+      ROWSKIP = MIN( 5, KBL )
 *[TP] ROWSKIP is a tuning parameter.
 
       LKAHEAD = 1
@@ -364,11 +361,11 @@
 
             igl = ( ibr-1 )*KBL + 1
 *
-            DO 1002 ir1 = 0, MIN0( LKAHEAD, NBL-ibr )
+            DO 1002 ir1 = 0, MIN( LKAHEAD, NBL-ibr )
 *
                igl = igl + ir1*KBL
 *
-               DO 2001 p = igl, MIN0( igl+KBL-1, N-1 )
+               DO 2001 p = igl, MIN( igl+KBL-1, N-1 )
 
 *     .. de Rijk's pivoting
                   q = IDAMAX( N-p+1, SVA( p ), 1 ) + p - 1
@@ -392,7 +389,7 @@
 *        Some BLAS implementations compute DNRM2(M,A(1,p),1)
 *        as DSQRT(DDOT(M,A(1,p),1,A(1,p),1)), which may result in
 *        overflow for ||A(:,p)||_2 > DSQRT(overflow_threshold), and
-*        undeflow for ||A(:,p)||_2 < DSQRT(underflow_threshold).
+*        underflow for ||A(:,p)||_2 < DSQRT(underflow_threshold).
 *        Hence, DNRM2 cannot be trusted, not even in the case when
 *        the true norm is far from the under(over)flow boundaries.
 *        If properly implemented DNRM2 is available, the IF-THEN-ELSE
@@ -417,7 +414,7 @@
 *
                      PSKIPPED = 0
 *
-                     DO 2002 q = p + 1, MIN0( igl+KBL-1, N )
+                     DO 2002 q = p + 1, MIN( igl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 
@@ -452,7 +449,7 @@
                               END IF
                            END IF
 *
-                           MXAAPQ = DMAX1( MXAAPQ, DABS( AAPQ ) )
+                           MXAAPQ = MAX( MXAAPQ, DABS( AAPQ ) )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
@@ -484,11 +481,11 @@
      $                                              V( 1, p ), 1,
      $                                              V( 1, q ), 1,
      $                                              FASTR )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO, 
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
-                                    MXSINJ = DMAX1( MXSINJ, DABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, DABS( T ) )
 *
                                  ELSE
 *
@@ -500,10 +497,10 @@
                                     CS = DSQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
 *
-                                    MXSINJ = DMAX1( MXSINJ, DABS( SN ) )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, DABS( SN ) )
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO,
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = D( p ) / D( q )
@@ -614,9 +611,9 @@
      $                                       A( 1, q ), 1 )
                                  CALL DLASCL( 'G', 0, 0, ONE, AAQQ, M,
      $                                        1, A( 1, q ), LDA, IERR )
-                                 SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                 SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                      ONE-AAPQ*AAPQ ) )
-                                 MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                 MXSINJ = MAX( MXSINJ, SFMIN )
                               END IF
 *           END IF ROTOK THEN ... ELSE
 *
@@ -680,7 +677,7 @@
                   ELSE
                      SVA( p ) = AAPP
                      IF( ( ir1.EQ.0 ) .AND. ( AAPP.EQ.ZERO ) )
-     $                   NOTROT = NOTROT + MIN0( igl+KBL-1, N ) - p
+     $                   NOTROT = NOTROT + MIN( igl+KBL-1, N ) - p
                   END IF
 *
  2001          CONTINUE
@@ -701,7 +698,7 @@
 *        doing the block at ( ibr, jbc )
 *
                IJBLSK = 0
-               DO 2100 p = igl, MIN0( igl+KBL-1, N )
+               DO 2100 p = igl, MIN( igl+KBL-1, N )
 *
                   AAPP = SVA( p )
 *
@@ -709,7 +706,7 @@
 *
                      PSKIPPED = 0
 *
-                     DO 2200 q = jgl, MIN0( jgl+KBL-1, N )
+                     DO 2200 q = jgl, MIN( jgl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 *
@@ -756,7 +753,7 @@
                               END IF
                            END IF
 *
-                           MXAAPQ = DMAX1( MXAAPQ, DABS( AAPQ ) )
+                           MXAAPQ = MAX( MXAAPQ, DABS( AAPQ ) )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
@@ -783,11 +780,11 @@
      $                                              V( 1, p ), 1,
      $                                              V( 1, q ), 1,
      $                                              FASTR )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO,
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
-                                    MXSINJ = DMAX1( MXSINJ, DABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, DABS( T ) )
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
@@ -798,10 +795,10 @@
      $                                  DSQRT( ONE+THETA*THETA ) )
                                     CS = DSQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
-                                    MXSINJ = DMAX1( MXSINJ, DABS( SN ) )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, DABS( SN ) )
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO, 
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = D( p ) / D( q )
@@ -916,9 +913,9 @@
                                     CALL DLASCL( 'G', 0, 0, ONE, AAQQ,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  ELSE
                                     CALL DCOPY( M, A( 1, q ), 1, WORK,
      $                                          1 )
@@ -933,9 +930,9 @@
                                     CALL DLASCL( 'G', 0, 0, ONE, AAPP,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    SVA( p ) = AAPP*DSQRT( DMAX1( ZERO,
+                                    SVA( p ) = AAPP*DSQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  END IF
                               END IF
 *           END IF ROTOK THEN ... ELSE
@@ -1003,7 +1000,7 @@
 *
                   ELSE
                      IF( AAPP.EQ.ZERO )NOTROT = NOTROT +
-     $                   MIN0( jgl+KBL-1, N ) - jgl + 1
+     $                   MIN( jgl+KBL-1, N ) - jgl + 1
                      IF( AAPP.LT.ZERO )NOTROT = 0
                   END IF
 
@@ -1013,7 +1010,7 @@
 *     end of the jbc-loop
  2011       CONTINUE
 *2011 bailed out of the jbc-loop
-            DO 2012 p = igl, MIN0( igl+KBL-1, N )
+            DO 2012 p = igl, MIN( igl+KBL-1, N )
                SVA( p ) = DABS( SVA( p ) )
  2012       CONTINUE
 *
@@ -1045,7 +1042,7 @@
 
  1993 CONTINUE
 *     end i=1:NSWEEP loop
-* #:) Reaching this point means that the procedure has comleted the given
+* #:) Reaching this point means that the procedure has completed the given
 *     number of iterations.
       INFO = NSWEEP - 1
       GO TO 1995

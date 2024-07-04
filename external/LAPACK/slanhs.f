@@ -1,25 +1,25 @@
-*> \brief \b SLANHS
+*> \brief \b SLANHS returns the value of the 1-norm, Frobenius norm, infinity-norm, or the largest absolute value of any element of an upper Hessenberg matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLANHS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slanhs.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slanhs.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slanhs.f"> 
+*> Download SLANHS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slanhs.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slanhs.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slanhs.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL             FUNCTION SLANHS( NORM, N, A, LDA, WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM
 *       INTEGER            LDA, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -96,22 +96,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHERauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION SLANHS( NORM, N, A, LDA, WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM
@@ -135,11 +132,11 @@
       EXTERNAL           SLASSQ
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, SISNAN
+      EXTERNAL           LSAME, SISNAN
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, SQRT
+      INTRINSIC          ABS, MIN, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -152,7 +149,8 @@
          VALUE = ZERO
          DO 20 J = 1, N
             DO 10 I = 1, MIN( N, J+1 )
-               VALUE = MAX( VALUE, ABS( A( I, J ) ) )
+               SUM = ABS( A( I, J ) )
+               IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    10       CONTINUE
    20    CONTINUE
       ELSE IF( ( LSAME( NORM, 'O' ) ) .OR. ( NORM.EQ.'1' ) ) THEN
@@ -165,7 +163,7 @@
             DO 30 I = 1, MIN( N, J+1 )
                SUM = SUM + ABS( A( I, J ) )
    30       CONTINUE
-            VALUE = MAX( VALUE, SUM )
+            IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    40    CONTINUE
       ELSE IF( LSAME( NORM, 'I' ) ) THEN
 *
@@ -181,7 +179,8 @@
    70    CONTINUE
          VALUE = ZERO
          DO 80 I = 1, N
-            VALUE = MAX( VALUE, WORK( I ) )
+            SUM = WORK( I )
+            IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    80    CONTINUE
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *

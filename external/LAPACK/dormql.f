@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DORMQL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dormql.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dormql.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dormql.f"> 
+*> Download DORMQL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dormql.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dormql.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dormql.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DORMQL( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS
 *       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -94,7 +94,6 @@
 *>          The i-th column must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
 *>          DGEQLF in the last k columns of its array argument A.
-*>          A is modified by the routine but restored on exit.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -137,9 +136,7 @@
 *>          The dimension of the array WORK.
 *>          If SIDE = 'L', LWORK >= max(1,N);
 *>          if SIDE = 'R', LWORK >= max(1,M).
-*>          For optimum performance LWORK >= N*NB if SIDE = 'L', and
-*>          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
-*>          blocksize.
+*>          For good performance, LWORK should generally be larger.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -157,12 +154,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -170,10 +165,9 @@
       SUBROUTINE DORMQL( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS
@@ -186,16 +180,14 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            NBMAX, LDT
-      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
+      INTEGER            NBMAX, LDT, TSIZE
+      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1,
+     $                     TSIZE = LDT*NBMAX )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, LQUERY, NOTRAN
-      INTEGER            I, I1, I2, I3, IB, IINFO, IWS, LDWORK, LWKOPT,
+      INTEGER            I, I1, I2, I3, IB, IINFO, IWT, LDWORK, LWKOPT,
      $                   MI, NB, NBMIN, NI, NQ, NW
-*     ..
-*     .. Local Arrays ..
-      DOUBLE PRECISION   T( LDT, NBMAX )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -240,25 +232,22 @@
          INFO = -7
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
          INFO = -10
+      ELSE IF( LWORK.LT.NW .AND. .NOT.LQUERY ) THEN
+         INFO = -12
       END IF
 *
       IF( INFO.EQ.0 ) THEN
+*
+*        Compute the workspace requirements
+*
          IF( M.EQ.0 .OR. N.EQ.0 ) THEN
             LWKOPT = 1
          ELSE
-*
-*           Determine the block size.  NB may be at most NBMAX, where
-*           NBMAX is used to define the local array T.
-*
             NB = MIN( NBMAX, ILAENV( 1, 'DORMQL', SIDE // TRANS, M, N,
      $                               K, -1 ) )
-            LWKOPT = NW*NB
+            LWKOPT = NW*NB + TSIZE
          END IF
          WORK( 1 ) = LWKOPT
-*
-         IF( LWORK.LT.NW .AND. .NOT.LQUERY ) THEN
-            INFO = -12
-         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -277,14 +266,11 @@
       NBMIN = 2
       LDWORK = NW
       IF( NB.GT.1 .AND. NB.LT.K ) THEN
-         IWS = NW*NB
-         IF( LWORK.LT.IWS ) THEN
-            NB = LWORK / LDWORK
+         IF( LWORK.LT.LWKOPT ) THEN
+            NB = (LWORK-TSIZE) / LDWORK
             NBMIN = MAX( 2, ILAENV( 2, 'DORMQL', SIDE // TRANS, M, N, K,
      $              -1 ) )
          END IF
-      ELSE
-         IWS = NW
       END IF
 *
       IF( NB.LT.NBMIN .OR. NB.GE.K ) THEN
@@ -297,6 +283,7 @@
 *
 *        Use blocked code
 *
+         IWT = 1 + NW*NB
          IF( ( LEFT .AND. NOTRAN ) .OR.
      $       ( .NOT.LEFT .AND. .NOT.NOTRAN ) ) THEN
             I1 = 1
@@ -321,7 +308,7 @@
 *           H = H(i+ib-1) . . . H(i+1) H(i)
 *
             CALL DLARFT( 'Backward', 'Columnwise', NQ-K+I+IB-1, IB,
-     $                   A( 1, I ), LDA, TAU( I ), T, LDT )
+     $                   A( 1, I ), LDA, TAU( I ), WORK( IWT ), LDT )
             IF( LEFT ) THEN
 *
 *              H or H**T is applied to C(1:m-k+i+ib-1,1:n)
@@ -337,8 +324,8 @@
 *           Apply H or H**T
 *
             CALL DLARFB( SIDE, TRANS, 'Backward', 'Columnwise', MI, NI,
-     $                   IB, A( 1, I ), LDA, T, LDT, C, LDC, WORK,
-     $                   LDWORK )
+     $                   IB, A( 1, I ), LDA, WORK( IWT ), LDT, C, LDC,
+     $                   WORK, LDWORK )
    10    CONTINUE
       END IF
       WORK( 1 ) = LWKOPT

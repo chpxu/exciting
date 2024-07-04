@@ -1,4 +1,4 @@
-!> Module for unit tests for for the functions in math_utils.
+!> Module for unit tests for the functions in math_utils.
 
 module math_utils_test
   use precision, only: dp
@@ -17,9 +17,8 @@ module math_utils_test
                         permanent, &
                         mod1, &
                         random_order, &
-                        round_down, &
                         boundary_mask, &
-                        round_down, &
+                        round_towards_zero, &
                         calculate_all_vector_distances, &
                         calculate_all_vector_differences, &
                         outer_sum, &
@@ -82,7 +81,7 @@ contains
 
     call test_mod1(test_report)
 
-    call test_round_down(test_report)
+    call test_round_towards_zero(test_report)
 
     call test_boundary_mask(test_report)
 
@@ -506,57 +505,57 @@ contains
   end subroutine test_mod1
 
 
-  !> Test round_down
-  subroutine test_round_down(test_report)
+  !> Test round_towards_zero
+  subroutine test_round_towards_zero(test_report)
     !> Our test object
     type(unit_test_type), intent(inout) :: test_report
 
     !scalar positive x; scalar positive n
-    call test_report%assert(all_close(round_down(2123.77963_dp, 3), 2123.779_dp), &
-            'Test function round_down for scalar with scalar n = 3. &
+    call test_report%assert(all_close(round_towards_zero(2123.77963_dp, 3), 2123.779_dp), &
+            'Test function round_towards_zero for scalar with scalar n = 3. &
             Expected result: 2123.779')
 
     !scalar negative x; scalar positive n
-    call test_report%assert(all_close(round_down(-2123.77963_dp, 3), -2123.779_dp), &
-            'Test function round_down for negative scalar with positive &
+    call test_report%assert(all_close(round_towards_zero(-2123.77963_dp, 3), -2123.779_dp), &
+            'Test function round_towards_zero for negative scalar with positive &
             scalar n = 3. Expected result: -2123.779')
 
     !scalar positive x; scalar negative n
-    call test_report%assert(all_close(round_down(2123.77963_dp, -2), 2100.0_dp), &
-            'Test function round_down for positive scalar with negative &
+    call test_report%assert(all_close(round_towards_zero(2123.77963_dp, -2), 2100.0_dp), &
+            'Test function round_towards_zero for positive scalar with negative &
             scalar n = -2. Expected result: 2100')
 
     !scalar negative x; scalar negative n
-    call test_report%assert(all_close(round_down(-2123.77963_dp, -2), -2100.0_dp), &
-            'Test function round_down for negative scalar with negative &
+    call test_report%assert(all_close(round_towards_zero(-2123.77963_dp, -2), -2100.0_dp), &
+            'Test function round_towards_zero for negative scalar with negative &
             scalar n = -2. Expected result: -2100')
 
     !scalar positive x; n=0
-    call test_report%assert(all_close(round_down(2123.77963_dp, 0), 2123.0_dp), &
-            'Test function round_down for positive scalar with &
+    call test_report%assert(all_close(round_towards_zero(2123.77963_dp, 0), 2123.0_dp), &
+            'Test function round_towards_zero for positive scalar with &
             scalar n = 0. Expected result: 2123.0')
 
     !scalar negative x; n=0
-    call test_report%assert(all_close(round_down(-2123.77963_dp, 0), -2123.0_dp), &
-            'Test function round_down for negative scalar with &
+    call test_report%assert(all_close(round_towards_zero(-2123.77963_dp, 0), -2123.0_dp), &
+            'Test function round_towards_zero for negative scalar with &
             scalar n = 0. Expected result: -2123.0')
 
     !mixed array x; scalar positive n
-    call test_report%assert(all_close(round_down([2123.77963_dp, -212.377963_dp, 2.12377963_dp], 3), &
-            [2123.779_dp, -212.377_dp, 2.123_dp]), 'Test function round_down for three &
+    call test_report%assert(all_close(round_towards_zero([2123.77963_dp, -212.377963_dp, 2.12377963_dp], 3), &
+            [2123.779_dp, -212.377_dp, 2.123_dp]), 'Test function round_towards_zero for three &
             element array with scalar n = 3. Expected result: [2123.779, -212.377, 2.123]')
 
     !positive scalar x; array positive n
-    call test_report%assert(all_close(round_down(2123.77963_dp, [1, 2, 4]), [2123.7_dp, 2123.77_dp, 2123.7796_dp]), &
-            'Test function round_down for scalar with array n = [1, 2, 4]. &
+    call test_report%assert(all_close(round_towards_zero(2123.77963_dp, [1, 2, 4]), [2123.7_dp, 2123.77_dp, 2123.7796_dp]), &
+            'Test function round_towards_zero for scalar with array n = [1, 2, 4]. &
                     Expected result: [2123.7, 2123.77, 2123.7796]')
 
     !array x; array n
-    call test_report%assert(all_close(round_down([2123.77963_dp, 212.377963_dp, 2.12377963_dp], &
+    call test_report%assert(all_close(round_towards_zero([2123.77963_dp, 212.377963_dp, 2.12377963_dp], &
             [2, 3, 5]), [2123.77_dp, 212.377_dp, 2.12377_dp]), &
-            'Test function round_down for array with array n = [2, 3, 5]. &
+            'Test function round_towards_zero for array with array n = [2, 3, 5]. &
             Expected result: [2123.77_dp, 212.377_dp, 2.12377_dp]')
-  end subroutine test_round_down
+  end subroutine test_round_towards_zero
 
 
   !> Test boundary_mask

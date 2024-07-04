@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYSVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssysvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssysvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssysvx.f"> 
+*> Download SSYSVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssysvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssysvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssysvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SSYSVX( FACT, UPLO, N, NRHS, A, LDA, AF, LDAF, IPIV, B,
 *                          LDB, X, LDX, RCOND, FERR, BERR, WORK, LWORK,
 *                          IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          FACT, UPLO
 *       INTEGER            INFO, LDA, LDAF, LDB, LDX, LWORK, N, NRHS
@@ -32,7 +32,7 @@
 *       REAL               A( LDA, * ), AF( LDAF, * ), B( LDB, * ),
 *      $                   BERR( * ), FERR( * ), WORK( * ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -132,7 +132,7 @@
 *>
 *> \param[in,out] AF
 *> \verbatim
-*>          AF is or output) REAL array, dimension (LDAF,N)
+*>          AF is REAL array, dimension (LDAF,N)
 *>          If FACT = 'F', then AF is an input argument and on entry
 *>          contains the block diagonal matrix D and the multipliers used
 *>          to obtain the factor U or L from the factorization
@@ -152,7 +152,7 @@
 *>
 *> \param[in,out] IPIV
 *> \verbatim
-*>          IPIV is or output) INTEGER array, dimension (N)
+*>          IPIV is INTEGER array, dimension (N)
 *>          If FACT = 'F', then IPIV is an input argument and on entry
 *>          contains details of the interchanges and the block structure
 *>          of D, as determined by SSYTRF.
@@ -270,12 +270,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYsolve
 *
@@ -284,10 +282,9 @@
      $                   LDB, X, LDX, RCOND, FERR, BERR, WORK, LWORK,
      $                   IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          FACT, UPLO

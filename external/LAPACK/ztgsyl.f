@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZTGSYL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ztgsyl.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ztgsyl.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ztgsyl.f"> 
+*> Download ZTGSYL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ztgsyl.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ztgsyl.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ztgsyl.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE ZTGSYL( TRANS, IJOB, M, N, A, LDA, B, LDB, C, LDC, D,
 *                          LDD, E, LDE, F, LDF, SCALE, DIF, WORK, LWORK,
 *                          IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            IJOB, INFO, LDA, LDB, LDC, LDD, LDE, LDF,
@@ -34,7 +34,7 @@
 *      $                   D( LDD, * ), E( LDE, * ), F( LDF, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -217,7 +217,7 @@
 *>          If 0 < SCALE < 1, C and F hold the solutions R and L, resp.,
 *>          to a slightly perturbed system but the input matrices A, B,
 *>          D and E have not been changed. If SCALE = 0, R and L will
-*>          hold the solutions to the homogenious system with C = F = 0.
+*>          hold the solutions to the homogeneous system with C = F = 0.
 *> \endverbatim
 *>
 *> \param[out] WORK
@@ -255,12 +255,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16SYcomputational
 *
@@ -295,10 +293,9 @@
      $                   LDD, E, LDE, F, LDF, SCALE, DIF, WORK, LWORK,
      $                   IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS

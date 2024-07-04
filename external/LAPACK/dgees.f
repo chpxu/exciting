@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGEES + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgees.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgees.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgees.f"> 
+*> Download DGEES + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgees.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgees.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgees.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGEES( JOBVS, SORT, SELECT, N, A, LDA, SDIM, WR, WI,
 *                         VS, LDVS, WORK, LWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBVS, SORT
 *       INTEGER            INFO, LDA, LDVS, LWORK, N, SDIM
@@ -34,7 +34,7 @@
 *       LOGICAL            SELECT
 *       EXTERNAL           SELECT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -80,7 +80,7 @@
 *>
 *> \param[in] SELECT
 *> \verbatim
-*>          SELECT is procedure) LOGICAL FUNCTION of two DOUBLE PRECISION arguments
+*>          SELECT is a LOGICAL FUNCTION of two DOUBLE PRECISION arguments
 *>          SELECT must be declared EXTERNAL in the calling subroutine.
 *>          If SORT = 'S', SELECT is used to select eigenvalues to sort
 *>          to the top left of the Schur form.
@@ -203,12 +203,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGEeigen
 *
@@ -216,10 +214,9 @@
       SUBROUTINE DGEES( JOBVS, SORT, SELECT, N, A, LDA, SDIM, WR, WI,
      $                  VS, LDVS, WORK, LWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SORT
@@ -305,7 +302,7 @@
 *
             CALL DHSEQR( 'S', JOBVS, N, 1, N, A, LDA, WR, WI, VS, LDVS,
      $             WORK, -1, IEVAL )
-            HSWORK = WORK( 1 )
+            HSWORK = INT( WORK( 1 ) )
 *
             IF( .NOT.WANTVS ) THEN
                MAXWRK = MAX( MAXWRK, N + HSWORK )

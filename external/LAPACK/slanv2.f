@@ -1,29 +1,29 @@
-*> \brief \b SLANV2
+*> \brief \b SLANV2 computes the Schur factorization of a real 2-by-2 nonsymmetric matrix in standard form.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLANV2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slanv2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slanv2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slanv2.f"> 
+*> Download SLANV2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slanv2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slanv2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slanv2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLANV2( A, B, C, D, RT1R, RT1I, RT2R, RT2I, CS, SN )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               A, B, C, CS, D, RT1I, RT1R, RT2I, RT2R, SN
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -104,12 +104,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHERauxiliary
 *
@@ -127,10 +125,9 @@
 *  =====================================================================
       SUBROUTINE SLANV2( A, B, C, D, RT1R, RT1I, RT2R, RT2I, CS, SN )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       REAL               A, B, C, CS, D, RT1I, RT1R, RT2I, RT2R, SN
@@ -139,14 +136,17 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL               ZERO, HALF, ONE
-      PARAMETER          ( ZERO = 0.0E+0, HALF = 0.5E+0, ONE = 1.0E+0 )
+      REAL               ZERO, HALF, ONE, TWO
+      PARAMETER          ( ZERO = 0.0E+0, HALF = 0.5E+0, ONE = 1.0E+0,
+     $                     TWO = 2.0E+0 )
       REAL               MULTPL
       PARAMETER          ( MULTPL = 4.0E+0 )
 *     ..
 *     .. Local Scalars ..
       REAL               AA, BB, BCMAX, BCMIS, CC, CS1, DD, EPS, P, SAB,
-     $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z
+     $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z, SAFMIN, 
+     $                   SAFMN2, SAFMX2
+      INTEGER            COUNT
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH, SLAPY2
@@ -157,11 +157,14 @@
 *     ..
 *     .. Executable Statements ..
 *
+      SAFMIN = SLAMCH( 'S' )
       EPS = SLAMCH( 'P' )
+      SAFMN2 = SLAMCH( 'B' )**INT( LOG( SAFMIN / EPS ) /
+     $            LOG( SLAMCH( 'B' ) ) / TWO )
+      SAFMX2 = ONE / SAFMN2
       IF( C.EQ.ZERO ) THEN
          CS = ONE
          SN = ZERO
-         GO TO 10
 *
       ELSE IF( B.EQ.ZERO ) THEN
 *
@@ -174,12 +177,12 @@
          A = TEMP
          B = -C
          C = ZERO
-         GO TO 10
+*
       ELSE IF( (A-D).EQ.ZERO .AND. SIGN( ONE, B ).NE.
      $   SIGN( ONE, C ) ) THEN
          CS = ONE
          SN = ZERO
-         GO TO 10
+*
       ELSE
 *
          TEMP = A - D
@@ -207,12 +210,30 @@
             SN = C / TAU
             B = B - C
             C = ZERO
+*
          ELSE
 *
 *           Complex eigenvalues, or real (almost) equal eigenvalues.
 *           Make diagonal elements equal.
 *
+            COUNT = 0
             SIGMA = B + C
+   10       CONTINUE
+            COUNT = COUNT + 1
+            SCALE = MAX( ABS(TEMP), ABS(SIGMA) )
+            IF( SCALE.GE.SAFMX2 ) THEN
+               SIGMA = SIGMA * SAFMN2
+               TEMP = TEMP * SAFMN2
+               IF (COUNT .LE. 20)
+     $            GOTO 10
+            END IF
+            IF( SCALE.LE.SAFMN2 ) THEN
+               SIGMA = SIGMA * SAFMX2
+               TEMP = TEMP * SAFMX2
+               IF (COUNT .LE. 20)
+     $            GOTO 10
+            END IF
+            P = HALF*TEMP
             TAU = SLAPY2( SIGMA, TEMP )
             CS = SQRT( HALF*( ONE+ABS( SIGMA ) / TAU ) )
             SN = -( P / ( TAU*CS ) )*SIGN( ONE, SIGMA )
@@ -268,8 +289,6 @@
          END IF
 *
       END IF
-*
-   10 CONTINUE
 *
 *     Store eigenvalues in (RT1R,RT1I) and (RT2R,RT2I).
 *

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGGEVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cggevx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cggevx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cggevx.f"> 
+*> Download CGGEVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cggevx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cggevx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cggevx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          ALPHA, BETA, VL, LDVL, VR, LDVR, ILO, IHI,
 *                          LSCALE, RSCALE, ABNRM, BBNRM, RCONDE, RCONDV,
 *                          WORK, LWORK, RWORK, IWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
 *       INTEGER            IHI, ILO, INFO, LDA, LDB, LDVL, LDVR, LWORK, N
@@ -37,7 +37,7 @@
 *      $                   BETA( * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -271,7 +271,7 @@
 *>          numbers of the eigenvectors, stored in consecutive elements
 *>          of the array. If the eigenvalues cannot be reordered to
 *>          compute RCONDV(j), RCONDV(j) is set to 0; this can only occur
-*>          when the true value would be very small anyway. 
+*>          when the true value would be very small anyway.
 *>          If SENSE = 'N' or 'E', RCONDV is not referenced.
 *> \endverbatim
 *>
@@ -330,12 +330,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexGEeigen
 *
@@ -374,10 +372,9 @@
      $                   LSCALE, RSCALE, ABNRM, BBNRM, RCONDE, RCONDV,
      $                   WORK, LWORK, RWORK, IWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
@@ -710,8 +707,8 @@
 *
          IF( .NOT.WANTSN ) THEN
 *
-*           compute eigenvectors (STGEVC) and estimate condition
-*           numbers (STGSNA). Note that the definition of the condition
+*           compute eigenvectors (CTGEVC) and estimate condition
+*           numbers (CTGSNA). Note that the definition of the condition
 *           number is not invariant under transformation (u,v) to
 *           (Q*u, Z*v), where (u,v) are eigenvectors of the generalized
 *           Schur form (S,T), Q and Z are orthogonal matrices. In order
@@ -788,15 +785,15 @@
 *
 *     Undo scaling if necessary
 *
+   90 CONTINUE
+*
       IF( ILASCL )
      $   CALL CLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHA, N, IERR )
 *
       IF( ILBSCL )
      $   CALL CLASCL( 'G', 0, 0, BNRMTO, BNRM, N, 1, BETA, N, IERR )
 *
-   90 CONTINUE
       WORK( 1 ) = MAXWRK
-*
       RETURN
 *
 *     End of CGGEVX

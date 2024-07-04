@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPOSVXX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sposvxx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sposvxx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sposvxx.f"> 
+*> Download SPOSVXX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sposvxx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sposvxx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sposvxx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                           S, B, LDB, X, LDX, RCOND, RPVGRW, BERR,
 *                           N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
 *                           NPARAMS, PARAMS, WORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          EQUED, FACT, UPLO
 *       INTEGER            INFO, LDA, LDAF, LDB, LDX, N, NRHS, NPARAMS,
@@ -37,7 +37,7 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -181,7 +181,7 @@
 *>
 *> \param[in,out] AF
 *> \verbatim
-*>          AF is or output) REAL array, dimension (LDAF,N)
+*>          AF is REAL array, dimension (LDAF,N)
 *>     If FACT = 'F', then AF is an input argument and on entry
 *>     contains the triangular factor U or L from the Cholesky
 *>     factorization A = U**T*U or A = L*L**T, in the same storage
@@ -208,7 +208,7 @@
 *>
 *> \param[in,out] EQUED
 *> \verbatim
-*>          EQUED is or output) CHARACTER*1
+*>          EQUED is CHARACTER*1
 *>     Specifies the form of equilibration that was done.
 *>       = 'N':  No equilibration (always true if FACT = 'N').
 *>       = 'Y':  Both row and column equilibration, i.e., A has been
@@ -219,7 +219,7 @@
 *>
 *> \param[in,out] S
 *> \verbatim
-*>          S is or output) REAL array, dimension (N)
+*>          S is REAL array, dimension (N)
 *>     The row scale factors for A.  If EQUED = 'Y', A is multiplied on
 *>     the left and right by diag(S).  S is an input argument if FACT =
 *>     'F'; otherwise, S is an output argument.  If FACT = 'F' and EQUED
@@ -366,7 +366,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -402,14 +402,14 @@
 *> \param[in] NPARAMS
 *> \verbatim
 *>          NPARAMS is INTEGER
-*>     Specifies the number of parameters set in PARAMS.  If .LE. 0, the
+*>     Specifies the number of parameters set in PARAMS.  If <= 0, the
 *>     PARAMS array is never referenced and default values are used.
 *> \endverbatim
 *>
 *> \param[in,out] PARAMS
 *> \verbatim
-*>          PARAMS is / output) REAL array, dimension NPARAMS
-*>     Specifies algorithm parameters.  If an entry is .LT. 0.0, then
+*>          PARAMS is REAL array, dimension NPARAMS
+*>     Specifies algorithm parameters.  If an entry is < 0.0, then
 *>     that entry will be filled with default value used for that
 *>     parameter.  Only positions up to NPARAMS are accessed; defaults
 *>     are used for higher-numbered parameters.
@@ -417,9 +417,9 @@
 *>       PARAMS(LA_LINRX_ITREF_I = 1) : Whether to perform iterative
 *>            refinement or not.
 *>         Default: 1.0
-*>            = 0.0 : No refinement is performed, and no error bounds are
+*>            = 0.0:  No refinement is performed, and no error bounds are
 *>                    computed.
-*>            = 1.0 : Use the double-precision refinement algorithm,
+*>            = 1.0:  Use the double-precision refinement algorithm,
 *>                    possibly with doubled-single computations if the
 *>                    compilation environment does not support DOUBLE
 *>                    PRECISION.
@@ -482,12 +482,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realPOsolve
 *
@@ -497,10 +495,9 @@
      $                    N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
      $                    NPARAMS, PARAMS, WORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO

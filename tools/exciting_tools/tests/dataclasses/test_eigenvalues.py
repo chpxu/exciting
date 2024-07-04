@@ -32,7 +32,10 @@ def eigenvalues_instance():
 
     ref_weights = [0.125, 0.5, 0.375000]
 
-    eigen_values = EigenValues(NumberOfStates(19, 24), ref_k_points, [1, 2, 3], ref_gw_eigenvalues, ref_weights)
+    ref_occupations = np.array([[2, 2, 2, 0, 0, 0], [2, 2, 2, 0, 0, 0], [2, 2, 2, 0, 0, 0]])
+
+    eigen_values = EigenValues(NumberOfStates(19, 24), ref_k_points, [1, 2, 3], ref_gw_eigenvalues, ref_weights,
+                               ref_occupations)
 
     assert ref_gw_eigenvalues.shape == (len(eigen_values.k_points), eigen_values.state_range.n_states)
     assert eigen_values.state_range.first_state == 19
@@ -41,6 +44,7 @@ def eigenvalues_instance():
     assert eigen_values.k_indices == [1, 2, 3]
     assert np.allclose(eigen_values.all_eigenvalues, ref_gw_eigenvalues), "GW column eigenvalues, for all k-points"
     assert eigen_values.weights == ref_weights
+    assert np.allclose(eigen_values.occupations, ref_occupations)
     return eigen_values
 
 
@@ -91,3 +95,18 @@ def test_class_eigenvalues_band_gap(eigenvalues_instance):
 
     assert np.isclose(indirect_band_gap, 0.19767), 'Indirect band gap in Ha'
     assert np.isclose(direct_band_gap_at_Gamma, 0.218540887), 'Direct band gap at Gamma, in Ha'
+
+
+def test_class_eigenvalues_get_transition_energy(eigenvalues_instance):
+    k_valence = [0.000, 0.500, 0.500]
+    k_conduction = [0.000, 0.000, 0.000]
+
+    indirect_gap = eigenvalues_instance.get_transition_energy(k_valence, k_conduction)
+    direct_gap_at_Gamma =eigenvalues_instance.get_transition_energy(k_conduction, k_conduction)
+
+    assert np.isclose(indirect_gap, 0.19767), 'Transition energy for X→Γ, in Ha'
+    assert np.isclose(direct_gap_at_Gamma, 0.21854), 'Transition energy for Γ→Γ, in Ha'
+
+    with pytest.raises(ValueError, match="Requested conduction k-point \\[1, 1, 1\\] not present."):
+        eigenvalues_instance.get_transition_energy(k_valence, [1, 1, 1]), \
+        "ValueError is returned if k-point is not matched."

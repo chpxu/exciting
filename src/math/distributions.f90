@@ -1,6 +1,7 @@
-!> Tools that are useful for defining grids or working with grids.
+!> Distributions.
 module distributions
-    use precision, only: sp, dp
+    use precision, only: dp
+    use constants, only: pi
 
   
     implicit none
@@ -8,39 +9,53 @@ module distributions
     private
     public :: lorentzian
 contains
-        !> Constructs the Lorentzian distribution, defined as 
-    !>
-    !> \[
-    !>    f(\omega;\omega_0,\gamma) = 
-    !>        \frac{1}{\pi\gamma}\frac{\gamma^2}{(\omega - \omega_0)^2 + \gamma^2}
-    !>                                                                          \]
-    !>
-    !> for given frequencies \( \omega \), location parameter \( \omega_0  \)
-    !> and broadening \(  \gamma \).
-    !> See e.g. https://en.wikipedia.org/wiki/Cauchy_distribution.
-    function lorentzian(broad, frequencies, freq_0) result(lorentzian_func)
 
-        use constants, only: pi
+  !> Constructs the Lorentzian distribution, defined as 
+  !>
+  !> \[
+  !>    f(x; \mu,\gamma) = 
+  !>        \frac{1}{\pi \gamma}\frac{\gamma^2}{(x - \mu)^2 + \gamma^2}
+  !>                                                                          \]
+  !>
+  !> for an array of values \( x \), the location parameter \( \mu  \)
+  !> and the broadening \(  \gamma \).
+  !> See e.g. https://en.wikipedia.org/wiki/Cauchy_distribution.
+  pure function lorentzian(x, gamma, mu) result(lorentzian_func)
 
-        !> Broadening in eV
-        real(dp) :: broad
-        !> Location parameter, i.e. center of the Lorentzian
-        real(dp) :: freq_0
-        !> Frequencies of the frequency grid
-        real(dp) :: frequencies(:)
-        real(dp), allocatable :: lorentzian_func(:)
-        !> Number of frequencies
-        integer :: n_freqs
-        !> Runnind index frequencies
-        integer :: ifreq
+    !> Grid on which the function is calculated
+    real(dp), intent(in) :: x(:)
+    !> Broadening \(\gamma\)
+    real(dp), intent(in) :: gamma
+    !> Location of the center of the Lorentzian
+    real(dp), intent(in) :: mu
 
-        n_freqs = size(frequencies)
+    real(dp), allocatable :: lorentzian_func(:)
 
-        allocate (lorentzian_func(size(frequencies)))
+    lorentzian_func = gamma/((x - mu)**2 + gamma**2) /pi
+  end function
 
-        lorentzian_func = broad/((frequencies - freq_0)**2 + broad**2) /pi
+  !> Constructs the Gauss distribution, defined as 
+  !>
+  !> \[
+  !>    f(x; \mu,\sigma) = 
+  !>        \frac {1} {\sqrt{2 \pi \sigma^2}} \exp{ \frac {(x - \mu)^2} {\sqrt{2 \sigma^2}} }
+  !>                                                                          \]
+  !>
+  !> for an array of values \( x \), the location parameter \( \mu  \)
+  !> and the broadening \(  \sigma \).
+  !> See e.g. https://en.wikipedia.org/wiki/Normal_distribution.
+  pure function gaussian(x, sigma, mu) result(gaussian_func)
 
+    !> Grid on which the function is calculated
+    real(dp), intent(in) :: x(:)
+    !> Broadening \(\sigma\)
+    real(dp), intent(in) :: sigma
+    !> Location of the center of the Gaussian
+    real(dp), intent(in) :: mu
 
+    real(dp), allocatable :: gaussian_func(:)
+    
+    gaussian_func = 1.0_dp / sqrt(2 * pi * sigma**2) * exp((x - mu)**2 / sqrt( 2* sigma**2))
+  end function gaussian
 
-    end function
-end 
+end module distributions

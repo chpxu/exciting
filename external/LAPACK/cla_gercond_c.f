@@ -1,27 +1,27 @@
-*> \brief \b CLA_GERCOND_C
+*> \brief \b CLA_GERCOND_C computes the infinity norm condition number of op(A)*inv(diag(c)) for general matrices.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLA_GERCOND_C + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_gercond_c.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_gercond_c.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_gercond_c.f"> 
+*> Download CLA_GERCOND_C + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_gercond_c.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_gercond_c.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_gercond_c.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL FUNCTION CLA_GERCOND_C( TRANS, N, A, LDA, AF, LDAF, IPIV, C,
 *                                    CAPPLY, INFO, WORK, RWORK )
-* 
-*       .. Scalar Aguments ..
+*
+*       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       LOGICAL            CAPPLY
 *       INTEGER            N, LDA, LDAF, INFO
@@ -31,14 +31,14 @@
 *       COMPLEX            A( LDA, * ), AF( LDAF, * ), WORK( * )
 *       REAL               C( * ), RWORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> 
+*>
 *>    CLA_GERCOND_C computes the infinity norm condition number of
 *>    op(A) * inv(diag(C)) where C is a REAL vector.
 *> \endverbatim
@@ -114,13 +114,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX array, dimension (2*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] RWORK
+*> \param[out] RWORK
 *> \verbatim
 *>          RWORK is REAL array, dimension (N).
 *>     Workspace.
@@ -129,12 +129,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexGEcomputational
 *
@@ -142,12 +140,11 @@
       REAL FUNCTION CLA_GERCOND_C( TRANS, N, A, LDA, AF, LDAF, IPIV, C,
      $                             CAPPLY, INFO, WORK, RWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
-*     .. Scalar Aguments ..
+*     .. Scalar Arguments ..
       CHARACTER          TRANS
       LOGICAL            CAPPLY
       INTEGER            N, LDA, LDAF, INFO
@@ -192,8 +189,13 @@
       NOTRANS = LSAME( TRANS, 'N' )
       IF ( .NOT. NOTRANS .AND. .NOT. LSAME( TRANS, 'T' ) .AND. .NOT.
      $     LSAME( TRANS, 'C' ) ) THEN
+         INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( LDAF.LT.MAX( 1, N ) ) THEN
+         INFO = -6
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'CLA_GERCOND_C', -INFO )
@@ -308,5 +310,7 @@
      $   CLA_GERCOND_C = 1.0E+0 / AINVNM
 *
       RETURN
+*
+*     End of CLA_GERCOND_C
 *
       END

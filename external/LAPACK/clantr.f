@@ -1,26 +1,26 @@
-*> \brief \b CLANTR
+*> \brief \b CLANTR returns the value of the 1-norm, or the Frobenius norm, or the infinity norm, or the element of largest absolute value of a trapezoidal or triangular matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLANTR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clantr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clantr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clantr.f"> 
+*> Download CLANTR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clantr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clantr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clantr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL             FUNCTION CLANTR( NORM, UPLO, DIAG, M, N, A, LDA,
 *                        WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, NORM, UPLO
 *       INTEGER            LDA, M, N
@@ -29,7 +29,7 @@
 *       REAL               WORK( * )
 *       COMPLEX            A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -129,12 +129,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -142,10 +140,9 @@
       REAL             FUNCTION CLANTR( NORM, UPLO, DIAG, M, N, A, LDA,
      $                 WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORM, UPLO
@@ -168,14 +165,14 @@
       REAL               SCALE, SUM, VALUE
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, SISNAN
+      EXTERNAL           LSAME, SISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLASSQ
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, SQRT
+      INTRINSIC          ABS, MIN, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -190,13 +187,15 @@
             IF( LSAME( UPLO, 'U' ) ) THEN
                DO 20 J = 1, N
                   DO 10 I = 1, MIN( M, J-1 )
-                     VALUE = MAX( VALUE, ABS( A( I, J ) ) )
+                     SUM = ABS( A( I, J ) )
+                     IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    10             CONTINUE
    20          CONTINUE
             ELSE
                DO 40 J = 1, N
                   DO 30 I = J + 1, M
-                     VALUE = MAX( VALUE, ABS( A( I, J ) ) )
+                     SUM = ABS( A( I, J ) )
+                     IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    30             CONTINUE
    40          CONTINUE
             END IF
@@ -205,13 +204,15 @@
             IF( LSAME( UPLO, 'U' ) ) THEN
                DO 60 J = 1, N
                   DO 50 I = 1, MIN( M, J )
-                     VALUE = MAX( VALUE, ABS( A( I, J ) ) )
+                     SUM = ABS( A( I, J ) )
+                     IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    50             CONTINUE
    60          CONTINUE
             ELSE
                DO 80 J = 1, N
                   DO 70 I = J, M
-                     VALUE = MAX( VALUE, ABS( A( I, J ) ) )
+                     SUM = ABS( A( I, J ) )
+                     IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    70             CONTINUE
    80          CONTINUE
             END IF
@@ -235,7 +236,7 @@
                      SUM = SUM + ABS( A( I, J ) )
   100             CONTINUE
                END IF
-               VALUE = MAX( VALUE, SUM )
+               IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
   110       CONTINUE
          ELSE
             DO 140 J = 1, N
@@ -250,7 +251,7 @@
                      SUM = SUM + ABS( A( I, J ) )
   130             CONTINUE
                END IF
-               VALUE = MAX( VALUE, SUM )
+               IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
   140       CONTINUE
          END IF
       ELSE IF( LSAME( NORM, 'I' ) ) THEN
@@ -279,7 +280,7 @@
             END IF
          ELSE
             IF( LSAME( DIAG, 'U' ) ) THEN
-               DO 210 I = 1, N
+               DO 210 I = 1, MIN( M, N )
                   WORK( I ) = ONE
   210          CONTINUE
                DO 220 I = N + 1, M
@@ -303,7 +304,8 @@
          END IF
          VALUE = ZERO
          DO 280 I = 1, M
-            VALUE = MAX( VALUE, WORK( I ) )
+            SUM = WORK( I )
+            IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
   280    CONTINUE
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *

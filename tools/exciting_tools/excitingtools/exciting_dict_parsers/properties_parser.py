@@ -723,3 +723,177 @@ def parse_lossfunction(fname: str) -> tuple:
         ydata.append(float(data[1]))
     file.close()
     return xdata, ydata
+
+
+def parse_wf1d(fname: str) -> dict:
+  """
+  Parses files containing one dimensional wave function plot as saved in
+  the files, _e.g._, wf1d-0001-0001.dat, where the first 0001 indicates the k-point
+  and the second the state index.
+  
+  :param str fname: name of the file
+  """
+
+  data = np.genfromtxt(fname)
+
+  output = {}
+  output["path"] = data[:, 0]
+  output["|psi|^2"] = data[:, 1]
+  output["Re(psi)"] = data[:, 2]
+  output["Im(psi)"] = data[:, 3]
+
+  return output 
+
+
+def parse_wf2d(fname: str) -> dict:
+  """
+  Parses files containing the two dimensional wave function plot as saved in the files,
+  _e.g._, wf2d-0001-0001.xsf, where the first 0001 indicates the k-point
+  and the second the state index.
+
+  Does not parse PRIMVEC and PRIMCOORD. These can be parsed with ase.io.read(fname).
+
+  :param str fname: name of the file
+  """
+
+  file = open(fname, 'r')
+  lines = file.readlines()
+  output = {}
+  
+  i = 0
+  while i < len(lines):
+    if 'BEGIN_BLOCK_DATAGRID_2D' in lines[i]:
+      i = i + 1
+      data_name = lines[i].replace('\n', '').lstrip()
+      
+      i = i + 2
+      grid = np.fromstring(lines[i], dtype=int, sep=' ')
+
+      i = i + 1
+      origin = np.fromstring(lines[i], dtype=np.double, sep = ' ')
+      
+      i = i + 1
+      point1 = np.fromstring(lines[i], dtype=np.double, sep = ' ')
+      
+      i = i + 1
+      point2 = np.fromstring(lines[i], dtype=np.double, sep = ' ')
+
+      i = i + 1
+      data = np.fromstring(lines[i], dtype=np.double, sep=' ')
+      while 'END_DATAGRID_2D' not in lines[i]:
+        i = i + 1
+        new_data = np.fromstring(lines[i], dtype=np.double, sep=' ')
+        data = np.concatenate((data, new_data), axis=None)
+    
+      output['grid'] = grid
+      output['origin'] = origin
+      output['point1'] = point1
+      output['point2'] = point2
+      output[data_name] = data # data_name: "module squared", "real", "imaginary"
+
+    i = i + 1
+
+  return output
+
+
+def parse_wf3d(fname: str) -> dict:
+  """
+  Parses files containing the two dimensional wave function plot as saved in the files,
+  _e.g._, wf3d-0001-0001.xsf, where the first 0001 indicates the k-point
+  and the second the state index.
+
+  Does not parse PRIMVEC and PRIMCOORD. These can be parsed with ase.io.read(fname).
+
+  :param str fname: name of the file
+  """
+
+  file = open(fname, 'r')
+  lines = file.readlines()
+  output = {}
+  
+  i = 0
+  while i < len(lines):
+    if 'BEGIN_BLOCK_DATAGRID_3D' in lines[i]:
+      i = i + 1
+      data_name = lines[i].replace('\n', '').lstrip()
+      
+      i = i + 2
+      grid = np.fromstring(lines[i], dtype=int, sep=' ')
+
+      i = i + 1
+      origin = np.fromstring(lines[i], dtype=np.double, sep = ' ')
+      
+      i = i + 1
+      point1 = np.fromstring(lines[i], dtype=np.double, sep = ' ')
+      
+      i = i + 1
+      point2 = np.fromstring(lines[i], dtype=np.double, sep = ' ')
+
+      i = i + 1
+      point3 = np.fromstring(lines[i], dtype=np.double, sep = ' ')
+
+      i = i + 1
+      data = np.fromstring(lines[i], dtype=np.double, sep=' ')
+      while 'END_DATAGRID_3D' not in lines[i]:
+        i = i + 1
+        new_data = np.fromstring(lines[i], dtype=np.double, sep=' ')
+        data = np.concatenate((data, new_data), axis=None)
+    
+      output['grid'] = grid
+      output['origin'] = origin
+      output['point1'] = point1
+      output['point2'] = point2
+      output['point3'] = point3
+      output[data_name] = data # data_name: "module squared", "real", "imaginary"
+
+    i = i + 1
+
+  return output  
+
+def parse_cube(fname: str) -> dict:
+  """
+  Parses .cube files. These files contain data calculated on a regular grid in a box.
+  All vectors are given in cartesian coordinates. `output['cube_data']` contains the data. 
+  It is described by `output['description']`.
+
+  :param str fname: name of the file
+  """
+
+  file = open(fname, 'r')
+  lines = file.readlines()
+  output = {}
+
+  output['title'] = str(lines[0])
+  output['description'] = str(lines[1])
+
+  n_atoms = int(lines[2].split()[0])
+  output['n_atoms'] = n_atoms
+  output['origin'] = np.array(lines[2].split()[1:], dtype=np.double)
+
+  output['n_1'] = int(lines[3].split()[0])
+  output['v_increment_1'] = np.array(lines[3].split()[1:], dtype=np.double)
+
+  output['n_2'] = int(lines[4].split()[0])
+  output['v_increment_2'] = np.array(lines[4].split()[1:], dtype=np.double)
+
+  output['n_3'] = int(lines[5].split()[0])
+  output['v_increment_3'] = np.array(lines[5].split()[1:], dtype=np.double)
+
+  line_offset = 6
+  output['atoms'] = []
+  for line in lines[line_offset : line_offset + n_atoms]:
+      atom_number = int(line.split()[0])
+      charge = np.double(line.split()[1])
+      coordinate = np.array(line.split()[2:], dtype=np.double)
+      output['atoms'].append(dict(atom_number=atom_number, charge=charge, coordinate=coordinate))
+
+  line_offset = line_offset + n_atoms
+
+  cube_data = []
+  for line in lines[line_offset:]:
+      cube_data = cube_data + line.split()
+  
+  output['cube_data'] = np.array(cube_data, dtype=np.double)
+
+  return output
+  

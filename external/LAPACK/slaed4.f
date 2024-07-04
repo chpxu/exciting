@@ -1,25 +1,25 @@
-*> \brief \b SLAED4
+*> \brief \b SLAED4 used by SSTEDC. Finds a single root of the secular equation.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAED4 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed4.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed4.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed4.f"> 
+*> Download SLAED4 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed4.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed4.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed4.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAED4( N, I, D, Z, DELTA, RHO, DLAM, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            I, INFO, N
 *       REAL               DLAM, RHO
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       REAL               D( * ), DELTA( * ), Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -82,7 +82,7 @@
 *> \param[out] DELTA
 *> \verbatim
 *>          DELTA is REAL array, dimension (N)
-*>         If N .GT. 2, DELTA contains (D(j) - lambda_I) in its  j-th
+*>         If N > 2, DELTA contains (D(j) - lambda_I) in its  j-th
 *>         component.  If N = 1, then DELTA(1) = 1. If N = 2, see SLAED5
 *>         for detail. The vector DELTA contains the information necessary
 *>         to construct the eigenvectors by SLAED3 and SLAED9.
@@ -127,12 +127,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -145,10 +143,9 @@
 *  =====================================================================
       SUBROUTINE SLAED4( N, I, D, Z, DELTA, RHO, DLAM, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            I, INFO, N
@@ -331,9 +328,12 @@
          IF( C.LT.ZERO )
      $      C = ABS( C )
          IF( C.EQ.ZERO ) THEN
-*          ETA = B/A
+*           ETA = B/A
 *           ETA = RHO - TAU
-            ETA = DLTUB - TAU
+*           ETA = DLTUB - TAU
+*
+*           Update proposed by Li, Ren-Cang:
+            ETA = -W / ( DPSI+DPHI )
          ELSE IF( A.GE.ZERO ) THEN
             ETA = ( A+SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
          ELSE

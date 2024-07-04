@@ -19,7 +19,7 @@ or
 """
 import pytest
 
-from excitingtools.input.ground_state import ExcitingGroundStateInput
+from excitingtools.input.input_classes import ExcitingGroundStateInput
 
 
 @pytest.mark.parametrize(
@@ -48,8 +48,7 @@ from excitingtools.input.ground_state import ExcitingGroundStateInput
      ({'gmaxvr': 12}, [('gmaxvr', '12')]), ({'isgkmax': -1}, [('isgkmax', '-1')]),
      ({'ldapu': "none"}, [('ldapu', "none")]), ({'lmaxapw': 8}, [('lmaxapw', '8')]),
      ({'lmaxinr': 2}, [('lmaxinr', '2')]), ({'lmaxmat': 8}, [('lmaxmat', '8')]),
-     ({'lmaxvr': 8}, [('lmaxvr', '8')]), ({'lorecommendation': False}, [('lorecommendation', 'false')]),
-     ({'lradstep': 1}, [('lradstep', '1')]),
+     ({'lmaxvr': 8}, [('lmaxvr', '8')]), ({'lradstep': 1}, [('lradstep', '1')]),
      ({'maxscl': 200}, [('maxscl', '200')]), ({'mixer': 'msec'}, [('mixer', 'msec')]),
      ({'mixerswitch': 1}, [('mixerswitch', '1')]), ({'modifiedsv': False}, [('modifiedsv', 'false')]),
      ({'msecStoredSteps': 8}, [('msecStoredSteps', '8')]), ({'nempty': 5}, [('nempty', '5')]),
@@ -79,11 +78,8 @@ def test_invalid_input():
     Test error is raised when giving bogus attributes to class constructor.
     """
     # Use an erroneous ground state attribute
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(ValueError, match="groundstate keys are not valid: {'erroneous_attribute'}"):
         ExcitingGroundStateInput(erroneous_attribute=True)
-
-    assert error.value.args[
-               0] == "groundstate keys are not valid: {'erroneous_attribute'}"
 
 
 def test_as_dict(mock_env_jobflow_missing):
@@ -97,7 +93,7 @@ def test_as_dict_jobflow(mock_env_jobflow):
     ref_rgkmax = 8.5
     gs_input = ExcitingGroundStateInput(rgkmax=ref_rgkmax)
     ref_dict = {'@class': 'ExcitingGroundStateInput',
-                '@module': 'excitingtools.input.ground_state',
+                '@module': 'excitingtools.input.input_classes',
                 'xml_string': f'<groundstate rgkmax="{ref_rgkmax}"> </groundstate>'}
     assert gs_input.as_dict() == ref_dict, 'expected different dict representation'
 
@@ -109,4 +105,80 @@ def test_from_dict():
 
     assert gs_input.name == 'groundstate'
     # added comment for pylint to disable warning, because of dynamic attributes
-    assert gs_input.rgkmax == str(ref_rgkmax), f'Expect rgkmax to be equal {ref_rgkmax}'  # pylint: disable=no-member
+    assert gs_input.rgkmax == ref_rgkmax, f'Expect rgkmax to be equal {ref_rgkmax}'  # pylint: disable=no-member
+
+
+def test_spin_input():
+    spin_attributes = {'bfieldc': [0, 0, 0], 'fixspin': 'total FSM'}
+    spin_keys = list(spin_attributes)
+    gs_input = ExcitingGroundStateInput(rgkmax=7.0, spin=spin_attributes)
+
+    gs_xml = gs_input.to_xml()
+    assert gs_xml.tag == 'groundstate'
+    assert set(gs_xml.keys()) == {'rgkmax'}
+
+    elements = list(gs_xml)
+    assert len(elements) == 1
+
+    spin_xml = elements[0]
+    assert spin_xml.tag == "spin"
+    assert spin_xml.keys() == spin_keys, 'Should contain all spin attributes'
+    assert spin_xml.get('bfieldc') == '0 0 0'
+    assert spin_xml.get('fixspin') == 'total FSM'
+
+
+def test_solver_input():
+    solver_attributes = {'packedmatrixstorage': True, 'type': "Lapack"}
+    solver_keys = list(solver_attributes)
+    gs_input = ExcitingGroundStateInput(solver=solver_attributes)
+
+    gs_xml = gs_input.to_xml()
+    assert gs_xml.tag == 'groundstate'
+    assert set(gs_xml.keys()) == set()
+
+    elements = list(gs_xml)
+    assert len(elements) == 1
+
+    solver_xml = elements[0]
+    assert solver_xml.tag == "solver"
+    assert solver_xml.keys() == solver_keys, 'Should contain all spin attributes'
+    assert solver_xml.get('packedmatrixstorage') == 'true'
+    assert solver_xml.get('type') == 'Lapack'
+
+
+def test_dfthalf_input():
+    dfthalf_attributes = {"printVSfile": True}
+    dfthalf_keys = list(dfthalf_attributes)
+    gs_input = ExcitingGroundStateInput(dfthalf=dfthalf_attributes)
+
+    gs_xml = gs_input.to_xml()
+    assert gs_xml.tag == 'groundstate'
+    assert set(gs_xml.keys()) == set()
+
+    elements = list(gs_xml)
+    assert len(elements) == 1
+
+    dfthalf_xml = elements[0]
+    assert dfthalf_xml.tag == "dfthalf"
+    assert dfthalf_xml.keys() == dfthalf_keys, 'Should contain all dfthalf attributes'
+    assert dfthalf_xml.get('printVSfile') == 'true'
+
+
+def test_OEP_input():
+    oep_attributes = {"convoep": 1e-5, "maxitoep": 200, "tauoep": [1, 2, 3]}
+    oep_keys = list(oep_attributes)
+    gs_input = ExcitingGroundStateInput(OEP=oep_attributes)
+
+    gs_xml = gs_input.to_xml()
+    assert gs_xml.tag == 'groundstate'
+    assert set(gs_xml.keys()) == set()
+
+    elements = list(gs_xml)
+    assert len(elements) == 1
+
+    oep_xml = elements[0]
+    assert oep_xml.tag == "OEP"
+    assert oep_xml.keys() == oep_keys, 'Should contain all dfthalf attributes'
+    assert oep_xml.get('convoep') == '1e-05'
+    assert oep_xml.get('maxitoep') == '200'
+    assert oep_xml.get('tauoep') == '1 2 3'

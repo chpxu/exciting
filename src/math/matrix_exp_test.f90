@@ -1,7 +1,9 @@
 !> Module for unit tests of the functions in [[matrix_exp]]
 module matrix_exp_test
+  use constants, only: zone, zzero, zi
   use matrix_exp
   use math_utils, only: all_close
+  use modmpi, only: mpiinfo
   use precision, only: dp
   use unit_test_framework, only : unit_test_type
 
@@ -13,8 +15,6 @@ module matrix_exp_test
   contains
 
   subroutine matrix_exp_test_driver(mpiglobal, kill_on_failure)
-    use modmpi, only: mpiinfo
-
     !> mpi information
     type(mpiinfo), intent(in) :: mpiglobal
     !> Kill the program before the test driver finishes
@@ -23,15 +23,17 @@ module matrix_exp_test
     !> test object
     type(unit_test_type) :: test_report
     !> Number of assertions
-    integer, parameter :: n_assertions = 6
+    integer, parameter :: n_assertions = 7
 
     ! Initialize test object
     call test_report%init(n_assertions, mpiglobal)
 
     ! Run and assert tests
-    call test_exp_hermitianmatrix_times_vectors( test_report )
+    call test_exp_hermitian_matrix_times_vectors( test_report )
 
-    call test_exphouston_hermitianmatrix_times_vectors( test_report )
+    call test_exp_general_matrix_times_vectors( test_report )
+
+    call test_exphouston_hermitian_matrix_times_vectors( test_report )
 
     ! report results
     if (present(kill_on_failure)) then
@@ -45,11 +47,9 @@ module matrix_exp_test
 
   end subroutine matrix_exp_test_driver
 
-  !> Tests for the subroutine [[exp_hermitianmatrix_times_vectors]].
-  !> 6 tests are carried out.
-  subroutine test_exp_hermitianmatrix_times_vectors( test_report )
-    use constants, only: zone, zzero, zi
-
+  !> Tests for the subroutine [[exp_hermitian_matrix_times_vectors]].
+  !> 5 tests are carried out.
+  subroutine test_exp_hermitian_matrix_times_vectors( test_report )
     !> Our test object
     type(unit_test_type), intent(inout) :: test_report
 
@@ -115,7 +115,7 @@ module matrix_exp_test
     contains
 
       !> This api is used by the subroutine
-      !> [[test_exp_hermitianmatrix_times_vector]] to avoid copy/paste.
+      !> [[test_exp_hermitian_matrix_times_vectors]] to avoid copy/paste.
       !> It tests if [[exp_hermitianoperator_times_wavefunctions]] provides
       !> the expected result, taking care of the error message when the result
       !> does not match the expected one.
@@ -147,26 +147,59 @@ module matrix_exp_test
 
         allocate( aux(size( vectors, 1 ), size( vectors, 2 )) )
         aux = vectors
-        call exp_hermitianoperator_times_wavefunctions( &
+        call exp_hermitian_matrix_times_vectors( &
           & order_taylor=order_taylor, alpha=alpha, &
           & H=H, S=S, vectors=aux )
         write ( error_msg, * ) &
-          & 'exp_hermitianmatrix_times_vectors, test number', &
+          & 'exp_hermitian_matrix_times_vectors, test number', &
           & test_number, ' failed.'
         call test_report%assert( all_close( a=aux , b=expected, &
           & tol=tol ), message=error_msg )
       end subroutine api_to_call_test
 
-  end subroutine test_exp_hermitianmatrix_times_vectors
+  end subroutine
 
-
-  !> Tests for the subroutine [[exphouston_hermitianmatrix_times_vectors]].
+  !> Tests for the subroutine [[exp_general_matrix_times_vectors]].
   !> 1 test is carried out.
-  subroutine test_exphouston_hermitianmatrix_times_vectors( test_report )
-    use constants, only: zi, zzero, zone
+  subroutine test_exp_general_matrix_times_vectors( test_report )
     !> Our test object
     type(unit_test_type), intent(inout) :: test_report
-    !> Vectors to test [[exphouston_hermitianmatrix_times_vectors]]
+    
+    !> Vectors to test [[exp_general_matrix_times_vectors]]
+    complex(dp)            :: vectors_to_test(2, 2)
+    !> Expected result for the exphouston
+    complex(dp)            :: expected_result(2, 2)
+    !> Tolerance for comparing the expected and the obtained vectors
+    real(dp), parameter    :: tol = 1.e-10_dp 
+
+    ! Test a normal case
+    vectors_to_test = transpose(reshape([&
+          & -zone,        zi, &
+          &  2._dp*zone,  3._dp*zone ] , [2,2] ))
+    expected_result = transpose(reshape([&
+      & (-30.75133221112_dp, 6.97003925824_dp), (-51.65417372143_dp, 21.63493311818_dp), &
+        (  4.07903080788_dp,23.05627348073_dp), ( 11.46334794687_dp, 40.19849931832_dp) ], [2,2] ))
+    call exp_general_matrix_times_vectors( order_taylor=4, alpha=(1._dp,1._dp), &
+      H=transpose(reshape([&
+        &      zone,   (1._dp,1._dp), &
+        &     zzero,   0.7_dp*zone], [2,2])), &
+      S=transpose(reshape([&
+        &      zone,  -0.3_dp*zi, &
+        & 0.3_dp*zi,   0.7_dp*zone], [2,2])), &
+      vectors=vectors_to_test)
+    call test_report%assert( all_close( a=vectors_to_test, &
+      & b= expected_result, tol=tol ) , &
+      & message='exp_general_matrix_times_vectors does not return the&
+      & expected result for given input.' )
+
+  end subroutine
+
+  !> Tests for the subroutine [[exphouston_hermitian_matrix_times_vectors]].
+  !> 1 test is carried out.
+  subroutine test_exphouston_hermitian_matrix_times_vectors( test_report )
+    !> Our test object
+    type(unit_test_type), intent(inout) :: test_report
+    !> Vectors to test [[exphouston_hermitian_matrix_times_vectors]]
     complex(dp), allocatable            :: vectors_to_test(:, :)
     !> Expected result for the exphouston
     complex(dp), allocatable            :: expected_result(:, :)
@@ -181,7 +214,7 @@ module matrix_exp_test
     expected_result = transpose(reshape([&
       & ( -1.56610785914499_dp, 0.357804262667934_dp ), ( -0.596007992382660_dp, 1.05980026647606_dp ), &
       & ( 2.11926808755586_dp, 0.188702619714271_dp ) , ( 3.01993342215869_dp, 0.198669330793250_dp) ], [2,2] ))
-    call exphouston_hermitianoperator_times_wavefunctions( alpha=-0.1_dp*zi, &
+    call exphouston_hermitian_matrix_times_vectors( alpha=-0.1_dp*zi, &
       & H=transpose(reshape([& 
           & zone,   -zi, &
           & zi,    zone ], [2,2] )), &
@@ -191,9 +224,9 @@ module matrix_exp_test
       & vectors=vectors_to_test, tol=tol)
     call test_report%assert( all_close( a=vectors_to_test, &
       & b= expected_result, tol=tol ) , &
-      & message='exphouston_hermitianmatrix_times_vectors does not return the &
+      & message='exphouston_hermitian_matrix_times_vectors does not return the&
       & expected result for given input.' )
 
-  end subroutine test_exphouston_hermitianmatrix_times_vectors
+  end subroutine
 
 end module

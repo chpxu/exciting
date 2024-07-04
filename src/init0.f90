@@ -37,7 +37,8 @@ Subroutine init0
       Use modxs
 #endif
       use sirius_init, only: sirius_options
-      use sirius_api, only: setup_sirius, get_mpi_comm_sirius, gengvec_sirius, warn_array_sizes_sirius
+      use sirius_api, only: setup_sirius, get_mpi_comm_sirius, gengvec_sirius, warn_array_sizes_sirius,&
+                            set_periodic_function_ptr_sirius
 
       Implicit None
 
@@ -268,9 +269,16 @@ Subroutine init0
 ! calculate advanced information on symmetry group
       Call setupsym
 #endif
+
 ! automatically determine the muffin-tin radii if required
-      If (input%structure%autormt) Call optimal_rmt(rmt, spzn, input%structure%crystal%basevect, atposc&
-                                          &,input%structure%autormtscaling, natoms, nspecies, 1)         
+      If (input%structure%autormt .and. (idx_species_fixed_rmt .gt. 0)) then 
+            Call optimal_rmt(rmt, spzn, input%structure%crystal%basevect, atposc,&
+                              &input%structure%autormtscaling, natoms, nspecies, 1, idx_species_fixed_rmt)         
+      else if (input%structure%autormt) then 
+            Call optimal_rmt(rmt, spzn, input%structure%crystal%basevect, atposc,&
+                              &input%structure%autormtscaling, natoms, nspecies, 1)         
+      end if 
+
 ! check for overlapping muffin-tins               
       Call checkmt  
 !
@@ -475,6 +483,10 @@ call allocate_coulomb_potentials(lmmaxvr, nrmtmax, natmtot, ngrtot, vclmt, vclir
 !      If (allocated(vrefig)) deallocate (vrefig)
 !      Allocate (vrefig(ngvec))
 
+      if ( associated(input%groundstate%sirius) ) then
+        call set_periodic_function_ptr_sirius(rhomt, veffmt, magmt, lmmaxvr, nrmtmax, natmtot)
+      end if
+
 ! allocate muffin-tin charge and moment arrays
       If (allocated(chgmt)) deallocate (chgmt)
       Allocate (chgmt(natmtot))
@@ -549,6 +561,11 @@ call allocate_coulomb_potentials(lmmaxvr, nrmtmax, natmtot, ngrtot, vclmt, vclir
       If (allocated(dpp1d)) deallocate (dpp1d)
       Allocate (dpp1d(npp1d))
 !
+
+! initialisation for the Davidson solver
+      nsingular=-1
+      mine0=input%groundstate%solver%minenergy
+
       Call timesec (ts1)
 !!      timeinit = timeinit + ts1 - ts0
 !

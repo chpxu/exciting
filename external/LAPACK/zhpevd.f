@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZHPEVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhpevd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhpevd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhpevd.f"> 
+*> Download ZHPEVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhpevd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhpevd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhpevd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZHPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK,
 *                          RWORK, LRWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, LDZ, LIWORK, LRWORK, LWORK, N
@@ -30,7 +30,7 @@
 *       DOUBLE PRECISION   RWORK( * ), W( * )
 *       COMPLEX*16         AP( * ), WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -134,8 +134,7 @@
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is DOUBLE PRECISION array,
-*>                                         dimension (LRWORK)
+*>          RWORK is DOUBLE PRECISION array, dimension (MAX(1,LRWORK))
 *>          On exit, if INFO = 0, RWORK(1) returns the required LRWORK.
 *> \endverbatim
 *>
@@ -188,12 +187,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHEReigen
 *
@@ -201,10 +198,9 @@
       SUBROUTINE ZHPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK,
      $                   RWORK, LRWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -304,7 +300,7 @@
      $   RETURN
 *
       IF( N.EQ.1 ) THEN
-         W( 1 ) = AP( 1 )
+         W( 1 ) = DBLE( AP( 1 ) )
          IF( WANTZ )
      $      Z( 1, 1 ) = CONE
          RETURN

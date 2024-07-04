@@ -1,26 +1,26 @@
-*> \brief \b SSPGST
+*> \brief \b SSPGVD
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSPGVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sspgvd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sspgvd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sspgvd.f"> 
+*> Download SSPGVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sspgvd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sspgvd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sspgvd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSPGVD( ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK,
 *                          LWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, ITYPE, LDZ, LIWORK, LWORK, N
@@ -30,7 +30,7 @@
 *       REAL               AP( * ), BP( * ), W( * ), WORK( * ),
 *      $                   Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -192,12 +192,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHEReigen
 *
@@ -210,10 +208,9 @@
       SUBROUTINE SSPGVD( ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK,
      $                   LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -227,10 +224,6 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      REAL               TWO
-      PARAMETER          ( TWO = 2.0E+0 )
-*     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, UPPER, WANTZ
       CHARACTER          TRANS
@@ -314,8 +307,8 @@
       CALL SSPGST( ITYPE, UPLO, N, AP, BP, INFO )
       CALL SSPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK, IWORK,
      $             LIWORK, INFO )
-      LWMIN = MAX( REAL( LWMIN ), REAL( WORK( 1 ) ) )
-      LIWMIN = MAX( REAL( LIWMIN ), REAL( IWORK( 1 ) ) )
+      LWMIN = INT( MAX( REAL( LWMIN ), REAL( WORK( 1 ) ) ) )
+      LIWMIN = INT( MAX( REAL( LIWMIN ), REAL( IWORK( 1 ) ) ) )
 *
       IF( WANTZ ) THEN
 *

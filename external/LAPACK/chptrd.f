@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHPTRD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chptrd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chptrd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chptrd.f"> 
+*> Download CHPTRD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chptrd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chptrd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chptrd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CHPTRD( UPLO, N, AP, D, E, TAU, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, N
@@ -28,7 +28,7 @@
 *       REAL               D( * ), E( * )
 *       COMPLEX            AP( * ), TAU( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -107,12 +107,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -151,10 +149,9 @@
 *  =====================================================================
       SUBROUTINE CHPTRD( UPLO, N, AP, D, E, TAU, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -224,7 +221,7 @@
 *
             ALPHA = AP( I1+I-1 )
             CALL CLARFG( I, ALPHA, AP( I1 ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = REAL( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -249,11 +246,11 @@
 *
             END IF
             AP( I1+I-1 ) = E( I )
-            D( I+1 ) = AP( I1+I )
+            D( I+1 ) = REAL( AP( I1+I ) )
             TAU( I ) = TAUI
             I1 = I1 - I
    10    CONTINUE
-         D( 1 ) = AP( 1 )
+         D( 1 ) = REAL( AP( 1 ) )
       ELSE
 *
 *        Reduce the lower triangle of A. II is the index in AP of
@@ -269,7 +266,7 @@
 *
             ALPHA = AP( II+1 )
             CALL CLARFG( N-I, ALPHA, AP( II+2 ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = REAL( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -296,11 +293,11 @@
 *
             END IF
             AP( II+1 ) = E( I )
-            D( I ) = AP( II )
+            D( I ) = REAL( AP( II ) )
             TAU( I ) = TAUI
             II = I1I1
    20    CONTINUE
-         D( N ) = AP( II )
+         D( N ) = REAL( AP( II ) )
       END IF
 *
       RETURN

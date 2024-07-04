@@ -1,26 +1,26 @@
-*> \brief \b SLA_SYRPVGRW
+*> \brief \b SLA_SYRPVGRW computes the reciprocal pivot growth factor norm(A)/norm(U) for a symmetric indefinite matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLA_SYRPVGRW + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrpvgrw.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrpvgrw.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrpvgrw.f"> 
+*> Download SLA_SYRPVGRW + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrpvgrw.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrpvgrw.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrpvgrw.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL FUNCTION SLA_SYRPVGRW( UPLO, N, INFO, A, LDA, AF, LDAF, IPIV,
 *                                   WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*1        UPLO
 *       INTEGER            N, INFO, LDA, LDAF
@@ -29,14 +29,14 @@
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), AF( LDAF, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> 
+*>
 *> SLA_SYRPVGRW computes the reciprocal pivot growth factor
 *> norm(A)/norm(U). The "max absolute element" norm is used. If this is
 *> much less than 1, the stability of the LU factorization of the
@@ -101,7 +101,7 @@
 *>     as determined by SSYTRF.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is REAL array, dimension (2*N)
 *> \endverbatim
@@ -109,12 +109,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYcomputational
 *
@@ -122,10 +120,9 @@
       REAL FUNCTION SLA_SYRPVGRW( UPLO, N, INFO, A, LDA, AF, LDAF, IPIV,
      $                            WORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER*1        UPLO
@@ -147,7 +144,7 @@
       INTRINSIC          ABS, MAX, MIN
 *     ..
 *     .. External Functions ..
-      EXTERNAL           LSAME, SLASET
+      EXTERNAL           LSAME
       LOGICAL            LSAME
 *     ..
 *     .. Executable Statements ..
@@ -317,4 +314,7 @@
       END IF
 
       SLA_SYRPVGRW = RPVGRW
+*
+*     End of SLA_SYRPVGRW
+*
       END

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZUNBDB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zunbdb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zunbdb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zunbdb.f"> 
+*> Download ZUNBDB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zunbdb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zunbdb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zunbdb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE ZUNBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
 *                          X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
 *                          TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIGNS, TRANS
 *       INTEGER            INFO, LDX11, LDX12, LDX21, LDX22, LWORK, M, P,
@@ -33,7 +33,7 @@
 *      $                   WORK( * ), X11( LDX11, * ), X12( LDX12, * ),
 *      $                   X21( LDX21, * ), X22( LDX22, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -250,12 +250,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -287,10 +285,9 @@
      $                   X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
      $                   TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIGNS, TRANS
@@ -309,9 +306,8 @@
 *     .. Parameters ..
       DOUBLE PRECISION   REALONE
       PARAMETER          ( REALONE = 1.0D0 )
-      COMPLEX*16         NEGONE, ONE
-      PARAMETER          ( NEGONE = (-1.0D0,0.0D0),
-     $                     ONE = (1.0D0,0.0D0) )
+      COMPLEX*16         ONE
+      PARAMETER          ( ONE = (1.0D0,0.0D0) )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            COLMAJOR, LQUERY
@@ -397,7 +393,7 @@
 *
       IF( COLMAJOR ) THEN
 *
-*        Reduce columns 1, ..., Q of X11, X12, X21, and X22 
+*        Reduce columns 1, ..., Q of X11, X12, X21, and X22
 *
          DO I = 1, Q
 *
@@ -421,19 +417,33 @@
             THETA(I) = ATAN2( DZNRM2( M-P-I+1, X21(I,I), 1 ),
      $                 DZNRM2( P-I+1, X11(I,I), 1 ) )
 *
-            CALL ZLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
+            IF( P .GT. I ) THEN
+               CALL ZLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
+            ELSE IF ( P .EQ. I ) THEN
+               CALL ZLARFGP( P-I+1, X11(I,I), X11(I,I), 1, TAUP1(I) )
+            END IF
             X11(I,I) = ONE
-            CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I+1,I), 1, TAUP2(I) )
+            IF ( M-P .GT. I ) THEN
+               CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I+1,I), 1,
+     $                       TAUP2(I) )
+            ELSE IF ( M-P .EQ. I ) THEN
+               CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I), 1,
+     $                       TAUP2(I) )
+            END IF
             X21(I,I) = ONE
 *
-            CALL ZLARF( 'L', P-I+1, Q-I, X11(I,I), 1, DCONJG(TAUP1(I)),
-     $                  X11(I,I+1), LDX11, WORK )
-            CALL ZLARF( 'L', P-I+1, M-Q-I+1, X11(I,I), 1,
-     $                  DCONJG(TAUP1(I)), X12(I,I), LDX12, WORK )
-            CALL ZLARF( 'L', M-P-I+1, Q-I, X21(I,I), 1,
-     $                  DCONJG(TAUP2(I)), X21(I,I+1), LDX21, WORK )
-            CALL ZLARF( 'L', M-P-I+1, M-Q-I+1, X21(I,I), 1,
-     $                  DCONJG(TAUP2(I)), X22(I,I), LDX22, WORK )
+            IF ( Q .GT. I ) THEN
+               CALL ZLARF( 'L', P-I+1, Q-I, X11(I,I), 1,
+     $                     DCONJG(TAUP1(I)), X11(I,I+1), LDX11, WORK )
+               CALL ZLARF( 'L', M-P-I+1, Q-I, X21(I,I), 1,
+     $                     DCONJG(TAUP2(I)), X21(I,I+1), LDX21, WORK )
+            END IF
+            IF ( M-Q+1 .GT. I ) THEN
+               CALL ZLARF( 'L', P-I+1, M-Q-I+1, X11(I,I), 1,
+     $                     DCONJG(TAUP1(I)), X12(I,I), LDX12, WORK )
+               CALL ZLARF( 'L', M-P-I+1, M-Q-I+1, X21(I,I), 1,
+     $                     DCONJG(TAUP2(I)), X22(I,I), LDX22, WORK )
+            END IF
 *
             IF( I .LT. Q ) THEN
                CALL ZSCAL( Q-I, DCMPLX( -Z1*Z3*SIN(THETA(I)), 0.0D0 ),
@@ -452,13 +462,25 @@
 *
             IF( I .LT. Q ) THEN
                CALL ZLACGV( Q-I, X11(I,I+1), LDX11 )
-               CALL ZLARFGP( Q-I, X11(I,I+1), X11(I,I+2), LDX11,
-     $                       TAUQ1(I) )
+               IF ( I .EQ. Q-1 ) THEN
+                  CALL ZLARFGP( Q-I, X11(I,I+1), X11(I,I+1), LDX11,
+     $                          TAUQ1(I) )
+               ELSE
+                  CALL ZLARFGP( Q-I, X11(I,I+1), X11(I,I+2), LDX11,
+     $                          TAUQ1(I) )
+               END IF
                X11(I,I+1) = ONE
             END IF
-            CALL ZLACGV( M-Q-I+1, X12(I,I), LDX12 )
-            CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I,I+1), LDX12,
-     $                    TAUQ2(I) )
+            IF ( M-Q+1 .GT. I ) THEN
+               CALL ZLACGV( M-Q-I+1, X12(I,I), LDX12 )
+               IF ( M-Q .EQ. I ) THEN
+                  CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I,I), LDX12,
+     $                          TAUQ2(I) )
+               ELSE
+                  CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I,I+1), LDX12,
+     $                          TAUQ2(I) )
+               END IF
+            END IF
             X12(I,I) = ONE
 *
             IF( I .LT. Q ) THEN
@@ -467,10 +489,14 @@
                CALL ZLARF( 'R', M-P-I, Q-I, X11(I,I+1), LDX11, TAUQ1(I),
      $                     X21(I+1,I+1), LDX21, WORK )
             END IF
-            CALL ZLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
-     $                  X12(I+1,I), LDX12, WORK )
-            CALL ZLARF( 'R', M-P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
-     $                  X22(I+1,I), LDX22, WORK )
+            IF ( P .GT. I ) THEN
+               CALL ZLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
+     $                     X12(I+1,I), LDX12, WORK )
+            END IF
+            IF ( M-P .GT. I ) THEN
+               CALL ZLARF( 'R', M-P-I, M-Q-I+1, X12(I,I), LDX12,
+     $                     TAUQ2(I), X22(I+1,I), LDX22, WORK )
+            END IF
 *
             IF( I .LT. Q )
      $         CALL ZLACGV( Q-I, X11(I,I+1), LDX11 )
@@ -485,12 +511,19 @@
             CALL ZSCAL( M-Q-I+1, DCMPLX( -Z1*Z4, 0.0D0 ), X12(I,I),
      $                  LDX12 )
             CALL ZLACGV( M-Q-I+1, X12(I,I), LDX12 )
-            CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I,I+1), LDX12,
-     $                    TAUQ2(I) )
+            IF ( I .GE. M-Q ) THEN
+               CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I,I), LDX12,
+     $                       TAUQ2(I) )
+            ELSE
+               CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I,I+1), LDX12,
+     $                       TAUQ2(I) )
+            END IF
             X12(I,I) = ONE
 *
-            CALL ZLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
-     $                  X12(I+1,I), LDX12, WORK )
+            IF ( P .GT. I ) THEN
+               CALL ZLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
+     $                     X12(I+1,I), LDX12, WORK )
+            END IF
             IF( M-P-Q .GE. 1 )
      $         CALL ZLARF( 'R', M-P-Q, M-Q-I+1, X12(I,I), LDX12,
      $                     TAUQ2(I), X22(Q+1,I), LDX22, WORK )
@@ -549,8 +582,13 @@
 *
             CALL ZLARFGP( P-I+1, X11(I,I), X11(I,I+1), LDX11, TAUP1(I) )
             X11(I,I) = ONE
-            CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I+1), LDX21,
-     $                    TAUP2(I) )
+            IF ( I .EQ. M-P ) THEN
+               CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I), LDX21,
+     $                       TAUP2(I) )
+            ELSE
+               CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I+1), LDX21,
+     $                       TAUP2(I) )
+            END IF
             X21(I,I) = ONE
 *
             CALL ZLARF( 'R', Q-I, P-I+1, X11(I,I), LDX11, TAUP1(I),
@@ -595,8 +633,10 @@
             END IF
             CALL ZLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1,
      $                  DCONJG(TAUQ2(I)), X12(I,I+1), LDX12, WORK )
-            CALL ZLARF( 'L', M-Q-I+1, M-P-I, X12(I,I), 1,
-     $                  DCONJG(TAUQ2(I)), X22(I,I+1), LDX22, WORK )
+            IF ( M-P .GT. I ) THEN
+               CALL ZLARF( 'L', M-Q-I+1, M-P-I, X12(I,I), 1,
+     $                     DCONJG(TAUQ2(I)), X22(I,I+1), LDX22, WORK )
+            END IF
 *
          END DO
 *
@@ -608,8 +648,10 @@
             CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1, TAUQ2(I) )
             X12(I,I) = ONE
 *
-            CALL ZLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1,
-     $                  DCONJG(TAUQ2(I)), X12(I,I+1), LDX12, WORK )
+            IF ( P .GT. I ) THEN
+               CALL ZLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1,
+     $                     DCONJG(TAUQ2(I)), X12(I,I+1), LDX12, WORK )
+            END IF
             IF( M-P-Q .GE. 1 )
      $         CALL ZLARF( 'L', M-Q-I+1, M-P-Q, X12(I,I), 1,
      $                     DCONJG(TAUQ2(I)), X22(I,Q+1), LDX22, WORK )
@@ -626,9 +668,11 @@
      $                    TAUQ2(P+I) )
             X22(P+I,Q+I) = ONE
 *
-            CALL ZLARF( 'L', M-P-Q-I+1, M-P-Q-I, X22(P+I,Q+I), 1,
-     $                  DCONJG(TAUQ2(P+I)), X22(P+I,Q+I+1), LDX22,
-     $                  WORK )
+            IF ( M-P-Q .NE. I ) THEN
+               CALL ZLARF( 'L', M-P-Q-I+1, M-P-Q-I, X22(P+I,Q+I), 1,
+     $                     DCONJG(TAUQ2(P+I)), X22(P+I,Q+I+1), LDX22,
+     $                     WORK )
+            END IF
 *
          END DO
 *

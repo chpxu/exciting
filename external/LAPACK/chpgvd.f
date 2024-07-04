@@ -1,26 +1,26 @@
-*> \brief \b CHPGST
+*> \brief \b CHPGVD
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHPGVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chpgvd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chpgvd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chpgvd.f"> 
+*> Download CHPGVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chpgvd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chpgvd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chpgvd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CHPGVD( ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK,
 *                          LWORK, RWORK, LRWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, ITYPE, LDZ, LIWORK, LRWORK, LWORK, N
@@ -30,7 +30,7 @@
 *       REAL               RWORK( * ), W( * )
 *       COMPLEX            AP( * ), BP( * ), WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -213,12 +213,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHEReigen
 *
@@ -231,10 +229,9 @@
       SUBROUTINE CHPGVD( ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK,
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -338,9 +335,9 @@
       CALL CHPGST( ITYPE, UPLO, N, AP, BP, INFO )
       CALL CHPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK, RWORK,
      $             LRWORK, IWORK, LIWORK, INFO )
-      LWMIN = MAX( REAL( LWMIN ), REAL( WORK( 1 ) ) )
-      LRWMIN = MAX( REAL( LRWMIN ), REAL( RWORK( 1 ) ) )
-      LIWMIN = MAX( REAL( LIWMIN ), REAL( IWORK( 1 ) ) )
+      LWMIN = INT( MAX( REAL( LWMIN ), REAL( WORK( 1 ) ) ) )
+      LRWMIN = INT( MAX( REAL( LRWMIN ), REAL( RWORK( 1 ) ) ) )
+      LIWMIN = INT( MAX( REAL( LIWMIN ), REAL( IWORK( 1 ) ) ) )
 *
       IF( WANTZ ) THEN
 *

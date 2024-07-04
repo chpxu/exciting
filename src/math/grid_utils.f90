@@ -19,7 +19,8 @@ module grid_utils
             index_column_vector_in_array, &
             indices_zero_vectors, indices_finite_vectors,&
             partial_grid, &
-            flattened_map, point_in_triangle
+            flattened_map, point_in_triangle, &
+            first_element, last_element
 
   real(dp), parameter :: offset_default(3) = [0._dp, 0._dp, 0._dp]
   logical, parameter :: kill_on_failure_default = .false.        
@@ -644,5 +645,38 @@ contains
       map_out(i) = indices_to_composite_index(multi_index, shape_A)
     end do
   end function flattened_map
+
+  !> For a set, separated in subsets of differing sizes, return the index 
+  !> in the super set of the first element of the `i`'th subset.
+  integer function first_element(n_elements, i)
+    !> Number of elements in each subset.
+    integer :: n_elements(:)
+    !> Index of the subset.
+    integer :: i
+
+    call assert(i <= size(n_elements), 'i > size(n_elements).')
+    call assert(all(n_elements > 0), 'some of n_elements <=0.')
+
+    if(i==1) then
+      first_element = 1
+      return 
+    end if 
+
+    first_element = sum(n_elements(:i-1)) + 1
+  end function first_element
+
+  !> For a set, separated in subsets of differing sizes, return the index 
+  !> in the super set of the last element of the `i`'th subset.
+  integer function last_element(n_elements, i)
+    !> Number of elements in each subset.
+    integer :: n_elements(:)
+    !> Index of the subset.
+    integer :: i
+
+    call assert(i <= size(n_elements), 'i > size(n_elements).')
+    call assert(all(n_elements > 0), 'some of n_elements <=0.')
+
+    last_element = sum(n_elements(:i))
+  end function last_element
 
 end module grid_utils

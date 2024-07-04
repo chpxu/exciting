@@ -34,6 +34,8 @@ Module mod_Gvector
       Complex (8), Allocatable :: sfacg (:, :)
 ! G-space characteristic function: 0 inside the muffin-tins and 1 outside
       Complex (8), Allocatable :: cfunig (:)
+! the first element in cfunig(:)
+      Complex (8) :: cfunig0
 ! real-space characteristic function: 0 inside the muffin-tins and 1 outside
       Real (8), Allocatable :: cfunir (:)
 ! damping coefficient for characteristic function

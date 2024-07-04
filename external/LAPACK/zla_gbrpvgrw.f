@@ -1,33 +1,33 @@
-*> \brief \b ZLA_GBRPVGRW
+*> \brief \b ZLA_GBRPVGRW computes the reciprocal pivot growth factor norm(A)/norm(U) for a general banded matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_GBRPVGRW + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gbrpvgrw.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gbrpvgrw.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gbrpvgrw.f"> 
+*> Download ZLA_GBRPVGRW + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gbrpvgrw.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gbrpvgrw.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gbrpvgrw.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZLA_GBRPVGRW( N, KL, KU, NCOLS, AB,
 *                                               LDAB, AFB, LDAFB )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            N, KL, KU, NCOLS, LDAB, LDAFB
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX*16         AB( LDAB, * ), AFB( LDAFB, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -104,12 +104,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GBcomputational
 *
@@ -117,10 +115,9 @@
       DOUBLE PRECISION FUNCTION ZLA_GBRPVGRW( N, KL, KU, NCOLS, AB,
      $                                        LDAB, AFB, LDAFB )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            N, KL, KU, NCOLS, LDAB, LDAFB
@@ -164,4 +161,7 @@
          END IF
       END DO
       ZLA_GBRPVGRW = RPVGRW
+*
+*     End of ZLA_GBRPVGRW
+*
       END

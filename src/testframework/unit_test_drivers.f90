@@ -11,10 +11,13 @@ module unit_test_drivers
    use mpi_test_drivers, only: mpi_test_driver
    use structure_test_drivers, only: structure_test_driver
    use testframework_test_drivers, only: testframework_test_driver
-   use char_utils_test_drivers, only: char_utils_test_driver
+   use xstring_test_drivers, only: xstring_test_driver
    use file_io_test_drivers, only: file_io_test_driver
    use simplified_input_test_drivers, only: simplified_input_test_driver
+   use hybrids_test_drivers, only: hybrids_test_driver
    use matrix_elements_test_drivers, only: matrix_elements_test_driver
+   use xgrid_test_drivers, only: xgrid_test_driver
+   use xhdf5_test, only: xhdf5_test_driver
 
    implicit none
    private
@@ -79,13 +82,9 @@ contains
          ! Placeholder
          !call gw_test_driver(mpiglobal, kill_on_failure)
       end if
-      
-      if (run%structure .or. run%all) then
-         call structure_test_driver(mpiglobal, kill_on_failure)
-      end if
 
-      if (run%char .or. run%all) then
-         call char_utils_test_driver(mpiglobal, kill_on_failure) 
+      if (run%xstring .or. run%all) then
+         call xstring_test_driver(mpiglobal, kill_on_failure) 
       end if
       
       if (run%simplified_input .or. run%all) then         
@@ -104,6 +103,17 @@ contains
          call testframework_test_driver(mpiglobal, kill_on_failure)
       end if
 
+      if (run%hybrids .or. run%all) then         
+         call hybrids_test_driver(mpiglobal, kill_on_failure) 
+      end if
+
+      if (run%xgrid .or. run%all) then
+         call xgrid_test_driver(mpiglobal, kill_on_failure)
+      end if
+
+      if (run%xhdf5 .or. run%all) then
+         call xhdf5_test_driver(mpiglobal, kill_on_failure)
+      end if
    end subroutine unit_test_driver
 
 end module unit_test_drivers

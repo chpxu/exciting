@@ -1,26 +1,26 @@
-*> \brief \b SLA_GEAMV
+*> \brief \b SLA_GEAMV computes a matrix-vector product using a general matrix to calculate error bounds.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLA_GEAMV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_geamv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_geamv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_geamv.f"> 
+*> Download SLA_GEAMV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_geamv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_geamv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_geamv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE SLA_GEAMV ( TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA,
-*                              Y, INCY )
-* 
+*       SUBROUTINE SLA_GEAMV( TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA,
+*                             Y, INCY )
+*
 *       .. Scalar Arguments ..
 *       REAL               ALPHA, BETA
 *       INTEGER            INCX, INCY, LDA, M, N, TRANS
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), X( * ), Y( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -94,7 +94,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is REAL array of DIMENSION ( LDA, n )
+*>          A is REAL array, dimension ( LDA, n )
 *>           Before entry, the leading m by n part of the array A must
 *>           contain the matrix of coefficients.
 *>           Unchanged on exit.
@@ -138,8 +138,8 @@
 *>
 *> \param[in,out] Y
 *> \verbatim
-*>          Y is REAL
-*>           Array of DIMENSION at least
+*>          Y is REAL array,
+*>           dimension at least
 *>           ( 1 + ( m - 1 )*abs( INCY ) ) when TRANS = 'N' or 'n'
 *>           and at least
 *>           ( 1 + ( n - 1 )*abs( INCY ) ) otherwise.
@@ -161,23 +161,20 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGEcomputational
 *
 *  =====================================================================
-      SUBROUTINE SLA_GEAMV ( TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA,
-     $                       Y, INCY )
+      SUBROUTINE SLA_GEAMV( TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA,
+     $                      Y, INCY )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       REAL               ALPHA, BETA

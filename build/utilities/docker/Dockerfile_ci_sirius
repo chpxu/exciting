@@ -1,4 +1,19 @@
-# Dockerfile
+# Dockerfile for exciting plus Sirius dependencies.
+#
+# * Build (from directory containing Dockerfile, else replace . with path/2/Dockerfile)
+#  docker build -t sirius-cpu:develop-may2023 .
+#
+# * Run natively
+#   docker run --entrypoint bash -it sirius-cpu:develop-may2023
+#
+#  Building on Mac M1 and newer
+#  * Note, target=x86_64 will fail unless building docker in emulation mode.
+#  * Removing the target option may also fail, unless one specifies the Ubuntu package architecture
+#    AND the requested packages are available for the specified architecture.
+#    For example:
+#      FROM --platform=linux/amd64 ubuntu:focal
+#      RUN dpkg --add-architecture amd64
+#      RUN apt update -o APT::Architecture="amd64"
 FROM ubuntu:focal
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -29,8 +44,11 @@ SHELL ["/bin/bash", "--login", "-c"]
 RUN /spack/bin/spack compiler find
 RUN /spack/bin/spack external find
 
-# Sirius build specification
+# Sirius build specification, at commit: 38988070cda2772f79892f079803875d4835d117
 ENV SPEC="sirius@develop %gcc@9.4.0 build_type=Release +scalapack +fortran ^mpich@3.3.2 ^intel-oneapi-mkl+cluster ^spfft target=x86_64"
+
+# Install sirius dependencies
+RUN /spack/bin/spack install --fresh --only=dependencies $SPEC
 
 # Sirius installation location
 ENV SIRIUS_ROOT=spack-sirius-install
@@ -39,31 +57,9 @@ ENV SIRIUS_ROOT=spack-sirius-install
 ENV SIRIUS_ENV=spack-sirius-env
 
 # Create an environment
-RUN /spack/bin/spack env create --with-view $SIRIUS_ROOT -d $SIRIUS_ENV
+RUN /spack/bin/spack env create --with-view $SIRIUS_ROOT $SIRIUS_ENV
+RUN /spack/bin/spack -e $SIRIUS_ENV add $SPEC
 
-# Install sirius's dependencies
-RUN /spack/bin/spack compiler find && spack/bin/spack -e $SIRIUS_ENV install --only=dependencies $SPEC
-
-# Install sirius
-RUN /spack/bin/spack compiler find && /spack/bin/spack -e $SIRIUS_ENV install $SPEC
-
-# Remove any intermediate dependencies
-RUN /spack/bin/spack gc -y
-
-# Test suite dependencies
+# exciting test suite dependencies
 RUN apt-get update && apt-get install -y python3.8-full python3.8-venv
-RUN pip install termcolor lxml pytest pyyaml pytest-cov
-
-# ---------------------------------------------
-# Build exciting, linking to sirius
-# This is defined in the CI, but the commented
-# commands are retained for reference
-# ---------------------------------------------
-
-# RUN cp build/platforms/make.inc.sirius_ci build/make.inc 
-# RUN spack build-env $SPEC -- make mpiandsmp -j 4
-
-# Run test suite for mpiandsmp binary, for the sirius test cases
-# RUN cd /exciting/tools/exciting_tools && pip install . 
-# RUN cd test && cp sirius_defaults_config.yml defaults_config.yml
-# RUN python3 runtest.py -e exciting_mpismp -t sirius
+RUN pip install termcolor lxml pytest pyyaml pytest-cov xmlschema

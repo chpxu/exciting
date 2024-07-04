@@ -419,13 +419,6 @@ subroutine scrcoulint(iqmt, fra)
     & Calculating W(G1,G2,qr) fourier coefficients")')
   call timesec(tscc0)
 
-#ifndef MPI
-  if(mpiglobal%rank == 0) then
-    write(6, '(a)', advance="no") "Calculating Screened Coulomb Potential"
-    flush(6)
-  end if
-#endif
-
   do iqr = qpari, qparf ! Reduced q
 
     ! Locate reduced q-point in non-reduced set
@@ -447,12 +440,6 @@ subroutine scrcoulint(iqmt, fra)
     call putematrad(iqr, iqrnr)
   end do
 
-#ifndef MPI
-  if(mpiglobal%rank == 0) then
-    write(6, *)
-  end if
-#endif
-
   ! Set file extesion for later read EMATRAD in getematrad
   ! (some ranks may not participate in the qr loop above)
   filext = fileext_ematrad_write
@@ -460,26 +447,7 @@ subroutine scrcoulint(iqmt, fra)
   ! Communicate array-parts wrt. q-points
   call mpi_allgatherv_ifc(set=nqptr, rlen=ngqmax*ngqmax,&
     & zbuf=scieffg, inplace=.true., comm=mpiglobal)
-  ! write W(G,G,q) to file if necessary
-#ifdef _HDF5_
-  if (input%xs%BSE%writepotential) then
-    if (mpiglobal%rank == 0) then
-      if (.not. hdf5_exist_group(fhdf5,'/','screenedpotential')) then
-        call hdf5_create_group(fhdf5,'/','screenedpotential')
-      end if
-      gname="/screenedpotential"
-      ! loop over all reduced q-vectors
-      do iqr=1, nqptr
-        write(ciq,'(I4.4)') iqr
-        if (.not. hdf5_exist_group(fhdf5,trim(adjustl(gname)),ciq)) then
-          call hdf5_create_group(fhdf5,trim(adjustl(gname)),ciq)
-        end if
-        group="/screenedpotential/"//ciq//'/'
-        call hdf5_write(fhdf5, group, "wqq",scieffg(1,1,iqr), shape(scieffg(:,:,iqr)))
-      end do
-    end if
-  end if
-#endif
+
   if(mpiglobal%rank == 0) then
     call timesec(tscc1)
     if (input%xs%BSE%outputlevelnumber == 1) &
@@ -520,14 +488,14 @@ subroutine scrcoulint(iqmt, fra)
   !---------------------------------------------------
   if( associated(input%xs%phonon_screening) ) then 
     n_phonon_modes = 3*natmtot  
-    allocate(scieffg_ph(ngqmax, ngqmax, n_phonon_modes, nqptr))
-    allocate (freq_ph(n_phonon_modes, nqptr))
+    allocate(scieffg_ph(ngqmax, ngqmax, n_phonon_modes, nqpt))
+    allocate (freq_ph(n_phonon_modes, nqpt))
 
     ! Read phonon screened Coulomb interaction (for all q and all phonon modes)
     ! and all phonon frequencies on rank 0 and broadcast afterwards
     if(mpiglobal%rank == mpiglobal%root) then
       call init_phonon_hamiltonian(n_phonon_modes,natoms,& 
-                              ngqr,vqcr, scieffg_ph, freq_ph)
+                              ngq,vqc, scieffg_ph, freq_ph)
     end if 
    
     Call xmpi_bcast(mpiglobal, freq_ph)
@@ -563,13 +531,6 @@ subroutine scrcoulint(iqmt, fra)
   bsedt(1, :) = 1.d8
   bsedt(2, :) = -1.d8
   bsedt(3, :) = zzero
-
-#ifndef MPI
-  if(mpiglobal%rank == 0) then
-      write(6, '(a)', advance="no") "Calculating Screened Coulomb Matrix Elements"
-      flush(6)
-    end if
-#endif
 
   kkploop: do ikkp = ppari, pparf
 
@@ -777,28 +738,13 @@ subroutine scrcoulint(iqmt, fra)
         call select_bse_energies(koulims(:,iknr),evalsv0_ik,evalsv0_jk,&
                                     &bse_scissor,eigvals_o,eigvals_u) 
 
-        ! Use phase factor if q-points were reduced
-        ! (previously generated for electronic part)
-        if(allocated(g_ids)) deallocate(g_ids)
-        allocate(g_ids(numgq))
-        if(allocated(phasefactors)) deallocate(phasefactors)
-        allocate(phasefactors(numgq, numgq))
-                                    
-        if(input%xs%reduceq) then
-          g_ids = igqmap
-          phasefactors = phf(:numgq, :numgq)
-        else
-          g_ids = [(i_run, i_run=1, numgq)]
-          phasefactors = 1._dp
-        end if         
         
         do imode = 1, n_phonon_modes
-           wfc_ph(:, :, imode) = phasefactors * &
-                               scieffg_ph(g_ids, g_ids, imode, iqr)
+           wfc_ph(:, :, imode) = scieffg_ph(:numgq,:numgq, imode, iq)
 
           ! Compute phonon contribution for given mode and (k,k')-combination
           call gen_phonon_hamiltonian(pref, wfc_ph(:,: , imode), cmuu, cmoo,& 
-              & eigvals_o, eigvals_u, freq_ph(imode, iqr), & 
+              & eigvals_o, eigvals_u, freq_ph(imode, iq), & 
               & eigen_exc, smap_rel, iaoff, jaoff, W_ph(:, :, imode))
         end do
 
@@ -951,11 +897,6 @@ subroutine scrcoulint(iqmt, fra)
   deallocate(bsedt)
   !   Write BSE kernel diagonal parameters
   if(mpiglobal%rank .eq. 0) call putbsediag('BSEDIAG.OUT')
-#ifndef MPI 
-  if(mpiglobal%rank == 0) then
-    write(6, *)
-  end if
-#endif
   if(allocated(igqmap)) deallocate(igqmap)
   if(allocated(wfc)) deallocate(wfc)
 

@@ -67,6 +67,16 @@ default_files_under_test:
    core_properties:
       - "ELNES.OUT"
       - "mossbauer.xml"
+   wfplot:
+      - "wf1d-????-????.dat"
+      - "wf2d-????-????.xsf"
+      - "wf3d-????-????.xsf"
+      - "wf3d-????-????.cube"
+# TODO(Bene #160): 
+# Fix fastBSE test      
+#   fastBSE:
+#      - "fastBSE_test.h5"
+
 
 # Specify each new group.
 # Any test without a group is assigned NONE
@@ -77,5 +87,6 @@ group_execution:
   GW_INTEL: False
   LIBXC: True
   SIRIUS: False
+  HDF5: False
   # Do not run (useful for disabling in the CI)
   NORUN: False

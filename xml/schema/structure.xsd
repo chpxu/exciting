@@ -92,6 +92,14 @@
                     </xs:annotation>
                   </xs:attribute>
 
+                  <xs:attribute ex:importance="essential" ex:unit="atomic units" name="velocity"
+                    type="vect3d" use="optional">
+                    <xs:annotation>
+                      <xs:documentation>Atom velocity in Cartesian coordinates.
+                      Used for molecular dynamics. </xs:documentation>
+                    </xs:annotation>
+                  </xs:attribute>
+
                   <xs:attribute ex:importance="expert" ex:unit="" name="lockxyz" type="booleantriple"
                     default="false false false" use="optional">
                     <xs:annotation>
@@ -219,6 +227,17 @@
                 </xs:complexType>  
               </xs:element>
             </xs:sequence>
+            <xs:attribute ex:importance="expert" ex:unit="" name="fixrmt" type="xs:boolean"
+              use="optional" default="false">
+              <xs:annotation>
+                <xs:documentation> If the parameter <attref>autormt</attref> is set to true, this parameter <attref>fixrmt</attref> can be used to  
+                automatically calculate the optimal muffin-tin radii from a fixed, user-given muffin-tin radius of one selected species in the input file. 
+                To invoke this, the parameter <attref>fixrmt</attref> has to be set to true for the selected species from which the other muffin-tin radii  
+                will then be calculated. The calculated size of the muffin-tin radii for the other species will have the optimal ratio with respect to the 
+                fixed muffin-tin radius.
+                </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
             <xs:attribute ex:importance="essential" ex:unit="" name="speciesfile" type="xs:anyURI"
               use="required">
               <xs:annotation>
@@ -303,7 +322,10 @@
           <xs:documentation> This attribute determines a global scaling parameter for all muffin-tin radii, 
             if the attribute <attref>autormt</attref> is set to <pre>"true"</pre>.
             It is normalized such that the closest muffin-tin spheres will touch each other,
-            if <attref>autormtscaling</attref>=1. </xs:documentation>
+            if <attref>autormtscaling</attref>=1. 
+            Note: <attref>autormtscaling</attref> will not be used for the automatic calculation of the muffin-tin radii, if
+            <attref>autormt</attref> = <pre>"true"</pre> and <attref>fixrmt</attref> = <pre>"true"</pre> for one species. 
+            </xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attribute ex:importance="expert" ex:unit="Bohr" name="epslat" type="fortrandouble"

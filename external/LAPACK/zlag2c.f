@@ -1,25 +1,25 @@
-*> \brief \b ZLAG2C
+*> \brief \b ZLAG2C converts a complex double precision matrix to a complex single precision matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLAG2C + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlag2c.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlag2c.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlag2c.f"> 
+*> Download ZLAG2C + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlag2c.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlag2c.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlag2c.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLAG2C( M, N, A, LDA, SA, LDSA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDSA, M, N
 *       ..
@@ -27,7 +27,7 @@
 *       COMPLEX            SA( LDSA, * )
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -38,7 +38,7 @@
 *>
 *> RMAX is the overflow for the SINGLE PRECISION arithmetic
 *> ZLAG2C checks that all the entries of A are between -RMAX and
-*> RMAX. If not the convertion is aborted and a flag is raised.
+*> RMAX. If not the conversion is aborted and a flag is raised.
 *>
 *> This is an auxiliary routine so there is no argument checking.
 *> \endverbatim
@@ -95,22 +95,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZLAG2C( M, N, A, LDA, SA, LDSA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDSA, M, N
@@ -127,7 +124,7 @@
       DOUBLE PRECISION   RMAX
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DIMAG
+      INTRINSIC          DBLE, DIMAG, CMPLX
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH
@@ -145,7 +142,7 @@
                INFO = 1
                GO TO 30
             END IF
-            SA( I, J ) = A( I, J )
+            SA( I, J ) = CMPLX( A( I, J ) )
    10    CONTINUE
    20 CONTINUE
       INFO = 0

@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGESVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvd.f"> 
+*> Download CGESVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT,
 *                          WORK, LWORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU, JOBVT
 *       INTEGER            INFO, LDA, LDU, LDVT, LWORK, M, N
@@ -30,7 +30,7 @@
 *       COMPLEX            A( LDA, * ), U( LDU, * ), VT( LDVT, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -201,12 +201,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexGEsing
 *
@@ -214,10 +212,9 @@
       SUBROUTINE CGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT
@@ -321,24 +318,24 @@
 *
             MNTHR = ILAENV( 6, 'CGESVD', JOBU // JOBVT, M, N, 0, 0 )
 *           Compute space needed for CGEQRF
-            CALL CGEQRF( M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CGEQRF=DUM(1)
+            CALL CGEQRF( M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGEQRF = INT( CDUM(1) )
 *           Compute space needed for CUNGQR
-            CALL CUNGQR( M, N, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGQR_N=DUM(1)
-            CALL CUNGQR( M, M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGQR_M=DUM(1)
+            CALL CUNGQR( M, N, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CUNGQR_N = INT( CDUM(1) )
+            CALL CUNGQR( M, M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CUNGQR_M = INT( CDUM(1) )
 *           Compute space needed for CGEBRD
-            CALL CGEBRD( N, N, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-            LWORK_CGEBRD=DUM(1)
+            CALL CGEBRD( N, N, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGEBRD = INT( CDUM(1) )
 *           Compute space needed for CUNGBR
-            CALL CUNGBR( 'P', N, N, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_P=DUM(1)
-            CALL CUNGBR( 'Q', N, N, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_Q=DUM(1)
+            CALL CUNGBR( 'P', N, N, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_P = INT( CDUM(1) )
+            CALL CUNGBR( 'Q', N, N, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_Q = INT( CDUM(1) )
 *
             MNTHR = ILAENV( 6, 'CGESVD', JOBU // JOBVT, M, N, 0, 0 )
             IF( M.GE.MNTHR ) THEN
@@ -444,26 +441,26 @@
 *
 *              Path 10 (M at least N, but not much larger)
 *
-               CALL CGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-               LWORK_CGEBRD=DUM(1)
+               CALL CGEBRD( M, N, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+               LWORK_CGEBRD = INT( CDUM(1) )
                MAXWRK = 2*N + LWORK_CGEBRD
                IF( WNTUS .OR. WNTUO ) THEN
-                  CALL CUNGBR( 'Q', M, N, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-                  LWORK_CUNGBR_Q=DUM(1)
+                  CALL CUNGBR( 'Q', M, N, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                  LWORK_CUNGBR_Q = INT( CDUM(1) )
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_CUNGBR_Q )
                END IF
                IF( WNTUA ) THEN
-                  CALL CUNGBR( 'Q', M, M, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-                  LWORK_CUNGBR_Q=DUM(1)
+                  CALL CUNGBR( 'Q', M, M, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                  LWORK_CUNGBR_Q = INT( CDUM(1) )
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_CUNGBR_Q )
                END IF
                IF( .NOT.WNTVN ) THEN
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_CUNGBR_P )
-               MINWRK = 2*N + M
                END IF
+               MINWRK = 2*N + M
             END IF
          ELSE IF( MINMN.GT.0 ) THEN
 *
@@ -471,25 +468,26 @@
 *
             MNTHR = ILAENV( 6, 'CGESVD', JOBU // JOBVT, M, N, 0, 0 )
 *           Compute space needed for CGELQF
-            CALL CGELQF( M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CGELQF=DUM(1)
+            CALL CGELQF( M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGELQF = INT( CDUM(1) )
 *           Compute space needed for CUNGLQ
-            CALL CUNGLQ( N, N, M, VT, LDVT, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGLQ_N=DUM(1)
-            CALL CUNGLQ( M, N, M, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGLQ_M=DUM(1)
+            CALL CUNGLQ( N, N, M, CDUM(1), N, CDUM(1), CDUM(1), -1,
+     $                   IERR )
+            LWORK_CUNGLQ_N = INT( CDUM(1) )
+            CALL CUNGLQ( M, N, M, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CUNGLQ_M = INT( CDUM(1) )
 *           Compute space needed for CGEBRD
-            CALL CGEBRD( M, M, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-            LWORK_CGEBRD=DUM(1)
+            CALL CGEBRD( M, M, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGEBRD = INT( CDUM(1) )
 *            Compute space needed for CUNGBR P
-            CALL CUNGBR( 'P', M, M, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_P=DUM(1)
+            CALL CUNGBR( 'P', M, M, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_P = INT( CDUM(1) )
 *           Compute space needed for CUNGBR Q
-            CALL CUNGBR( 'Q', M, M, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_Q=DUM(1)
+            CALL CUNGBR( 'Q', M, M, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_Q = INT( CDUM(1) )
             IF( N.GE.MNTHR ) THEN
                IF( WNTVN ) THEN
 *
@@ -593,27 +591,27 @@
 *
 *              Path 10t(N greater than M, but not much larger)
 *
-               CALL CGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-               LWORK_CGEBRD=DUM(1)
+               CALL CGEBRD( M, N, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+               LWORK_CGEBRD = INT( CDUM(1) )
                MAXWRK = 2*M + LWORK_CGEBRD
                IF( WNTVS .OR. WNTVO ) THEN
 *                Compute space needed for CUNGBR P
-                 CALL CUNGBR( 'P', M, N, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-                 LWORK_CUNGBR_P=DUM(1)
+                 CALL CUNGBR( 'P', M, N, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                 LWORK_CUNGBR_P = INT( CDUM(1) )
                  MAXWRK = MAX( MAXWRK, 2*M+LWORK_CUNGBR_P )
                END IF
                IF( WNTVA ) THEN
-                 CALL CUNGBR( 'P', N,  N, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-                 LWORK_CUNGBR_P=DUM(1)
+                 CALL CUNGBR( 'P', N,  N, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                 LWORK_CUNGBR_P = INT( CDUM(1) )
                  MAXWRK = MAX( MAXWRK, 2*M+LWORK_CUNGBR_P )
                END IF
                IF( .NOT.WNTUN ) THEN
                   MAXWRK = MAX( MAXWRK, 2*M+LWORK_CUNGBR_Q )
-               MINWRK = 2*M + N
                END IF
+               MINWRK = 2*M + N
             END IF
          END IF
          MAXWRK = MAX( MINWRK, MAXWRK )
@@ -680,8 +678,10 @@
 *
 *              Zero out below R
 *
-               CALL CLASET( 'L', N-1, N-1, CZERO, CZERO, A( 2, 1 ),
-     $                      LDA )
+               IF( N .GT. 1 ) THEN
+                  CALL CLASET( 'L', N-1, N-1, CZERO, CZERO, A( 2, 1 ),
+     $                         LDA )
+               END IF
                IE = 1
                ITAUQ = 1
                ITAUP = ITAUQ + N
@@ -1144,8 +1144,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)
@@ -1321,8 +1323,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)
@@ -1649,8 +1653,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)
@@ -1830,8 +1836,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)

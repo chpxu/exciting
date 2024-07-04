@@ -1,19 +1,19 @@
-*> \brief \b SLAED8
+*> \brief \b SLAED8 used by SSTEDC. Merges eigenvalues and deflates secular equation. Used when the original matrix is dense.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAED8 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed8.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed8.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed8.f"> 
+*> Download SLAED8 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed8.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed8.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed8.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SLAED8( ICOMPQ, K, N, QSIZ, D, Q, LDQ, INDXQ, RHO,
 *                          CUTPNT, Z, DLAMDA, Q2, LDQ2, W, PERM, GIVPTR,
 *                          GIVCOL, GIVNUM, INDXP, INDX, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            CUTPNT, GIVPTR, ICOMPQ, INFO, K, LDQ, LDQ2, N,
 *      $                   QSIZ
@@ -33,7 +33,7 @@
 *       REAL               D( * ), DLAMDA( * ), GIVNUM( 2, * ),
 *      $                   Q( LDQ, * ), Q2( LDQ2, * ), W( * ), Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -223,12 +223,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -243,10 +241,9 @@
      $                   CUTPNT, Z, DLAMDA, Q2, LDQ2, W, PERM, GIVPTR,
      $                   GIVCOL, GIVNUM, INDXP, INDX, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            CUTPNT, GIVPTR, ICOMPQ, INFO, K, LDQ, LDQ2, N,
@@ -308,8 +305,8 @@
       END IF
 *
 *     Need to initialize GIVPTR to O here in case of quick exit
-*     to prevent an unspecified code behavior (usually sigfault) 
-*     when IWORK array on entry to *stedc is not zeroed 
+*     to prevent an unspecified code behavior (usually sigfault)
+*     when IWORK array on entry to *stedc is not zeroed
 *     (or at least some IWORK entries which used in *laed7 for GIVPTR).
 *
       GIVPTR = 0
@@ -353,7 +350,7 @@
          Z( I ) = W( INDX( I ) )
    40 CONTINUE
 *
-*     Calculate the allowable deflation tolerence
+*     Calculate the allowable deflation tolerance
 *
       IMAX = ISAMAX( N, Z, 1 )
       JMAX = ISAMAX( N, D, 1 )

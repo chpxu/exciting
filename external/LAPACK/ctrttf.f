@@ -1,25 +1,25 @@
-*> \brief \b CTRTTF
+*> \brief \b CTRTTF copies a triangular matrix from the standard full format (TR) to the rectangular full packed format (TF).
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CTRTTF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctrttf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctrttf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctrttf.f"> 
+*> Download CTRTTF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctrttf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctrttf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctrttf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CTRTTF( TRANSR, UPLO, N, A, LDA, ARF, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANSR, UPLO
 *       INTEGER            INFO, N, LDA
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       COMPLEX            A( 0: LDA-1, 0: * ), ARF( 0: * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -81,7 +81,7 @@
 *>
 *> \param[out] ARF
 *> \verbatim
-*>          ARF is COMPLEX*16 array, dimension ( N*(N+1)/2 ),
+*>          ARF is COMPLEX array, dimension ( N*(N+1)/2 ),
 *>          On exit, the upper or lower triangular matrix A stored in
 *>          RFP format. For a further discussion see Notes below.
 *> \endverbatim
@@ -96,12 +96,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -216,10 +214,9 @@
 *  =====================================================================
       SUBROUTINE CTRTTF( TRANSR, UPLO, N, A, LDA, ARF, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANSR, UPLO

@@ -1,25 +1,25 @@
-*> \brief \b ZLANHP
+*> \brief \b ZLANHP returns the value of the 1-norm, or the Frobenius norm, or the infinity norm, or the element of largest absolute value of a complex Hermitian matrix supplied in packed form.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLANHP + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlanhp.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlanhp.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlanhp.f"> 
+*> Download ZLANHP + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlanhp.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlanhp.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlanhp.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZLANHP( NORM, UPLO, N, AP, WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM, UPLO
 *       INTEGER            N
@@ -28,7 +28,7 @@
 *       DOUBLE PRECISION   WORK( * )
 *       COMPLEX*16         AP( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -105,22 +105,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION ZLANHP( NORM, UPLO, N, AP, WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM, UPLO
@@ -142,14 +139,14 @@
       DOUBLE PRECISION   ABSA, SCALE, SUM, VALUE
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, DISNAN
+      EXTERNAL           LSAME, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZLASSQ
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE, MAX, SQRT
+      INTRINSIC          ABS, DBLE, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -164,17 +161,21 @@
             K = 0
             DO 20 J = 1, N
                DO 10 I = K + 1, K + J - 1
-                  VALUE = MAX( VALUE, ABS( AP( I ) ) )
+                  SUM = ABS( AP( I ) )
+                  IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    10          CONTINUE
                K = K + J
-               VALUE = MAX( VALUE, ABS( DBLE( AP( K ) ) ) )
+               SUM = ABS( DBLE( AP( K ) ) )
+               IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    20       CONTINUE
          ELSE
             K = 1
             DO 40 J = 1, N
-               VALUE = MAX( VALUE, ABS( DBLE( AP( K ) ) ) )
+               SUM = ABS( DBLE( AP( K ) ) )
+               IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
                DO 30 I = K + 1, K + N - J
-                  VALUE = MAX( VALUE, ABS( AP( I ) ) )
+                  SUM = ABS( AP( I ) )
+                  IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    30          CONTINUE
                K = K + N - J + 1
    40       CONTINUE
@@ -199,7 +200,8 @@
                K = K + 1
    60       CONTINUE
             DO 70 I = 1, N
-               VALUE = MAX( VALUE, WORK( I ) )
+               SUM = WORK( I )
+               IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    70       CONTINUE
          ELSE
             DO 80 I = 1, N
@@ -214,7 +216,7 @@
                   WORK( I ) = WORK( I ) + ABSA
                   K = K + 1
    90          CONTINUE
-               VALUE = MAX( VALUE, SUM )
+               IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
   100       CONTINUE
          END IF
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN

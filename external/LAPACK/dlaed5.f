@@ -1,25 +1,25 @@
-*> \brief \b DLAED5
+*> \brief \b DLAED5 used by DSTEDC. Solves the 2-by-2 secular equation.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAED5 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed5.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed5.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed5.f"> 
+*> Download DLAED5 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed5.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed5.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed5.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAED5( I, D, Z, DELTA, RHO, DLAM )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            I
 *       DOUBLE PRECISION   DLAM, RHO
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   D( 2 ), DELTA( 2 ), Z( 2 )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -90,12 +90,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -108,10 +106,9 @@
 *  =====================================================================
       SUBROUTINE DLAED5( I, D, Z, DELTA, RHO, DLAM )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            I
@@ -184,6 +181,6 @@
       END IF
       RETURN
 *
-*     End OF DLAED5
+*     End of DLAED5
 *
       END

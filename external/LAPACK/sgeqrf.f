@@ -2,31 +2,31 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGEQRF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgeqrf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgeqrf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgeqrf.f"> 
+*> Download SGEQRF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgeqrf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgeqrf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgeqrf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGEQRF( M, N, A, LDA, TAU, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LWORK, M, N
 *       ..
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -34,7 +34,16 @@
 *> \verbatim
 *>
 *> SGEQRF computes a QR factorization of a real M-by-N matrix A:
-*> A = Q * R.
+*>
+*>    A = Q * ( R ),
+*>            ( 0 )
+*>
+*> where:
+*>
+*>    Q is a M-by-M orthogonal matrix;
+*>    R is an upper-triangular N-by-N matrix;
+*>    0 is a (M-N)-by-N zero matrix, if M > N.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -86,8 +95,9 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.  LWORK >= max(1,N).
-*>          For optimum performance LWORK >= N*NB, where NB is 
+*>          The dimension of the array WORK.
+*>          LWORK >= 1, if MIN(M,N) = 0, and LWORK >= N, otherwise.
+*>          For optimum performance LWORK >= N*NB, where NB is
 *>          the optimal blocksize.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
@@ -106,12 +116,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGEcomputational
 *
@@ -136,10 +144,9 @@
 *  =====================================================================
       SUBROUTINE SGEQRF( M, N, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N
@@ -169,10 +176,9 @@
 *
 *     Test the input arguments
 *
+      K = MIN( M, N )
       INFO = 0
       NB = ILAENV( 1, 'SGEQRF', ' ', M, N, -1, -1 )
-      LWKOPT = N*NB
-      WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -180,19 +186,25 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
-         INFO = -7
+      ELSE IF( .NOT.LQUERY ) THEN
+         IF( LWORK.LE.0 .OR. ( M.GT.0 .AND. LWORK.LT.MAX( 1, N ) ) )
+     $      INFO = -7
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SGEQRF', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
+         IF( K.EQ.0 ) THEN
+            LWKOPT = 1
+         ELSE
+            LWKOPT = N*NB
+         END IF
+         WORK( 1 ) = LWKOPT
          RETURN
       END IF
 *
 *     Quick return if possible
-*
-      K = MIN( M, N )
+*     
       IF( K.EQ.0 ) THEN
          WORK( 1 ) = 1
          RETURN

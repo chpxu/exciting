@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZUNMBR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zunmbr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zunmbr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zunmbr.f"> 
+*> Download ZUNMBR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zunmbr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zunmbr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zunmbr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZUNMBR( VECT, SIDE, TRANS, M, N, K, A, LDA, TAU, C,
 *                          LDC, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS, VECT
 *       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16         A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -183,12 +183,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -196,10 +194,9 @@
       SUBROUTINE ZUNMBR( VECT, SIDE, TRANS, M, N, K, A, LDA, TAU, C,
      $                   LDC, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS, VECT
@@ -241,13 +238,10 @@
 *
       IF( LEFT ) THEN
          NQ = M
-         NW = N
+         NW = MAX( 1, N )
       ELSE
          NQ = N
-         NW = M
-      END IF
-      IF( M.EQ.0 .OR. N.EQ.0 ) THEN
-         NW = 0
+         NW = MAX( 1, M )
       END IF
       IF( .NOT.APPLYQ .AND. .NOT.LSAME( VECT, 'P' ) ) THEN
          INFO = -1
@@ -267,12 +261,12 @@
          INFO = -8
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
          INFO = -11
-      ELSE IF( LWORK.LT.MAX( 1, NW ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.NW .AND. .NOT.LQUERY ) THEN
          INFO = -13
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         IF( NW.GT.0 ) THEN
+         IF( M.GT.0 .AND. N.GT.0 ) THEN
             IF( APPLYQ ) THEN
                IF( LEFT ) THEN
                   NB = ILAENV( 1, 'ZUNMQR', SIDE // TRANS, M-1, N, M-1,
@@ -290,7 +284,7 @@
      $                 -1 )
                END IF
             END IF
-            LWKOPT = MAX( 1, NW*NB )
+            LWKOPT = NW*NB
          ELSE
             LWKOPT = 1
          END IF

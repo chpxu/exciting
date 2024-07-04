@@ -1,19 +1,19 @@
-*> \brief \b CLA_GBRCOND_C
+*> \brief \b CLA_GBRCOND_C computes the infinity norm condition number of op(A)*inv(diag(c)) for general banded matrices.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLA_GBRCOND_C + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_gbrcond_c.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_gbrcond_c.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_gbrcond_c.f"> 
+*> Download CLA_GBRCOND_C + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_gbrcond_c.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_gbrcond_c.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_gbrcond_c.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       REAL FUNCTION CLA_GBRCOND_C( TRANS, N, KL, KU, AB, LDAB, AFB,
 *                                    LDAFB, IPIV, C, CAPPLY, INFO, WORK,
 *                                    RWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       LOGICAL            CAPPLY
@@ -32,7 +32,7 @@
 *       COMPLEX            AB( LDAB, * ), AFB( LDAFB, * ), WORK( * )
 *       REAL               C( * ), RWORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -132,13 +132,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX array, dimension (2*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] RWORK
+*> \param[out] RWORK
 *> \verbatim
 *>          RWORK is REAL array, dimension (N).
 *>     Workspace.
@@ -147,12 +147,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexGBcomputational
 *
@@ -161,10 +159,9 @@
      $                             LDAFB, IPIV, C, CAPPLY, INFO, WORK,
      $                             RWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -338,5 +335,7 @@
      $   CLA_GBRCOND_C = 1.0E+0 / AINVNM
 *
       RETURN
+*
+*     End of CLA_GBRCOND_C
 *
       END

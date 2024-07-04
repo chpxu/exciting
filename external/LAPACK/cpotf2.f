@@ -1,25 +1,25 @@
-*> \brief \b CPOTF2
+*> \brief \b CPOTF2 computes the Cholesky factorization of a symmetric/Hermitian positive definite matrix (unblocked algorithm).
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CPOTF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cpotf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cpotf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cpotf2.f"> 
+*> Download CPOTF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cpotf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cpotf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cpotf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CPOTF2( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       COMPLEX            A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -97,22 +97,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexPOcomputational
 *
 *  =====================================================================
       SUBROUTINE CPOTF2( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -177,8 +174,8 @@
 *
 *           Compute U(J,J) and test for non-positive-definiteness.
 *
-            AJJ = REAL( A( J, J ) ) - CDOTC( J-1, A( 1, J ), 1,
-     $            A( 1, J ), 1 )
+            AJJ = REAL( REAL( A( J, J ) ) - CDOTC( J-1, A( 1, J ), 1,
+     $            A( 1, J ), 1 ) )
             IF( AJJ.LE.ZERO.OR.SISNAN( AJJ ) ) THEN
                A( J, J ) = AJJ
                GO TO 30
@@ -204,8 +201,8 @@
 *
 *           Compute L(J,J) and test for non-positive-definiteness.
 *
-            AJJ = REAL( A( J, J ) ) - CDOTC( J-1, A( J, 1 ), LDA,
-     $            A( J, 1 ), LDA )
+            AJJ = REAL( REAL( A( J, J ) ) - CDOTC( J-1, A( J, 1 ), LDA,
+     $            A( J, 1 ), LDA ) )
             IF( AJJ.LE.ZERO.OR.SISNAN( AJJ ) ) THEN
                A( J, J ) = AJJ
                GO TO 30

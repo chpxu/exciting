@@ -156,4 +156,5 @@ subroutine gencfunig( ng, gc, vgc, cfunig)
 
   end do
 !$omp end parallel
+
 end subroutine

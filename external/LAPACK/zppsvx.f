@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZPPSVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zppsvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zppsvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zppsvx.f"> 
+*> Download ZPPSVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zppsvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zppsvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zppsvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZPPSVX( FACT, UPLO, N, NRHS, AP, AFP, EQUED, S, B, LDB,
 *                          X, LDX, RCOND, FERR, BERR, WORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          EQUED, FACT, UPLO
 *       INTEGER            INFO, LDB, LDX, N, NRHS
@@ -31,7 +31,7 @@
 *       COMPLEX*16         AFP( * ), AP( * ), B( LDB, * ), WORK( * ),
 *      $                   X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -147,7 +147,7 @@
 *>
 *> \param[in,out] AFP
 *> \verbatim
-*>          AFP is or output) COMPLEX*16 array, dimension (N*(N+1)/2)
+*>          AFP is COMPLEX*16 array, dimension (N*(N+1)/2)
 *>          If FACT = 'F', then AFP is an input argument and on entry
 *>          contains the triangular factor U or L from the Cholesky
 *>          factorization A = U**H*U or A = L*L**H, in the same storage
@@ -168,7 +168,7 @@
 *>
 *> \param[in,out] EQUED
 *> \verbatim
-*>          EQUED is or output) CHARACTER*1
+*>          EQUED is CHARACTER*1
 *>          Specifies the form of equilibration that was done.
 *>          = 'N':  No equilibration (always true if FACT = 'N').
 *>          = 'Y':  Equilibration was done, i.e., A has been replaced by
@@ -179,7 +179,7 @@
 *>
 *> \param[in,out] S
 *> \verbatim
-*>          S is or output) DOUBLE PRECISION array, dimension (N)
+*>          S is DOUBLE PRECISION array, dimension (N)
 *>          The scale factors for A; not accessed if EQUED = 'N'.  S is
 *>          an input argument if FACT = 'F'; otherwise, S is an output
 *>          argument.  If FACT = 'F' and EQUED = 'Y', each element of S
@@ -278,12 +278,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERsolve
 *
@@ -311,10 +309,9 @@
       SUBROUTINE ZPPSVX( FACT, UPLO, N, NRHS, AP, AFP, EQUED, S, B, LDB,
      $                   X, LDX, RCOND, FERR, BERR, WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO

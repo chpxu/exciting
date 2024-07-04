@@ -17,6 +17,8 @@ Module mod_muffin_tin
       Integer :: nrmt (maxspecies)
 ! maximum nrmt over all the species
       Integer :: nrmtmax
+! index of species with fixed rmt 
+      Integer :: idx_species_fixed_rmt 
 ! muffin-tin radii
       Real (8) :: rmt (maxspecies)
 ! species for which the muffin-tin radius will be used for calculating gkmax

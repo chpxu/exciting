@@ -1,25 +1,25 @@
-*> \brief \b SLANSY
+*> \brief \b SLANSY returns the value of the 1-norm, or the Frobenius norm, or the infinity norm, or the element of largest absolute value of a real symmetric matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLANSY + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slansy.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slansy.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slansy.f"> 
+*> Download SLANSY + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slansy.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slansy.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slansy.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL             FUNCTION SLANSY( NORM, UPLO, N, A, LDA, WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM, UPLO
 *       INTEGER            LDA, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -110,22 +110,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION SLANSY( NORM, UPLO, N, A, LDA, WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM, UPLO
@@ -149,11 +146,11 @@
       EXTERNAL           SLASSQ
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, SISNAN
+      EXTERNAL           LSAME, SISNAN
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, SQRT
+      INTRINSIC          ABS, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -167,13 +164,15 @@
          IF( LSAME( UPLO, 'U' ) ) THEN
             DO 20 J = 1, N
                DO 10 I = 1, J
-                  VALUE = MAX( VALUE, ABS( A( I, J ) ) )
+                  SUM = ABS( A( I, J ) )
+                  IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    10          CONTINUE
    20       CONTINUE
          ELSE
             DO 40 J = 1, N
                DO 30 I = J, N
-                  VALUE = MAX( VALUE, ABS( A( I, J ) ) )
+                  SUM = ABS( A( I, J ) )
+                  IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    30          CONTINUE
    40       CONTINUE
          END IF
@@ -194,7 +193,8 @@
                WORK( J ) = SUM + ABS( A( J, J ) )
    60       CONTINUE
             DO 70 I = 1, N
-               VALUE = MAX( VALUE, WORK( I ) )
+               SUM = WORK( I )
+               IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
    70       CONTINUE
          ELSE
             DO 80 I = 1, N
@@ -207,7 +207,7 @@
                   SUM = SUM + ABSA
                   WORK( I ) = WORK( I ) + ABSA
    90          CONTINUE
-               VALUE = MAX( VALUE, SUM )
+               IF( VALUE .LT. SUM .OR. SISNAN( SUM ) ) VALUE = SUM
   100       CONTINUE
          END IF
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN

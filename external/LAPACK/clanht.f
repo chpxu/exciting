@@ -1,25 +1,25 @@
-*> \brief \b CLANHT
+*> \brief \b CLANHT returns the value of the 1-norm, or the Frobenius norm, or the infinity norm, or the element of largest absolute value of a complex Hermitian tridiagonal matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLANHT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clanht.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clanht.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clanht.f"> 
+*> Download CLANHT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clanht.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clanht.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clanht.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL             FUNCTION CLANHT( NORM, N, D, E )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM
 *       INTEGER            N
@@ -28,7 +28,7 @@
 *       REAL               D( * )
 *       COMPLEX            E( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -89,22 +89,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION CLANHT( NORM, N, D, E )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM
@@ -126,14 +123,14 @@
       REAL               ANORM, SCALE, SUM
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, SISNAN
+      EXTERNAL           LSAME, SISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLASSQ, SLASSQ
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, SQRT
+      INTRINSIC          ABS, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -145,8 +142,10 @@
 *
          ANORM = ABS( D( N ) )
          DO 10 I = 1, N - 1
-            ANORM = MAX( ANORM, ABS( D( I ) ) )
-            ANORM = MAX( ANORM, ABS( E( I ) ) )
+            SUM = ABS( D( I ) )
+            IF( ANORM .LT. SUM .OR. SISNAN( SUM ) ) ANORM = SUM
+            SUM = ABS( E( I ) )
+            IF( ANORM .LT. SUM .OR. SISNAN( SUM ) ) ANORM = SUM
    10    CONTINUE
       ELSE IF( LSAME( NORM, 'O' ) .OR. NORM.EQ.'1' .OR.
      $         LSAME( NORM, 'I' ) ) THEN
@@ -156,11 +155,12 @@
          IF( N.EQ.1 ) THEN
             ANORM = ABS( D( 1 ) )
          ELSE
-            ANORM = MAX( ABS( D( 1 ) )+ABS( E( 1 ) ),
-     $              ABS( E( N-1 ) )+ABS( D( N ) ) )
+            ANORM = ABS( D( 1 ) )+ABS( E( 1 ) )
+            SUM = ABS( E( N-1 ) )+ABS( D( N ) )
+            IF( ANORM .LT. SUM .OR. SISNAN( SUM ) ) ANORM = SUM
             DO 20 I = 2, N - 1
-               ANORM = MAX( ANORM, ABS( D( I ) )+ABS( E( I ) )+
-     $                 ABS( E( I-1 ) ) )
+               SUM = ABS( D( I ) )+ABS( E( I ) )+ABS( E( I-1 ) )
+               IF( ANORM .LT. SUM .OR. SISNAN( SUM ) ) ANORM = SUM
    20       CONTINUE
          END IF
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN

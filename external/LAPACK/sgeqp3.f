@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGEQP3 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgeqp3.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgeqp3.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgeqp3.f"> 
+*> Download SGEQP3 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgeqp3.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgeqp3.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgeqp3.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGEQP3( M, N, A, LDA, JPVT, TAU, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LWORK, M, N
 *       ..
@@ -27,7 +27,7 @@
 *       INTEGER            JPVT( * )
 *       REAL               A( LDA, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -115,12 +115,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGEcomputational
 *
@@ -137,7 +135,7 @@
 *>
 *>     H(i) = I - tau * v * v**T
 *>
-*>  where tau is a real/complex scalar, and v is a real/complex vector
+*>  where tau is a real scalar, and v is a real/complex vector
 *>  with v(1:i-1) = 0 and v(i) = 1; v(i+1:m) is stored on exit in
 *>  A(i+1:m,i), and tau in TAU(i).
 *> \endverbatim
@@ -151,10 +149,9 @@
 *  =====================================================================
       SUBROUTINE SGEQP3( M, N, A, LDA, JPVT, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N
@@ -185,8 +182,8 @@
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN
-*     ..
-*     .. Executable Statements ..
+*     Test input arguments
+*  ====================
 *
       INFO = 0
       LQUERY = ( LWORK.EQ.-1 )
@@ -219,12 +216,6 @@
          CALL XERBLA( 'SGEQP3', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         RETURN
-      END IF
-*
-*     Quick return if possible.
-*
-      IF( MINMN.EQ.0 ) THEN
          RETURN
       END IF
 *

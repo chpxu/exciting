@@ -1,26 +1,26 @@
-*> \brief \b DLA_GBAMV
+*> \brief \b DLA_GBAMV performs a matrix-vector operation to calculate error bounds.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLA_GBAMV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dla_gbamv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dla_gbamv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dla_gbamv.f"> 
+*> Download DLA_GBAMV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dla_gbamv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dla_gbamv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dla_gbamv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLA_GBAMV( TRANS, M, N, KL, KU, ALPHA, AB, LDAB, X,
 *                             INCX, BETA, Y, INCY )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   ALPHA, BETA
 *       INTEGER            INCX, INCY, LDAB, M, N, KL, KU, TRANS
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   AB( LDAB, * ), X( * ), Y( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -106,7 +106,7 @@
 *>
 *> \param[in] AB
 *> \verbatim
-*>          AB is DOUBLE PRECISION array of DIMENSION ( LDAB, n )
+*>          AB is DOUBLE PRECISION array, dimension ( LDAB, n )
 *>           Before entry, the leading m by n part of the array AB must
 *>           contain the matrix of coefficients.
 *>           Unchanged on exit.
@@ -172,12 +172,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGBcomputational
 *
@@ -185,10 +183,9 @@
       SUBROUTINE DLA_GBAMV( TRANS, M, N, KL, KU, ALPHA, AB, LDAB, X,
      $                      INCX, BETA, Y, INCY )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   ALPHA, BETA

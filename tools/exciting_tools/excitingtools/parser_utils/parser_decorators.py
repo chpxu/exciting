@@ -1,9 +1,8 @@
 """Decorators and wrappers for parser functions.
 """
-from typing import Callable, Union
-import os
-import xml.etree.ElementTree as ET
 import pathlib
+import xml.etree.ElementTree as ET
+from typing import Callable, Union
 
 
 def return_file_string(file_name: Union[str, pathlib.Path]) -> str:
@@ -53,24 +52,26 @@ def xml_root(func: Callable):
     an XML file name, XML string or ElementTree.Element as input
     and return the XML root.
     """
-    def modified_func(input: str):
+    function_selection = {type(None): lambda x, y: func(x), str: lambda x, y: func(x, y)}
+
+    def modified_func(input: str, tag: str = None):
         # Element
         if isinstance(input, ET.Element):
-            return func(input)
+            return function_selection[type(tag)](input, tag)
 
         # File name
         try:
             tree = ET.parse(input)
             root = tree.getroot()
-            return func(root)
+            return function_selection[type(tag)](root, tag)
         except (FileNotFoundError, OSError):
             pass
 
         # XML string
         try:
             root = ET.fromstring(input)
-            return func(root)
-        except ET.ParseError:
+            return function_selection[type(tag)](root, tag)
+        except (ET.ParseError, TypeError):
             raise ValueError(f'Input string neither an XML file, '
                              f'nor valid XML: {input}')
 

@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGGBAK + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sggbak.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sggbak.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sggbak.f"> 
+*> Download SGGBAK + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sggbak.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sggbak.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sggbak.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGGBAK( JOB, SIDE, N, ILO, IHI, LSCALE, RSCALE, M, V,
 *                          LDV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOB, SIDE
 *       INTEGER            IHI, ILO, INFO, LDV, M, N
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       REAL               LSCALE( * ), RSCALE( * ), V( LDV, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -125,12 +125,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGBcomputational
 *
@@ -147,10 +145,9 @@
       SUBROUTINE SGGBAK( JOB, SIDE, N, ILO, IHI, LSCALE, RSCALE, M, V,
      $                   LDV, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB, SIDE
@@ -255,7 +252,7 @@
      $         GO TO 50
 *
             DO 40 I = ILO - 1, 1, -1
-               K = RSCALE( I )
+               K = INT( RSCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 40
                CALL SSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -265,7 +262,7 @@
             IF( IHI.EQ.N )
      $         GO TO 70
             DO 60 I = IHI + 1, N
-               K = RSCALE( I )
+               K = INT( RSCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 60
                CALL SSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -279,7 +276,7 @@
             IF( ILO.EQ.1 )
      $         GO TO 90
             DO 80 I = ILO - 1, 1, -1
-               K = LSCALE( I )
+               K = INT( LSCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 80
                CALL SSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -289,7 +286,7 @@
             IF( IHI.EQ.N )
      $         GO TO 110
             DO 100 I = IHI + 1, N
-               K = LSCALE( I )
+               K = INT( LSCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 100
                CALL SSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )

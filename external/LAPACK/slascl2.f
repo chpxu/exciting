@@ -1,39 +1,39 @@
-*> \brief \b SLASCL2
+*> \brief \b SLASCL2 performs diagonal scaling on a matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASCL2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slascl2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slascl2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slascl2.f"> 
+*> Download SLASCL2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slascl2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slascl2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slascl2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLASCL2 ( M, N, D, X, LDX )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            M, N, LDX
 *       ..
 *       .. Array Arguments ..
 *       REAL               D( * ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> SLASCL2 performs a diagonal scaling on a vector:
+*> SLASCL2 performs a diagonal scaling on a matrix:
 *>   x <-- D * x
 *> where the diagonal matrix D is stored as a vector.
 *>
@@ -53,7 +53,7 @@
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>     The number of columns of D and X. N >= 0.
+*>     The number of columns of X. N >= 0.
 *> \endverbatim
 *>
 *> \param[in] D
@@ -65,35 +65,32 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is REAL array, dimension (LDX,N)
-*>     On entry, the vector X to be scaled by D.
-*>     On exit, the scaled vector.
+*>     On entry, the matrix X to be scaled by D.
+*>     On exit, the scaled matrix.
 *> \endverbatim
 *>
 *> \param[in] LDX
 *> \verbatim
 *>          LDX is INTEGER
-*>     The leading dimension of the vector X. LDX >= 0.
+*>     The leading dimension of the matrix X. LDX >= M.
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE SLASCL2 ( M, N, D, X, LDX )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            M, N, LDX

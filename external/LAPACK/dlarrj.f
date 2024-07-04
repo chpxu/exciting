@@ -1,19 +1,19 @@
-*> \brief \b DLARRJ
+*> \brief \b DLARRJ performs refinement of the initial estimates of the eigenvalues of the matrix T.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLARRJ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarrj.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarrj.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarrj.f"> 
+*> Download DLARRJ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarrj.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarrj.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarrj.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DLARRJ( N, D, E2, IFIRST, ILAST,
 *                          RTOL, OFFSET, W, WERR, WORK, IWORK,
 *                          PIVMIN, SPDIAM, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IFIRST, ILAST, INFO, N, OFFSET
 *       DOUBLE PRECISION   PIVMIN, RTOL, SPDIAM
@@ -31,7 +31,7 @@
 *       DOUBLE PRECISION   D( * ), E2( * ), W( * ),
 *      $                   WERR( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -85,7 +85,7 @@
 *>          RTOL is DOUBLE PRECISION
 *>          Tolerance for the convergence of the bisection intervals.
 *>          An interval [LEFT,RIGHT] has converged if
-*>          RIGHT-LEFT.LT.RTOL*MAX(|LEFT|,|RIGHT|).
+*>          RIGHT-LEFT < RTOL*MAX(|LEFT|,|RIGHT|).
 *> \endverbatim
 *>
 *> \param[in] OFFSET
@@ -145,14 +145,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -168,10 +166,9 @@
      $                   RTOL, OFFSET, W, WERR, WORK, IWORK,
      $                   PIVMIN, SPDIAM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            IFIRST, ILAST, INFO, N, OFFSET
@@ -203,6 +200,12 @@
 *     .. Executable Statements ..
 *
       INFO = 0
+*
+*     Quick return if possible
+*
+      IF( N.LE.0 ) THEN
+         RETURN
+      END IF
 *
       MAXITR = INT( ( LOG( SPDIAM+PIVMIN )-LOG( PIVMIN ) ) /
      $           LOG( TWO ) ) + 2

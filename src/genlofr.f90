@@ -15,14 +15,18 @@ Subroutine genlofr
       Use modinput
       Use modmain
 ! !DESCRIPTION:
-!   Generates the local-orbital radial functions. This is done by integrating
-!   the scalar relativistic Schr\"{o}dinger equation (or its energy deriatives)
-!   at the current linearisation energies using the spherical part of the
-!   effective potential. For each local-orbital, a linear combination of
-!   {\tt lorbord} radial functions is constructed such that its radial
-!   derivatives up to order ${\tt lorbord}-1$ are zero at the muffin-tin radius.
-!   This function is normalised and the radial Hamiltonian applied to it. The
-!   results are stored in the global array {\tt lofr}.
+!> Generates the local-orbital radial functions. This is done by integrating
+!> the scalar relativistic Schr\"{o}dinger equation or Dirac equation
+!> (or its energy deriatives) at the current linearisation energies using the
+!> spherical part of the effective potential. Dirac-type local orbitals are
+!> useful in the context of spin-orbit coupling, but should only be used along
+!> with second variation with local orbitals. For more details see:
+!> arXiv:2306.02965 [cond-mat.mtrl-sci].
+!> For each local-orbital, a linear combination of {\tt lorbord} radial functions is
+!> constructed such that its radial derivatives up to order ${\tt lorbord}-1$ are zero
+!> at the muffin-tin radius.This function is normalised and the radial Hamiltonian applied
+!> to it. The results are stored in the global array {\tt lofr}.
+!
 !
 ! !REVISION HISTORY:
 !   Created March 2003 (JKD)
@@ -51,102 +55,8 @@ Subroutine genlofr
 ! variables for the lo recommendation
       Real (8) energy,energyp,tmp,tmp2,ens(0:20),elo,ehi,flo,fhi,emi,fmi
       integer nodes
-
       call stopwatch("exciting:genlofr", 1)
-
-! The following segment is useful if you want to come up 
-! with energies for local orbitals with several nodes.
-! Cheers,
-! Andris.
-! -------------------------------------
-!      allocate(dwf1(mtnr),dwf2(mtnr))
-     
-      if ((input%groundstate%lorecommendation).and.(tlast)) then
-!       energy=-6d0
-!       vr(1:nrmt (1))=veffmt (1, 1:nrmt (1), 1) * y00
-!       do while (energy.lt.25d0)
-!           Call rschroddme (0, 0, 0, energy, 2, nrmt (1), spr(:,1), vr, nodes, p0s, hp0, q0s,q1s)
-!           tmp=p0s(nrmt (1))
-!           tmp2=(p0s(nrmt (1))-p0s(nrmt (1)-1))/(spr(nrmt (1),1)-spr(nrmt (1)-1,1))
-!           Call rschroddme (1, 0, 0, energy, 2, nrmt (1), spr(:,1), vr, nodes, p0s, hp0, q0s,q1s)
-!           write(*,*) energy,tmp,p0s(nrmt (1))
-!           energy=energy+0.05d0
-!       enddo
-!       stop
-       write(*,*) 'Energy parameters'
-       write(*,*) '------------'
-       do is=1,nspecies
-       write(*,*) 'species',is
-       nr = nrmt (is)
-       ias = idxas (1, is)
-       vr(1:nr)=veffmt (1, 1:nr, ias) * y00
-       do ilo=0,3
-        write(*,*) 'l=',ilo
-        do nodes=0,20
-          ens(nodes)=0d0
-!         energyp=0d0
-!          Call rdirac (0,nodes+ilo+1, ilo, ilo+1, nodes, nr, spr(:,is), vr, &
-!            & ens(nodes), p0s,q0s,.false.)
-           Call rdirac (0,nodes+ilo+1, ilo, ilo+1, nr, spr(:,is), vr, ens(nodes), p0s,q0s,.false.,.false.)
-!               rdirac (m, n, l, k, nr, r, vr, eval, g0, f0,dirac_eq,sloppy)
-
-!          Call rdirac (0, n(ist),    l(ist),k(ist), nr, r, vr, &
-!           & eval(ist), rwf(:, 1, ist), rwf(:, 2, ist),dirac_eq,sloppy)
-
-!          Call rdirac (1,nodes+ilo+1, ilo, ilo+1, nodes, nr, spr(:,is), vr, &
-!            & energyp, p0s,q0s,.false.)
-!         write(*,*) 'n=',nodes,0.5d0*(energy+energyp)
-!          do ir = 1, nrmt( is)
-!            write(*,'(2F13.6)') spr( ir, is), p0s( ir)
-!          end do
-!          write(*,*)
-        enddo
-        do nodes=0,20
-          ehi=ens(nodes)
-          Call rschroddme (0, ilo, 0, ehi, nr, spr(:,is), vr, nn, p0s, hp0, q0s,q1s)
-          fhi=hp0(nrmt (is))
-          if (p0s(nrmt (is)).eq.p0s(nrmt (is)-1)) then
-           elo=ehi
-          else
-           if (nodes.eq.0) then 
-             elo=2*ens(0)-ens(1) ! assuming lowest eigenenergy is  negative
-           else
-             elo=ens(nodes-1)
-           endif
-           Call rschroddme (0, ilo, 0, elo, nr, spr(:,is), vr, nn, p0s, hp0, q0s,q1s) 
-           flo=hp0(nrmt (is))
-!(p0s(nrmt (is))-p0s(nrmt (is)-1))/(spr(nrmt (is),1)-spr(nrmt (is)-1,1))
-!(p0s(nrmt (is))-p0s(nrmt (is)-1))/(spr(nrmt (is),1)-spr(nrmt (is)-1,1))
-           if (ehi.lt.elo) then
-              write(*,*) 'warning'
-              stop
-           endif
-           do while (ehi-elo.gt.1d-6)
-             emi=0.5d0*(ehi+elo)
-             Call rschroddme (0, ilo, 0, emi, nr, spr(:,is), vr, nn, p0s, hp0, q0s,q1s)
-             fmi=hp0(nrmt (is))
-!(p0s(nrmt (is))-p0s(nrmt (is)-1))/(spr(nrmt (is),1)-spr(nrmt (is)-1,1))
-             if (fmi*fhi.lt.0) then
-                flo=fmi
-                elo=emi
-             else
-                fhi=fmi
-                ehi=emi
-             endif
-           enddo
-          endif
-          write(*,*) 'n=',nodes,0.5d0*(ens(nodes)+0.5d0*(ehi+elo))
-!          write(*,*) ens(nodes),0.5d0*(ehi+emi)
-        enddo
-
-        write(*,*)
-       enddo
-       enddo
-       write(*,*) '------------'
-      endif
-!     deallocate(dwf1,dwf2)
-! ------------------------------------
-
+      
       np = Max (maxlorbord+1, 4)
       Allocate (ipiv(np))
       Allocate (xa(np), ya(np), c(np))
@@ -159,12 +69,19 @@ Subroutine genlofr
             Do ilo = 1, nlorb (is)
                l = lorbl (ilo, is)
                Do io2 = 1, lorbord (ilo, is)
-!!!                  if (is.eq.2) write(*,*) l,lorbdm(io2, ilo, is),lorbe(io2, ilo, ias)
-! integrate the radial Schrodinger equation
-                  Call rschroddme (lorbdm(io2, ilo, is), l, 0, &
-                 & lorbe(io2, ilo, ias), nr, &
-                 & spr(:, is), vr, nn, p0(:, io2), p1(:, io2), q0(:, io2), &
-                 & q1(:, io2))
+                  if (wfkappa(io2, ilo, is) /= 0) then
+                     ! integrate the radial Dirac equation                                                                                                           
+                     Call rdiracdme (lorbdm(io2, ilo, is), wfkappa(io2, ilo, is), &
+                          & lorbe(io2, ilo, ias), nr, &
+                          & spr(:, is), vr, nn, p0(:, io2), p1(:, io2), q0(:, io2), &
+                          & q1(:, io2), .false.)
+                  else
+                     ! integrate the radial Schrodinger equation
+                     Call rschroddme (lorbdm(io2, ilo, is), l, 0, &
+                          & lorbe(io2, ilo, ias), nr, &
+                          & spr(:, is), vr, nn, p0(:, io2), p1(:, io2), q0(:, io2), &
+                          & q1(:, io2))
+                  endif
 ! normalise radial functions
                   Do ir = 1, nr
                      fr (ir) = p0 (ir, io2) ** 2

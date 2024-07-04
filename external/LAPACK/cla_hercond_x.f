@@ -1,26 +1,26 @@
-*> \brief \b CLA_HERCOND_X
+*> \brief \b CLA_HERCOND_X computes the infinity norm condition number of op(A)*diag(x) for Hermitian indefinite matrices.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLA_HERCOND_X + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_hercond_x.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_hercond_x.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_hercond_x.f"> 
+*> Download CLA_HERCOND_X + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_hercond_x.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_hercond_x.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_hercond_x.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL FUNCTION CLA_HERCOND_X( UPLO, N, A, LDA, AF, LDAF, IPIV, X,
 *                                    INFO, WORK, RWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            N, LDA, LDAF, INFO
@@ -30,7 +30,7 @@
 *       COMPLEX            A( LDA, * ), AF( LDAF, * ), WORK( * ), X( * )
 *       REAL               RWORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -103,13 +103,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX array, dimension (2*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] RWORK
+*> \param[out] RWORK
 *> \verbatim
 *>          RWORK is REAL array, dimension (N).
 *>     Workspace.
@@ -118,12 +118,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexHEcomputational
 *
@@ -131,10 +129,9 @@
       REAL FUNCTION CLA_HERCOND_X( UPLO, N, A, LDA, AF, LDAF, IPIV, X,
      $                             INFO, WORK, RWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -151,7 +148,7 @@
 *     .. Local Scalars ..
       INTEGER            KASE, I, J
       REAL               AINVNM, ANORM, TMP
-      LOGICAL            UP
+      LOGICAL            UP, UPPER
       COMPLEX            ZDUM
 *     ..
 *     .. Local Arrays ..
@@ -178,8 +175,15 @@
       CLA_HERCOND_X = 0.0E+0
 *
       INFO = 0
-      IF( N.LT.0 ) THEN
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF ( N.LT.0 ) THEN
          INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( LDAF.LT.MAX( 1, N ) ) THEN
+         INFO = -6
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'CLA_HERCOND_X', -INFO )
@@ -286,5 +290,7 @@
      $   CLA_HERCOND_X = 1.0E+0 / AINVNM
 *
       RETURN
+*
+*     End of CLA_HERCOND_X
 *
       END

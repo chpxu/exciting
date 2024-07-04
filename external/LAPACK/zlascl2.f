@@ -1,25 +1,25 @@
-*> \brief \b ZLASCL2
+*> \brief \b ZLASCL2 performs diagonal scaling on a matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLASCL2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlascl2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlascl2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlascl2.f"> 
+*> Download ZLASCL2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlascl2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlascl2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlascl2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLASCL2 ( M, N, D, X, LDX )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            M, N, LDX
 *       ..
@@ -27,14 +27,14 @@
 *       DOUBLE PRECISION   D( * )
 *       COMPLEX*16         X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> ZLASCL2 performs a diagonal scaling on a vector:
+*> ZLASCL2 performs a diagonal scaling on a matrix:
 *>   x <-- D * x
 *> where the DOUBLE PRECISION diagonal matrix D is stored as a vector.
 *>
@@ -54,7 +54,7 @@
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>     The number of columns of D and X. N >= 0.
+*>     The number of columns of X. N >= 0.
 *> \endverbatim
 *>
 *> \param[in] D
@@ -66,35 +66,32 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is COMPLEX*16 array, dimension (LDX,N)
-*>     On entry, the vector X to be scaled by D.
-*>     On exit, the scaled vector.
+*>     On entry, the matrix X to be scaled by D.
+*>     On exit, the scaled matrix.
 *> \endverbatim
 *>
 *> \param[in] LDX
 *> \verbatim
 *>          LDX is INTEGER
-*>     The leading dimension of the vector X. LDX >= 0.
+*>     The leading dimension of the matrix X. LDX >= M.
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE ZLASCL2 ( M, N, D, X, LDX )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            M, N, LDX

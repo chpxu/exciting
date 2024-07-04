@@ -1,25 +1,25 @@
-*> \brief \b ZHETD2
+*> \brief \b ZHETD2 reduces a Hermitian matrix to real symmetric tridiagonal form by an unitary similarity transformation (unblocked algorithm).
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZHETD2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetd2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhetd2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetd2.f"> 
+*> Download ZHETD2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetd2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhetd2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetd2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZHETD2( UPLO, N, A, LDA, D, E, TAU, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -28,7 +28,7 @@
 *       DOUBLE PRECISION   D( * ), E( * )
 *       COMPLEX*16         A( LDA, * ), TAU( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -117,12 +117,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16HEcomputational
 *
@@ -175,10 +173,9 @@
 *  =====================================================================
       SUBROUTINE ZHETD2( UPLO, N, A, LDA, D, E, TAU, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -248,7 +245,7 @@
 *
             ALPHA = A( I, I+1 )
             CALL ZLARFG( I, ALPHA, A( 1, I+1 ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = DBLE( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -276,10 +273,10 @@
                A( I, I ) = DBLE( A( I, I ) )
             END IF
             A( I, I+1 ) = E( I )
-            D( I+1 ) = A( I+1, I+1 )
+            D( I+1 ) = DBLE( A( I+1, I+1 ) )
             TAU( I ) = TAUI
    10    CONTINUE
-         D( 1 ) = A( 1, 1 )
+         D( 1 ) = DBLE( A( 1, 1 ) )
       ELSE
 *
 *        Reduce the lower triangle of A
@@ -292,7 +289,7 @@
 *
             ALPHA = A( I+1, I )
             CALL ZLARFG( N-I, ALPHA, A( MIN( I+2, N ), I ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = DBLE( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -321,10 +318,10 @@
                A( I+1, I+1 ) = DBLE( A( I+1, I+1 ) )
             END IF
             A( I+1, I ) = E( I )
-            D( I ) = A( I, I )
+            D( I ) = DBLE( A( I, I ) )
             TAU( I ) = TAUI
    20    CONTINUE
-         D( N ) = A( N, N )
+         D( N ) = DBLE( A( N, N ) )
       END IF
 *
       RETURN

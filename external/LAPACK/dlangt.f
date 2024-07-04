@@ -1,25 +1,25 @@
-*> \brief \b DLANGT
+*> \brief \b DLANGT returns the value of the 1-norm, Frobenius norm, infinity-norm, or the largest absolute value of any element of a general tridiagonal matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLANGT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlangt.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlangt.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlangt.f"> 
+*> Download DLANGT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlangt.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlangt.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlangt.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION DLANGT( NORM, N, DL, D, DU )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM
 *       INTEGER            N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   D( * ), DL( * ), DU( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -94,22 +94,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERauxiliary
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION DLANGT( NORM, N, DL, D, DU )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM
@@ -127,17 +124,17 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I
-      DOUBLE PRECISION   ANORM, SCALE, SUM
+      DOUBLE PRECISION   ANORM, SCALE, SUM, TEMP
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, DISNAN
+      EXTERNAL           LSAME, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLASSQ
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, SQRT
+      INTRINSIC          ABS, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -149,9 +146,12 @@
 *
          ANORM = ABS( D( N ) )
          DO 10 I = 1, N - 1
-            ANORM = MAX( ANORM, ABS( DL( I ) ) )
-            ANORM = MAX( ANORM, ABS( D( I ) ) )
-            ANORM = MAX( ANORM, ABS( DU( I ) ) )
+            IF( ANORM.LT.ABS( DL( I ) ) .OR. DISNAN( ABS( DL( I ) ) ) )
+     $           ANORM = ABS(DL(I))
+            IF( ANORM.LT.ABS( D( I ) ) .OR. DISNAN( ABS( D( I ) ) ) )
+     $           ANORM = ABS(D(I))
+            IF( ANORM.LT.ABS( DU( I ) ) .OR. DISNAN (ABS( DU( I ) ) ) )
+     $           ANORM = ABS(DU(I))
    10    CONTINUE
       ELSE IF( LSAME( NORM, 'O' ) .OR. NORM.EQ.'1' ) THEN
 *
@@ -160,11 +160,12 @@
          IF( N.EQ.1 ) THEN
             ANORM = ABS( D( 1 ) )
          ELSE
-            ANORM = MAX( ABS( D( 1 ) )+ABS( DL( 1 ) ),
-     $              ABS( D( N ) )+ABS( DU( N-1 ) ) )
+            ANORM = ABS( D( 1 ) )+ABS( DL( 1 ) )
+            TEMP = ABS( D( N ) )+ABS( DU( N-1 ) )
+            IF( ANORM .LT. TEMP .OR. DISNAN( TEMP ) ) ANORM = TEMP
             DO 20 I = 2, N - 1
-               ANORM = MAX( ANORM, ABS( D( I ) )+ABS( DL( I ) )+
-     $                 ABS( DU( I-1 ) ) )
+               TEMP = ABS( D( I ) )+ABS( DL( I ) )+ABS( DU( I-1 ) )
+               IF( ANORM .LT. TEMP .OR. DISNAN( TEMP ) ) ANORM = TEMP
    20       CONTINUE
          END IF
       ELSE IF( LSAME( NORM, 'I' ) ) THEN
@@ -174,11 +175,12 @@
          IF( N.EQ.1 ) THEN
             ANORM = ABS( D( 1 ) )
          ELSE
-            ANORM = MAX( ABS( D( 1 ) )+ABS( DU( 1 ) ),
-     $              ABS( D( N ) )+ABS( DL( N-1 ) ) )
+            ANORM = ABS( D( 1 ) )+ABS( DU( 1 ) )
+            TEMP = ABS( D( N ) )+ABS( DL( N-1 ) )
+            IF( ANORM .LT. TEMP .OR. DISNAN( TEMP ) ) ANORM = TEMP
             DO 30 I = 2, N - 1
-               ANORM = MAX( ANORM, ABS( D( I ) )+ABS( DU( I ) )+
-     $                 ABS( DL( I-1 ) ) )
+               TEMP = ABS( D( I ) )+ABS( DU( I ) )+ABS( DL( I-1 ) )
+               IF( ANORM .LT. TEMP .OR. DISNAN( TEMP ) ) ANORM = TEMP
    30       CONTINUE
          END IF
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN

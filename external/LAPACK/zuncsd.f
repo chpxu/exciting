@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZUNCSD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zuncsd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zuncsd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zuncsd.f"> 
+*> Download ZUNCSD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zuncsd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zuncsd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zuncsd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -24,7 +24,7 @@
 *                                    U1, LDU1, U2, LDU2, V1T, LDV1T, V2T,
 *                                    LDV2T, WORK, LWORK, RWORK, LRWORK,
 *                                    IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS
 *       INTEGER            INFO, LDU1, LDU2, LDV1T, LDV2T, LDX11, LDX12,
@@ -39,7 +39,7 @@
 *      $                   X12( LDX12, * ), X21( LDX21, * ), X22( LDX22,
 *      $                   * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -188,7 +188,7 @@
 *>
 *> \param[out] U1
 *> \verbatim
-*>          U1 is COMPLEX*16 array, dimension (P)
+*>          U1 is COMPLEX*16 array, dimension (LDU1,P)
 *>          If JOBU1 = 'Y', U1 contains the P-by-P unitary matrix U1.
 *> \endverbatim
 *>
@@ -201,7 +201,7 @@
 *>
 *> \param[out] U2
 *> \verbatim
-*>          U2 is COMPLEX*16 array, dimension (M-P)
+*>          U2 is COMPLEX*16 array, dimension (LDU2,M-P)
 *>          If JOBU2 = 'Y', U2 contains the (M-P)-by-(M-P) unitary
 *>          matrix U2.
 *> \endverbatim
@@ -215,7 +215,7 @@
 *>
 *> \param[out] V1T
 *> \verbatim
-*>          V1T is COMPLEX*16 array, dimension (Q)
+*>          V1T is COMPLEX*16 array, dimension (LDV1T,Q)
 *>          If JOBV1T = 'Y', V1T contains the Q-by-Q matrix unitary
 *>          matrix V1**H.
 *> \endverbatim
@@ -229,7 +229,7 @@
 *>
 *> \param[out] V2T
 *> \verbatim
-*>          V2T is COMPLEX*16 array, dimension (M-Q)
+*>          V2T is COMPLEX*16 array, dimension (LDV2T,M-Q)
 *>          If JOBV2T = 'Y', V2T contains the (M-Q)-by-(M-Q) unitary
 *>          matrix V2**H.
 *> \endverbatim
@@ -303,12 +303,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -320,10 +318,9 @@
      $                             LDV2T, WORK, LWORK, RWORK, LRWORK,
      $                             IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS
@@ -343,11 +340,8 @@
 *  ===================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   REALONE
-      PARAMETER          ( REALONE = 1.0D0 )
-      COMPLEX*16         NEGONE, ONE, PIOVER2, ZERO
-      PARAMETER          ( NEGONE = (-1.0D0,0.0D0), ONE = (1.0D0,0.0D0),
-     $                     PIOVER2 = 1.57079632679489662D0,
+      COMPLEX*16         ONE, ZERO
+      PARAMETER          ( ONE = (1.0D0,0.0D0),
      $                     ZERO = (0.0D0,0.0D0) )
 *     ..
 *     .. Local Scalars ..
@@ -359,22 +353,22 @@
      $                   LBBCSDWORKOPT, LORBDBWORK, LORBDBWORKMIN,
      $                   LORBDBWORKOPT, LORGLQWORK, LORGLQWORKMIN,
      $                   LORGLQWORKOPT, LORGQRWORK, LORGQRWORKMIN,
-     $                   LORGQRWORKOPT, LWORKMIN, LWORKOPT
+     $                   LORGQRWORKOPT, LWORKMIN, LWORKOPT, P1, Q1
       LOGICAL            COLMAJOR, DEFAULTSIGNS, LQUERY, WANTU1, WANTU2,
      $                   WANTV1T, WANTV2T
       INTEGER            LRWORKMIN, LRWORKOPT
       LOGICAL            LRQUERY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZBBCSD, ZLACPY, ZLAPMR, ZLAPMT, ZLASCL,
-     $                   ZLASET, ZUNBDB, ZUNGLQ, ZUNGQR
+      EXTERNAL           XERBLA, ZBBCSD, ZLACPY, ZLAPMR, ZLAPMT,
+     $                   ZUNBDB, ZUNGLQ, ZUNGQR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. Intrinsic Functions
-      INTRINSIC          COS, INT, MAX, MIN, SIN
+      INTRINSIC          INT, MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
@@ -395,9 +389,22 @@
          INFO = -8
       ELSE IF( Q .LT. 0 .OR. Q .GT. M ) THEN
          INFO = -9
-      ELSE IF( ( COLMAJOR .AND. LDX11 .LT. MAX(1,P) ) .OR.
-     $         ( .NOT.COLMAJOR .AND. LDX11 .LT. MAX(1,Q) ) ) THEN
-         INFO = -11
+      ELSE IF ( COLMAJOR .AND.  LDX11 .LT. MAX( 1, P ) ) THEN
+        INFO = -11
+      ELSE IF (.NOT. COLMAJOR .AND. LDX11 .LT. MAX( 1, Q ) ) THEN
+        INFO = -11
+      ELSE IF (COLMAJOR .AND. LDX12 .LT. MAX( 1, P ) ) THEN
+        INFO = -13
+      ELSE IF (.NOT. COLMAJOR .AND. LDX12 .LT. MAX( 1, M-Q ) ) THEN
+        INFO = -13
+      ELSE IF (COLMAJOR .AND. LDX21 .LT. MAX( 1, M-P ) ) THEN
+        INFO = -15
+      ELSE IF (.NOT. COLMAJOR .AND. LDX21 .LT. MAX( 1, Q ) ) THEN
+        INFO = -15
+      ELSE IF (COLMAJOR .AND. LDX22 .LT. MAX( 1, M-P ) ) THEN
+        INFO = -17
+      ELSE IF (.NOT. COLMAJOR .AND. LDX22 .LT. MAX( 1, M-Q ) ) THEN
+        INFO = -17
       ELSE IF( WANTU1 .AND. LDU1 .LT. P ) THEN
          INFO = -20
       ELSE IF( WANTU2 .AND. LDU2 .LT. M-P ) THEN
@@ -461,9 +468,10 @@
          IB22D = IB21E + MAX( 1, Q - 1 )
          IB22E = IB22D + MAX( 1, Q )
          IBBCSD = IB22E + MAX( 1, Q - 1 )
-         CALL ZBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q, 0,
-     $                0, U1, LDU1, U2, LDU2, V1T, LDV1T, V2T, LDV2T, 0,
-     $                0, 0, 0, 0, 0, 0, 0, RWORK, -1, CHILDINFO )
+         CALL ZBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q,
+     $                THETA, THETA, U1, LDU1, U2, LDU2, V1T, LDV1T,
+     $                V2T, LDV2T, THETA, THETA, THETA, THETA, THETA,
+     $                THETA, THETA, THETA, RWORK, -1, CHILDINFO )
          LBBCSDWORKOPT = INT( RWORK(1) )
          LBBCSDWORKMIN = LBBCSDWORKOPT
          LRWORKOPT = IBBCSD + LBBCSDWORKOPT - 1
@@ -477,19 +485,19 @@
          ITAUQ1 = ITAUP2 + MAX( 1, M - P )
          ITAUQ2 = ITAUQ1 + MAX( 1, Q )
          IORGQR = ITAUQ2 + MAX( 1, M - Q )
-         CALL ZUNGQR( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), 0, WORK, -1,
+         CALL ZUNGQR( M-Q, M-Q, M-Q, U1, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGQRWORKOPT = INT( WORK(1) )
          LORGQRWORKMIN = MAX( 1, M - Q )
          IORGLQ = ITAUQ2 + MAX( 1, M - Q )
-         CALL ZUNGLQ( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), 0, WORK, -1,
+         CALL ZUNGLQ( M-Q, M-Q, M-Q, U1, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGLQWORKOPT = INT( WORK(1) )
          LORGLQWORKMIN = MAX( 1, M - Q )
          IORBDB = ITAUQ2 + MAX( 1, M - Q )
          CALL ZUNBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
-     $                X21, LDX21, X22, LDX22, 0, 0, 0, 0, 0, 0, WORK,
-     $                -1, CHILDINFO )
+     $                X21, LDX21, X22, LDX22, THETA, THETA, U1, U2,
+     $                V1T, V2T, WORK, -1, CHILDINFO )
          LORBDBWORKOPT = INT( WORK(1) )
          LORBDBWORKMIN = LORBDBWORKOPT
          LWORKOPT = MAX( IORGQR + LORGQRWORKOPT, IORGLQ + LORGLQWORKOPT,
@@ -554,10 +562,14 @@
          END IF
          IF( WANTV2T .AND. M-Q .GT. 0 ) THEN
             CALL ZLACPY( 'U', P, M-Q, X12, LDX12, V2T, LDV2T )
-            CALL ZLACPY( 'U', M-P-Q, M-P-Q, X22(Q+1,P+1), LDX22,
-     $                   V2T(P+1,P+1), LDV2T )
-            CALL ZUNGLQ( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
-     $                   WORK(IORGLQ), LORGLQWORK, INFO )
+            IF( M-P .GT. Q) THEN
+               CALL ZLACPY( 'U', M-P-Q, M-P-Q, X22(Q+1,P+1), LDX22,
+     $                      V2T(P+1,P+1), LDV2T )
+            END IF
+            IF( M .GT. Q ) THEN
+               CALL ZUNGLQ( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
+     $                      WORK(IORGLQ), LORGLQWORK, INFO )
+            END IF
          END IF
       ELSE
          IF( WANTU1 .AND. P .GT. 0 ) THEN
@@ -582,9 +594,13 @@
      $                   WORK(IORGQR), LORGQRWORK, INFO )
          END IF
          IF( WANTV2T .AND. M-Q .GT. 0 ) THEN
+            P1 = MIN( P+1, M )
+            Q1 = MIN( Q+1, M )
             CALL ZLACPY( 'L', M-Q, P, X12, LDX12, V2T, LDV2T )
-            CALL ZLACPY( 'L', M-P-Q, M-P-Q, X22(P+1,Q+1), LDX22,
-     $                   V2T(P+1,P+1), LDV2T )
+            IF( M .GT. P+Q ) THEN
+               CALL ZLACPY( 'L', M-P-Q, M-P-Q, X22(P1,Q1), LDX22,
+     $                      V2T(P+1,P+1), LDV2T )
+            END IF
             CALL ZUNGQR( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
      $                   WORK(IORGQR), LORGQRWORK, INFO )
          END IF
@@ -602,7 +618,7 @@
 *     Permute rows and columns to place identity submatrices in top-
 *     left corner of (1,1)-block and/or bottom-right corner of (1,2)-
 *     block and/or bottom-right corner of (2,1)-block and/or top-left
-*     corner of (2,2)-block 
+*     corner of (2,2)-block
 *
       IF( Q .GT. 0 .AND. WANTU2 ) THEN
          DO I = 1, Q

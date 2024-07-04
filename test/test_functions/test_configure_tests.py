@@ -9,39 +9,13 @@ Notes:
 """
 import pathlib
 import pytest
-import yaml
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
 
-from ..src.runner.configure_tests import initialise_tests, assign_test_configurations, get_method_from_test_name, \
-    ConfigurationDefaults, get_method_from_tolerance_file, setup_tests, str_attributes_to_enums, \
-    parse_config_defaults_file, find_tests_with_attribute, sort_tests_by_group, find_tests_to_skip_by_group
+from ..src.io.yaml_configuration import Group, yaml_load, group_tag, enum_group_constructor, build_tag, \
+    enum_compiler_build_constructor
+from ..src.runner.profile import CompilerBuild, Compiler, BuildType
 
-# Renamed else pytest will try and collect from it
-from ..src.runner.configure_tests import TestGroup as Group
-from ..src.runner.profile import CompilerBuild
-
-
-def test_str_attributes_enums():
-    # GROUP property
-    tests = str_attributes_to_enums({'groundstate/LDA_PW-PbTiO3': {'group': 'SLOW_TESTS'}})
-    assert tests == {'groundstate/LDA_PW-PbTiO3': {'group': Group.SLOW_TESTS}}
-
-    # Failing builds property
-    tests = str_attributes_to_enums({'groundstate/LDA_PW-PbTiO3': {'failing_builds': ['intel_mpiandsmp']}})
-    assert tests['groundstate/LDA_PW-PbTiO3']['failing_builds'][0].build == CompilerBuild('intel', 'mpiandsmp').build
-    assert tests['groundstate/LDA_PW-PbTiO3']['failing_builds'][0].compiler == CompilerBuild('intel', 'mpiandsmp').compiler
-
-    # Erroneous compiler/build string (missing underscore)
-    expected_error = "String representation of CompilerBuild enum is invalid: intel mpiandsmp. \n" \
-                     "See src/runner/profile.py or config file documentation for valid strings."
-
-    with pytest.raises(ValueError) as error_info:
-        tests = str_attributes_to_enums({'groundstate/LDA_PW-PbTiO3': {'failing_builds': ['intel mpiandsmp']}})
-
-    assert error_info.value.args[0] == expected_error
+from ..src.runner.configure_tests import initialise_tests, get_method_from_test_name, get_method_from_tolerance_file, \
+    assign_config_keys, find_tests_with_attribute, sort_tests_by_group, find_tests_to_skip_by_group
 
 
 def test_get_method_from_test_name():
@@ -108,7 +82,8 @@ tolerance_transport.json
 tolerance_optical.json
 tolerance_electric.json
 tolerance_core.json
-tolerance_spin.json"""
+tolerance_spin.json
+tolerance_wfplot.json"""
 
     with pytest.raises(KeyError) as error_info:
         method = get_method_from_tolerance_file(test_name.as_posix(), subdirectory='')
@@ -119,17 +94,13 @@ tolerance_spin.json"""
 def test_initialise_tests():
     """
     Test initialisation of the `tests` dictionary, for some choice of default values.
+    Note, most defaults are defined in `io.yaml_configuration` namedTupled.
     """
     test_names = ['groundstate/LDA-si', 'gw/LDA-si']
     input_files = ['input.xml', 'si.xml']
-    test_defaults = ConfigurationDefaults(files_under_test={'groundstate': ['INFO.OUT'], 'gw': ['GW_INFO.OUT']},
-                                          inputs={name: input_files for name in test_names},
-                                          repeat=False,
-                                          failing_builds=[],
-                                          #depends_on=[],
-                                          group=Group.NONE,
-                                          comments=''
-                                          )
+
+    default_inputs = {name: input_files for name in test_names}
+    default_files_under_test = {'groundstate': ['INFO.OUT'], 'gw': ['GW_INFO.OUT']}
 
     expected_initialisation = \
         {'groundstate/LDA-si':
@@ -137,20 +108,22 @@ def test_initialise_tests():
               'inputs': ['input.xml', 'si.xml'],
               'repeat': False,
               'failing_builds': [],
-              #'depends_on': [],
+              'depends_on': None,
               'group': Group.NONE,
-              'comments': ''},
+              'comments': '',
+              'cmd_line_args': ''},
          'gw/LDA-si':
              {'files_under_test': ['GW_INFO.OUT'],
               'inputs': ['input.xml', 'si.xml'],
               'repeat': False,
               'failing_builds': [],
-              #'depends_on': [],
+              'depends_on': None,
               'group': Group.NONE,
-              'comments': ''}
+              'comments': '',
+              'cmd_line_args': ''}
          }
 
-    tests = initialise_tests(test_names, test_defaults)
+    tests = initialise_tests(test_names, default_inputs, default_files_under_test)
     assert tests == expected_initialisation
 
 
@@ -163,178 +136,22 @@ def test_initialise_tests_bad_inputs():
     input_files_with_bad_key = {'erroneous_method/LDA-si': ['input.xml', 'si.xml'],
                                 'gw/LDA-si': ['input.xml', 'si.xml']
                                 }
-    test_defaults = ConfigurationDefaults(files_under_test={'groundstate': ['INFO.OUT'], 'gw': ['GW_INFO.OUT']},
-                                          inputs=input_files_with_bad_key,
-                                          repeat=False,
-                                          failing_builds=[],
-                                          #depends_on=[],
-                                          group=Group.NONE,
-                                          comments=''
-                                          )
+    default_files_under_test = {'groundstate': ['INFO.OUT'], 'gw': ['GW_INFO.OUT']}
 
     with pytest.raises(KeyError) as error_info:
-        tests = initialise_tests(test_names, test_defaults)
+        tests = initialise_tests(test_names, input_files_with_bad_key, default_files_under_test)
 
     assert error_info.value.args[0] == \
            "Default input keys (from inspecting test_farm) inconsistent with test_names (from config file): " \
            "{'erroneous_method/LDA-si'}"
 
 
-def test_assign_test_configurations_initialised_are_not_nulled():
-    """
-     No attributes set in the config file for test.
-     Test that the initialised values are not overwritten by null entries.
-
-    Test with all attributes initialised to:
-      a) empty/null
-      b) Values
-    """
-    data_from_config = {'groundstate/LDA_PW-PbTiO3': None}
-
-    # Test initialised with null values.
-    initialised_tests = {'groundstate/LDA_PW-PbTiO3':
-                             {'repeat': False,
-                              'failing_builds': [],
-                              'files_under_test': [],
-                              #'depends_on': '',
-                              'group': 'NONE',
-                              'inputs': [],
-                              'comments': ''
-                             }
-                         }
-
-    tests = assign_test_configurations(initialised_tests, data_from_config)
-    assert tests == initialised_tests, "No attributes specified in `data_from_config` " \
-                                       "=> tests should equal the initialised values"
-
-    # Test initialised with values.
-    initialised_tests = {'groundstate/LDA_PW-PbTiO3':
-                             {'repeat': True,
-                              'failing_builds': ['Intel_mpismp'],
-                              'files_under_test': ['INFO.OUT'],
-                              #'depends_on': None,
-                              'group': 'SOME_GROUP',
-                              'inputs': ['input.xml', 'Pb.xml', 'Ti.xml', 'O.xml'],
-                              'comments': 'Intel MPIANDSMP fails'
-                             }
-                         }
-    tests = assign_test_configurations(initialised_tests, data_from_config)
-    assert tests == initialised_tests, "No attributes specified in `data_from_config` " \
-                                       "=> tests should equal the initialised values"
-
-
-@pytest.mark.parametrize("erroneously_initialised_tests", [
-                        ({'groundstate/LDA_PW-PbTiO3': {}}),                # All keys missing in initialised test
-                        ({'groundstate/LDA_PW-PbTiO3': {'repeat': False}})  # Some keys missing in initialised test
-])
-def test_assign_test_configurations_erroneous_init(erroneously_initialised_tests):
-    """
-    Erroneously Initialised Input. Test not initialised with:
-     * any attribute keys
-     * all attribute keys
-    """
-    data_from_config = {'groundstate/LDA_PW-PbTiO3': None}
-
-    with pytest.raises(KeyError) as error_info:
-        tests = assign_test_configurations(erroneously_initialised_tests, data_from_config)
-
-    assert error_info.value.args[0] == \
-           'Test dictionary groundstate/LDA_PW-PbTiO3, not initialised with all ConfigurationDefaults keys'
-
-
-def test_assign_test_configurations_all_keys_replaced():
-    """
-    Test expected behaviour. ALl keys in initialised dict replaced by config data.
-    """
-    initialised_tests = {'groundstate/LDA_PW-PbTiO3':
-                             {'repeat': False,
-                              'failing_builds': [],
-                              'files_under_test': ['INFO.OUT'],
-                              #'depends_on': None,
-                              'group': 'NULL',
-                              'inputs': ['input.xml', 'A.xml', 'B.xml', 'C.xml'],
-                              'comments': 'Default comment to be overwritten'
-                             }
-                         }
-
-    data_from_config = {'groundstate/LDA_PW-PbTiO3':
-                             {'repeat': True,
-                              'failing_builds': ['Intel_mpismp'],
-                              'files_under_test': ['INFO.OUT', 'eigval.xml'],
-                              #'depends_on': ['groundstate/another_test'],
-                              'group': 'SOME_GROUP',
-                              'inputs': ['input.xml', 'Pb.xml', 'Ti.xml', 'O.xml'],
-                              'comments': 'Comment specified in config file'
-                             }
-                         }
-
-    tests = assign_test_configurations(initialised_tests, data_from_config)
-
-    assert tests == data_from_config, "All attributes specified in data_from_config should get added to `tests`" \
-                                      "therefore tests should equal the config dictionary"
-
-
-def test_assign_test_configurations_some_keys_replaced():
-    """
-    Keys specified in config data replace initialised values.
-    Otherwise, initialised values are retained
-    """
-    initialised_tests = {'groundstate/LDA_PW-PbTiO3':
-                             {'repeat': False,
-                              'failing_builds': [],
-                              'files_under_test': ['INFO.OUT'],
-                              #'depends_on': None,
-                              'group': 'NULL',
-                              'inputs': ['input.xml', 'A.xml', 'B.xml', 'C.xml'],
-                              'comments': ''
-                             }
-                         }
-
-    data_from_config = {'groundstate/LDA_PW-PbTiO3':
-                             {'failing_builds': ['Intel_mpismp'],
-                              'inputs': ['input.xml', 'Pb.xml', 'Ti.xml', 'O.xml']
-                             }
-                         }
-
-    tests = assign_test_configurations(initialised_tests, data_from_config)
-
-    expected_tests = {'groundstate/LDA_PW-PbTiO3':
-                          {'repeat': False,
-                           'failing_builds': ['Intel_mpismp'],
-                           'files_under_test': ['INFO.OUT'],
-                           #'depends_on': None,
-                           'group': 'NULL',
-                           'inputs': ['input.xml', 'Pb.xml', 'Ti.xml', 'O.xml'],
-                           'comments': ''
-                           }
-                      }
-
-    assert tests['groundstate/LDA_PW-PbTiO3']['repeat'] == initialised_tests['groundstate/LDA_PW-PbTiO3']['repeat'], \
-        "Returned tests should retain initialised values for 'repeat' as it is not specified in config dict"
-
-    assert tests['groundstate/LDA_PW-PbTiO3']['files_under_test'] == \
-           initialised_tests['groundstate/LDA_PW-PbTiO3']['files_under_test'], \
-        "Returned tests should retain initialised values for 'files_under_test' as it is not specified in config dict"
-
-    # assert tests['groundstate/LDA_PW-PbTiO3']['depends_on'] == \
-    #        initialised_tests['groundstate/LDA_PW-PbTiO3']['depends_on'], \
-    #     "Returned tests should retain initialised values for 'depends_on' as it is not specified in config dict"
-
-    assert tests['groundstate/LDA_PW-PbTiO3']['group'] == initialised_tests['groundstate/LDA_PW-PbTiO3']['group'], \
-        "Returned tests should retain initialised values for 'group' as it is not specified in config dict"
-
-    for key in ['failing_builds', 'inputs']:
-        assert tests['groundstate/LDA_PW-PbTiO3'][key] == data_from_config['groundstate/LDA_PW-PbTiO3'][key], \
-            "Returned tests should take values when specified in config dict"
-
-    assert tests == expected_tests
-
-
 @pytest.fixture()
-def defaults_config_str() -> str:
+def defaults_config_dict() -> dict:
     """
     Mock the defaults config file
     """
+    # Do not include all methods, and add dummy output file names for some
     defaults_string = """
      default_files_under_test:
         groundstate:
@@ -349,30 +166,6 @@ def defaults_config_str() -> str:
            - "some_file"
         bse:
            - "some_file"
-        plot:
-            - "some_file"
-        wannier:
-            - "some_file"
-        spin_properties:
-            - "some_file"
-        optical_properties:
-            - "some_file"
-        tddft:
-            - "some_file"
-        rt_tddft:
-            - "some_file"
-        electric_properties:
-            - "some_file"
-        core_properties:
-            - "some_file"
-        band_structure:
-            - "some_file"
-        xanes:
-            - "some_file"
-        transport:
-            - "some_file"
-        dos:
-            - "some_file"
 
      # Specify each new group.
      # Any test without a group is assigned NONE
@@ -380,44 +173,24 @@ def defaults_config_str() -> str:
        NONE: True
        SLOW_TESTS: False
     """
-    return defaults_string
+    return yaml_load(defaults_string)
 
 
 @pytest.fixture()
-def tests_config_str() -> str:
+def tests_config_dict() -> dict:
     """
-    Mock the tests config file
+    Mock the tests config file, and test its parsing
     """
     string = """
-     # ---------------------------------------------------------------------------------------------------------------
      # exciting Test Suite Configure File
-     #
-     # This file explicitly specifies each test case.
-     #
-     # One can explicitly add the attributes/properties:
-     #
-     #  group:              See defaults file.
-     #  repeat:             Repeat if test "sometimes fails". True or False
-     #  failing_builds:     For a given test, valid choices are intel_serial, intel_mpiandsmp, gcc_serial, gcc_mpiandsmp
-     #  comments:          "Comments regarding any failing tests"
-     #  files_under_test:   See defaults file.
-     #  inputs:             See defaults file.
-     #  depends_on:         Currently not implemented. See issue #
-     #
-     #  Or if one wishes to use the defaults defined in () simply put the test name:
-     #   ```
-     #   method_directory/test_name:
-     #   ```
-     #  where the terminating `:` is required.
-     # ---------------------------------------------------------------------------------------------------------------
 
      # TODO(Alex) Issue 5. Developers can add comments to YAML
      groundstate/LDA_PW-PbTiO3:
-        group: SLOW_TESTS
+        group: !Group SLOW_TESTS
         repeat: False
         failing_builds:
-           - intel_mpiandsmp
-           - intel_serial
+           - !Build intel_mpiandsmp
+           - !Build intel_serial
         comments: "Some details on failing test to print from CI"
         files_under_test:
            - "INFO.OUT"
@@ -433,7 +206,7 @@ def tests_config_str() -> str:
      # If so, one also must specify which input files to copyk
      BSE/LiF:
         repeat: True
-        depends-on: groundstate/LiF
+        depends_on: groundstate/LiF
         inputs:
            - input.xml
            - STATE.OUT
@@ -441,123 +214,113 @@ def tests_config_str() -> str:
            - F.xml
 
         """
-    return string
+    custom_constructor = {group_tag: enum_group_constructor, build_tag: enum_compiler_build_constructor}
+    config = yaml_load(string, custom_constructor=custom_constructor)
+
+    # Test parsing, with enum conversion
+    expected_config = {'groundstate/LDA_PW-PbTiO3':
+                           {'group': Group.SLOW_TESTS,
+                            'repeat': False,
+                            'failing_builds': [CompilerBuild('intel', 'mpiandsmp'), CompilerBuild('intel', 'serial')],
+                            'comments': 'Some details on failing test to print from CI',
+                            'files_under_test': ['INFO.OUT', 'evalcore.xml', 'geometry.xml', 'eigval.xml', 'atoms.xml']
+                            },
+                       'groundstate/LiF': None,
+                       'BSE/LiF':
+                           {'repeat': True,
+                            'depends_on': 'groundstate/LiF',
+                            'inputs': ['input.xml', 'STATE.OUT', 'Li.xml', 'F.xml']
+                            }
+                       }
+
+    # Test name 1
+    assert config['groundstate/LDA_PW-PbTiO3']['group'] == expected_config['groundstate/LDA_PW-PbTiO3']['group']
+    assert config['groundstate/LDA_PW-PbTiO3']['repeat'] == expected_config['groundstate/LDA_PW-PbTiO3']['repeat']
+    assert config['groundstate/LDA_PW-PbTiO3']['comments'] == expected_config['groundstate/LDA_PW-PbTiO3']['comments']
+    assert config['groundstate/LDA_PW-PbTiO3']['files_under_test'] == expected_config['groundstate/LDA_PW-PbTiO3']['files_under_test']
+    # Cannot directly compare object instantiations
+    assert len(config['groundstate/LDA_PW-PbTiO3']['failing_builds']) == 2
+    assert config['groundstate/LDA_PW-PbTiO3']['failing_builds'][0].compiler == Compiler.intel
+    assert config['groundstate/LDA_PW-PbTiO3']['failing_builds'][0].build == BuildType.mpiandsmp
+    assert config['groundstate/LDA_PW-PbTiO3']['failing_builds'][1].compiler == Compiler.intel
+    assert config['groundstate/LDA_PW-PbTiO3']['failing_builds'][1].build == BuildType.serial
+
+    # Test name 2
+    assert config['groundstate/LiF'] == expected_config['groundstate/LiF']
+
+    # Test name 3
+    assert config['BSE/LiF'] == expected_config['BSE/LiF']
+
+    return config
 
 
-def test_parse_and_setup_tests(defaults_config_str, tests_config_str):
+def test_configure_all_tests(defaults_config_dict, tests_config_dict):
     """
     Take a YAML-formatted string, parse and verify output dictionary
     (without removing any tests)
 
     Can't easily test `configure_all_tests` because it interacts with the file system
-    when finding input files - would need to mock those files.
+    As such, I've included the main calls here
     """
-    config_data: dict = yaml.load(tests_config_str, Loader=Loader)
-    config_data = str_attributes_to_enums(config_data)
-    config_defaults = parse_config_defaults_file(defaults_config_str)
+    test_names = [name for name in tests_config_dict.keys()]
+    default_files_under_test = defaults_config_dict['default_files_under_test']
 
-    mocked_default_inputs = {'groundstate/LDA_PW-PbTiO3': ['input.xml'],
-                             'groundstate/LiF': ['input.xml'],
-                             'BSE/LiF': ['input.xml'],
-                             }
+    # Result of routine that interacts with the file system
+    default_inputs = {'groundstate/LDA_PW-PbTiO3':
+                          ["INFO.OUT", "evalcore.xml", "geometry.xml", "eigval.xml", "atoms.xml"],
+                      'groundstate/LiF':
+                          ["INFO.OUT", "evalcore.xml", "geometry.xml", "eigval.xml", "atoms.xml"],
+                      'BSE/LiF':
+                          ['some_file']
+                      }
 
-    assert list(config_data.keys()) == list(mocked_default_inputs.keys()), \
-        "Test names in `tests_config_str` differ from those specified in `mocked_default_inputs`"
-
-    default_attributes = ConfigurationDefaults(files_under_test=config_defaults['default_files_under_test'],
-                                               inputs=mocked_default_inputs,
-                                               repeat=False,
-                                               failing_builds=[],
-                                               #depends_on=[],
-                                               group=Group.NONE,
-                                               comments=''
-                                               )
-
-    tests = setup_tests(config_data, default_attributes)
+    initialised_tests = initialise_tests(test_names, default_inputs, default_files_under_test)
+    tests = assign_config_keys(initialised_tests, tests_config_dict)
 
     expected_tests = {'groundstate/LDA_PW-PbTiO3':
                           {'files_under_test': ['INFO.OUT', 'evalcore.xml', 'geometry.xml', 'eigval.xml', 'atoms.xml'],
-                           'inputs': ['input.xml'],
+                           'inputs': ['INFO.OUT', 'evalcore.xml', 'geometry.xml', 'eigval.xml', 'atoms.xml'],
                            'repeat': False,
                            'failing_builds': [CompilerBuild('intel', 'mpiandsmp'), CompilerBuild('intel', 'serial')],
-                           #'depends_on': [],
                            'group': Group.SLOW_TESTS,
-                           'comments': 'Some details on failing test to print from CI'
+                           'comments': 'Some details on failing test to print from CI',
+                           'depends_on': None,
+                           'cmd_line_args': ''
                            },
                       'groundstate/LiF':
                           {'files_under_test': ['INFO.OUT', 'evalcore.xml', 'geometry.xml', 'eigval.xml', 'atoms.xml'],
-                           'inputs': ['input.xml'],
+                           'inputs': ['INFO.OUT', 'evalcore.xml', 'geometry.xml', 'eigval.xml', 'atoms.xml'],
                            'repeat': False,
                            'failing_builds': [],
-                           #'depends_on': [],
                            'group': Group.NONE,
-                           'comments': ''
+                           'comments': '',
+                           'depends_on': None,
+                           'cmd_line_args': ''
                            },
                       'BSE/LiF':
                           {'files_under_test': ['some_file'],
                            'inputs': ['input.xml', 'STATE.OUT', 'Li.xml', 'F.xml'],
                            'repeat': True,
                            'failing_builds': [],
-                           #'depends_on': [],
                            'group': Group.NONE,
-                           'depends-on': 'groundstate/LiF',
-                           'comments': ''
+                           'comments': '',
+                           'depends_on': 'groundstate/LiF',
+                           'cmd_line_args': ''
                            }
                       }
 
-    # Can't compare different instantiations of an object, even when it has the same attributes set.
-    PbTiO3_failing_builds = tests['groundstate/LDA_PW-PbTiO3'].pop('failing_builds')
-    expected_PbTiO3_failing_builds = expected_tests['groundstate/LDA_PW-PbTiO3'].pop('failing_builds')
+    # Compare values of CompilerBuild instances
+    expected_PbTiO3_fbuilds = expected_tests['groundstate/LDA_PW-PbTiO3'].pop('failing_builds')
+    PbTiO3_fbuilds = tests['groundstate/LDA_PW-PbTiO3'].pop('failing_builds')
+    assert PbTiO3_fbuilds[0].compiler == expected_PbTiO3_fbuilds[0].compiler
+    assert PbTiO3_fbuilds[1].compiler == expected_PbTiO3_fbuilds[1].compiler
+    assert PbTiO3_fbuilds[0].build == expected_PbTiO3_fbuilds[0].build
+    assert PbTiO3_fbuilds[1].build == expected_PbTiO3_fbuilds[1].build
 
-    assert tests == expected_tests
-
-    assert len(PbTiO3_failing_builds) == 2, "Expect two failing build entries for groundstate/LDA_PW-PbTiO3"
-
-    # Entry one
-    assert PbTiO3_failing_builds[0].compiler == expected_PbTiO3_failing_builds[0].compiler
-    assert PbTiO3_failing_builds[0].build == expected_PbTiO3_failing_builds[0].build
-
-    # Entry two
-    assert PbTiO3_failing_builds[1].compiler == expected_PbTiO3_failing_builds[1].compiler
-    assert PbTiO3_failing_builds[1].build == expected_PbTiO3_failing_builds[1].build
-
-
-@pytest.mark.parametrize("key, default, expected_tests", [
-                        ('failing_builds', [], ['groundstate/LDA_PW-PbTiO3']),
-                        ('repeat', False, ['BSE/LiF'])
-])
-def test_find_tests_with_attribute(key, default, expected_tests):
-    """
-    Find tests with attributes that don not equal their default (initialised) values.
-
-    Find test cases the attribute:
-        failing_builds
-        repeat
-    """
-    tests_from_config = {
-    'groundstate/LDA_PW-PbTiO3': {'repeat': False,
-                                  'failing_builds': ['intel mpiandsmp', 'intel serial'],
-                                  'files_under_test': ['INFO.OUT', 'evalcore.xml', 'geometry.xml', 'eigval.xml','atoms.xml'],
-                                  #'depends_on': '',
-                                  'group': 'SLOW_TESTS',
-                                  'comments': 'Some details on failing test to print from CI'},
-
-     'groundstate/LiF': {'repeat': False,
-                         'failing_builds': [],
-                         'files_under_test': ['INFO.OUT', 'evalcore.xml', 'geometry.xml', 'eigval.xml', 'atoms.xml'],
-                         'depends-on': '',
-                         'group': 'NONE'},
-
-     'BSE/LiF': {'repeat': True,
-                 'failing_builds': [],
-                 'files_under_test': ['some_file'],
-                 #'depends_on': 'groundstate/LiF',
-                 'group': 'NONE',
-                 'inputs': ['input.xml', 'STATE.OUT', 'Li.xml', 'F.xml']
-                 }
-    }
-    output_tests: dict = find_tests_with_attribute(tests_from_config, key, default)
-    assert list(output_tests.keys()) == expected_tests
+    # Compare all other dict values
+    assert tests['groundstate/LDA_PW-PbTiO3'] == expected_tests['groundstate/LDA_PW-PbTiO3']
+    assert tests['groundstate/LiF'] == expected_tests['groundstate/LiF']
+    assert tests['BSE/LiF'] == expected_tests['BSE/LiF']
 
 
 def test_sort_tests_by_group():

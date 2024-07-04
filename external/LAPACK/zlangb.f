@@ -1,26 +1,26 @@
-*> \brief \b ZLANGB
+*> \brief \b ZLANGB returns the value of the 1-norm, Frobenius norm, infinity-norm, or the largest absolute value of any element of general band matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLANGB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlangb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlangb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlangb.f"> 
+*> Download ZLANGB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlangb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlangb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlangb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZLANGB( NORM, N, KL, KU, AB, LDAB,
 *                        WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM
 *       INTEGER            KL, KU, LDAB, N
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   WORK( * )
 *       COMPLEX*16         AB( LDAB, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -112,12 +112,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GBauxiliary
 *
@@ -125,10 +123,9 @@
       DOUBLE PRECISION FUNCTION ZLANGB( NORM, N, KL, KU, AB, LDAB,
      $                 WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM
@@ -147,11 +144,11 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, J, K, L
-      DOUBLE PRECISION   SCALE, SUM, VALUE
+      DOUBLE PRECISION   SCALE, SUM, VALUE, TEMP
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, DISNAN
+      EXTERNAL           LSAME, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZLASSQ
@@ -170,7 +167,8 @@
          VALUE = ZERO
          DO 20 J = 1, N
             DO 10 I = MAX( KU+2-J, 1 ), MIN( N+KU+1-J, KL+KU+1 )
-               VALUE = MAX( VALUE, ABS( AB( I, J ) ) )
+               TEMP = ABS( AB( I, J ) )
+               IF( VALUE.LT.TEMP .OR. DISNAN( TEMP ) ) VALUE = TEMP
    10       CONTINUE
    20    CONTINUE
       ELSE IF( ( LSAME( NORM, 'O' ) ) .OR. ( NORM.EQ.'1' ) ) THEN
@@ -183,7 +181,7 @@
             DO 30 I = MAX( KU+2-J, 1 ), MIN( N+KU+1-J, KL+KU+1 )
                SUM = SUM + ABS( AB( I, J ) )
    30       CONTINUE
-            VALUE = MAX( VALUE, SUM )
+            IF( VALUE.LT.SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    40    CONTINUE
       ELSE IF( LSAME( NORM, 'I' ) ) THEN
 *
@@ -200,7 +198,8 @@
    70    CONTINUE
          VALUE = ZERO
          DO 80 I = 1, N
-            VALUE = MAX( VALUE, WORK( I ) )
+            TEMP = WORK( I )
+            IF( VALUE.LT.TEMP .OR. DISNAN( TEMP ) ) VALUE = TEMP
    80    CONTINUE
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *

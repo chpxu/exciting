@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSPSVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sspsvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sspsvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sspsvx.f"> 
+*> Download SSPSVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sspsvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sspsvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sspsvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSPSVX( FACT, UPLO, N, NRHS, AP, AFP, IPIV, B, LDB, X,
 *                          LDX, RCOND, FERR, BERR, WORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          FACT, UPLO
 *       INTEGER            INFO, LDB, LDX, N, NRHS
@@ -31,7 +31,7 @@
 *       REAL               AFP( * ), AP( * ), B( LDB, * ), BERR( * ),
 *      $                   FERR( * ), WORK( * ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -123,8 +123,7 @@
 *>
 *> \param[in,out] AFP
 *> \verbatim
-*>          AFP is or output) REAL array, dimension
-*>                            (N*(N+1)/2)
+*>          AFP is REAL array, dimension (N*(N+1)/2)
 *>          If FACT = 'F', then AFP is an input argument and on entry
 *>          contains the block diagonal matrix D and the multipliers used
 *>          to obtain the factor U or L from the factorization
@@ -140,7 +139,7 @@
 *>
 *> \param[in,out] IPIV
 *> \verbatim
-*>          IPIV is or output) INTEGER array, dimension (N)
+*>          IPIV is INTEGER array, dimension (N)
 *>          If FACT = 'F', then IPIV is an input argument and on entry
 *>          contains details of the interchanges and the block structure
 *>          of D, as determined by SSPTRF.
@@ -244,12 +243,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHERsolve
 *
@@ -277,10 +274,9 @@
       SUBROUTINE SSPSVX( FACT, UPLO, N, NRHS, AP, AFP, IPIV, B, LDB, X,
      $                   LDX, RCOND, FERR, BERR, WORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          FACT, UPLO

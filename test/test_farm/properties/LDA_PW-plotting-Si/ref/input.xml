@@ -47,7 +47,8 @@
       </plot3d>
     </exccplot>
     
-    <wfplot>
+    <wfplot
+      version="old">
       <kstlist>
         <pointstatepair>1 1</pointstatepair>
       </kstlist>

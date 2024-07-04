@@ -7,7 +7,8 @@ inputs and the post-processing of <span style="font-family:american typewriter; 
 
 * Generation of the <span style="font-family:american typewriter; font-size:1em;">**exciting**</span> input XML file 
   using Python classes:
-  - Currently supported for `groundstate`, `structure` and `BSE`
+  - Automatically supported for the whole input file through dynamic class construction
+  - Currently tested for `groundstate`, `structure`, `BSE` and `bandstructure`
 
 
 * Parsing of <span style="font-family:american typewriter; font-size:1em;">**exciting**</span> outputs into Python dictionaries
@@ -30,20 +31,44 @@ making it is possible to define a calculation, run it, and parse the relevant ou
 
 ## Installation
 If one wishes to import <span style="font-family:american typewriter; font-size:1em;">**excitingtools**</span> in their own scripts, it can be installed from this project's root directory 
-(`$EXCITING_ROOT/tools/exciting_tools`) with:
+(`$EXCITING_ROOT/tools/exciting_tools`).
+
+Although not strictly necessary, it is strongly recommended to use a virtual environment to manage Python packages. 
+There are several solutions available, including [venv](https://docs.python.org/3/library/venv.html), (mini)[conda](https://docs.conda.io/en/latest/miniconda.html)
+and [pipx](https://pypa.github.io/pipx/). 
+
+To set up a venv:
 
 ```bash
-pip install -e .
+# Create a directory `excitingvenv` containing our venv
+python3 -m venv excitingvenv
+# Activate the environment
+source excitingvenv/bin/activate
 ```
 
-or downloaded directly from pip:
+Before installing excitingtools, you should upgrade `pip` and `setuptools`:
+```bash
+python3 -m pip install --upgrade --force pip
+pip install --upgrade setuptools
+```
+
+No matter which type of environment or none is used, it should always be verified that the Python version is compatible with <span style="font-family:american typewriter; font-size:1em;">**excitingtools**</span> (>=3.7) and that `pip` is up-to-date (>=22.0) and also points to the same Python version.
+
+Now you can proceed to install <span style="font-family:american typewriter; font-size:1em;">**excitingtools**</span>
+from <span style="font-family:american typewriter; font-size:1em;">**exciting's**</span>'s root:
+
+```bash
+python3 -m pip install tools/exciting_tools
+```
+
+Alternatively, you can download it directly from PyPI:
 
 ```bash
 pip install excitingtools
 ```
 
 ## External Package Dependencies
-If a new external dependency is introduced to the package, this also requires adding to `setup.py` such that pip is aware 
+If a new external dependency is introduced to the package, this also requires adding to `pyproject.toml` such that pip is aware 
 of the new dependency.
 
 ## Basic File Structure 
@@ -116,9 +141,7 @@ ground state calculation could like this:
 import ase
 import numpy as np
 
-from excitingtools.input.structure import ExcitingStructure
-from excitingtools.input.ground_state import ExcitingGroundStateInput
-from excitingtools.input.input_xml import exciting_input_xml_str
+from excitingtools import ExcitingStructure, ExcitingGroundStateInput, ExcitingInputXML
 
 # Lattice and positions in angstrom, as expected by ASE
 lattice = np.array([[3.168394160510246,   0.0,                0.0],
@@ -145,13 +168,14 @@ ground_state = ExcitingGroundStateInput(
     nosource=False
     )
 
-input_xml_str = exciting_input_xml_str(structure, ground_state, title="My exciting Crystal")
+input_xml = ExcitingInputXML(structure=structure, 
+                             groundstate=ground_state, 
+                             title="My exciting Crystal")
 
-with open("input.xml", "w") as fid:
-    fid.write(input_xml_str)
+input_xml.write("input.xml")
 ```
 Here we defined the attributes required to perform a ground state calculation as seperate classes, and composed the 
-final XML string with `exciting_input_xml_str`. If the user does not have access to ASE, they can instead use a 
+final XML string with `ExcitingInputXML` class. If the user does not have access to ASE, they can instead use a 
 `List[dict]` to define the container with atoms data:
 
 ```python3
@@ -168,7 +192,7 @@ structure = ExcitingStructure(atoms, lattice, species_path='.')
 Additional examples can be found in the test cases, `exciting_tools/tests/input`. We note that not all XML tags 
 currently map onto Python classes. One can consult `exciting_tools/excitingtools/input` to see what is available. 
 Development follows a continuous integration and deployment workflow, therefore if one wishes for additional features, 
-please make a request on Github issues or open a merge request.
+please make a request on GitHub issues or open a merge request.
 
 #### Binary Execution
 
@@ -176,7 +200,7 @@ Next we can define a runner and run our calculation:
 ```python3
 from excitingtools.runner.runner import BinaryRunner
 
-runner = BinaryRunner('exciting_smp', run_cmd=[''], omp_num_threads=4, time_out=500)
+runner = BinaryRunner('exciting_smp', run_cmd='', omp_num_threads=4, time_out=500)
 run_status = runner.run()
 ```
 
@@ -298,7 +322,7 @@ excitingtools is available as a separate package on PyPi. In order to upload a n
 
 ```bash
 # Ensure twine is installed
-pip3 install twine
+pip3 install --upgrade twine build
 # Build the wheels
 cd $EXCITINGROOT/tools/exciting_tools
 python3 -m build
@@ -311,7 +335,7 @@ twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 twine upload dist/*
 ```
 
-Before doing so, please ensure the semantic versioning is appropriately updated in `setup.py`.
+Before doing so, please ensure the semantic versioning is appropriately updated in `pyproject.toml`.
 
 
 ## Contributors

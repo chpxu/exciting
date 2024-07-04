@@ -1,25 +1,25 @@
-*> \brief \b CLARFG
+*> \brief \b CLARFG generates an elementary reflector (Householder matrix).
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLARFG + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clarfg.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clarfg.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clarfg.f"> 
+*> Download CLARFG + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clarfg.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clarfg.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clarfg.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CLARFG( N, ALPHA, X, INCX, TAU )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INCX, N
 *       COMPLEX            ALPHA, TAU
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       COMPLEX            X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -94,22 +94,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE CLARFG( N, ALPHA, X, INCX, TAU )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
@@ -175,7 +172,7 @@
             BETA = BETA*RSAFMN
             ALPHI = ALPHI*RSAFMN
             ALPHR = ALPHR*RSAFMN
-            IF( ABS( BETA ).LT.SAFMIN )
+            IF( (ABS( BETA ).LT.SAFMIN) .AND. (KNT .LT. 20) )
      $         GO TO 10
 *
 *           New BETA is at most 1, at least SAFMIN

@@ -26,7 +26,7 @@ module predefined_rgkmax
         !> Number of total rgkmax values 
         integer, parameter :: n_initial_rgkmax = 86 
         !> Rgkmax values for atomic numbers going from 1 to 86 
-        real(dp), parameter :: inital_rgkmax_params(n_initial_rgkmax) = &
+        real(dp), parameter :: initial_rgkmax_params(n_initial_rgkmax) = &
             [5.83543_dp, & ! H, 1
             8.226318_dp, & ! He, 2
             8.450962_dp, & ! Li, 3
@@ -119,7 +119,7 @@ module predefined_rgkmax
                                 & "Error: Out of bounds (predefined_rgkmax): for given atomic number "// trim(z_label) // " no &
                                 & predefined rgkmax value exists.")
         
-        rgkmax = inital_rgkmax_params(idnint(Abs(spzn)))
+        rgkmax = initial_rgkmax_params(idnint(Abs(spzn)))
 
     end function get_predefined_rgkmax
 

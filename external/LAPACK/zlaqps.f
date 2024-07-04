@@ -1,26 +1,26 @@
-*> \brief \b ZLAQPS
+*> \brief \b ZLAQPS computes a step of QR factorization with column pivoting of a real m-by-n matrix A by using BLAS level 3.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLAQPS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlaqps.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlaqps.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlaqps.f"> 
+*> Download ZLAQPS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlaqps.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlaqps.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlaqps.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLAQPS( M, N, OFFSET, NB, KB, A, LDA, JPVT, TAU, VN1,
 *                          VN2, AUXV, F, LDF )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KB, LDA, LDF, M, N, NB, OFFSET
 *       ..
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   VN1( * ), VN2( * )
 *       COMPLEX*16         A( LDA, * ), AUXV( * ), F( LDF, * ), TAU( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -127,7 +127,7 @@
 *> \param[in,out] AUXV
 *> \verbatim
 *>          AUXV is COMPLEX*16 array, dimension (NB)
-*>          Auxiliar vector.
+*>          Auxiliary vector.
 *> \endverbatim
 *>
 *> \param[in,out] F
@@ -145,12 +145,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -170,17 +168,16 @@
 *> LAPACK Working Note 176
 *
 *> \htmlonly
-*> <a href="http://www.netlib.org/lapack/lawnspdf/lawn176.pdf">[PDF]</a> 
-*> \endhtmlonly 
+*> <a href="http://www.netlib.org/lapack/lawnspdf/lawn176.pdf">[PDF]</a>
+*> \endhtmlonly
 *
 *  =====================================================================
       SUBROUTINE ZLAQPS( M, N, OFFSET, NB, KB, A, LDA, JPVT, TAU, VN1,
      $                   VN2, AUXV, F, LDF )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            KB, LDA, LDF, M, N, NB, OFFSET
@@ -354,9 +351,9 @@
          ITEMP = NINT( VN2( LSTICC ) )
          VN1( LSTICC ) = DZNRM2( M-RK, A( RK+1, LSTICC ), 1 )
 *
-*        NOTE: The computation of VN1( LSTICC ) relies on the fact that 
+*        NOTE: The computation of VN1( LSTICC ) relies on the fact that
 *        SNRM2 does not fail on vectors with norm below the value of
-*        SQRT(DLAMCH('S')) 
+*        SQRT(DLAMCH('S'))
 *
          VN2( LSTICC ) = VN1( LSTICC )
          LSTICC = ITEMP

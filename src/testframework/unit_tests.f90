@@ -36,7 +36,7 @@ module unit_tests
       logical :: xc = .false.
       logical :: xs = .false.
 
-      logical :: char = .false.
+      logical :: xstring = .false.
       logical :: lapack = .false.
       logical :: math = .false.
       logical :: simplified_input = .false.
@@ -44,6 +44,8 @@ module unit_tests
       logical :: testframework = .false.
       logical :: file_io = .false.
       logical :: matrix_elements = .false.
+      logical :: xgrid = .false.
+      logical :: xhdf5 = .false.
 
    contains
       procedure :: init => set_unit_tests
@@ -146,8 +148,8 @@ contains
 
 
          ! Modern directory conventions
-      case ('char')
-         run%char = .true.
+      case ('xstring')
+         run%xstring = .true.
       case ('lapack')
          run%lapack = .true.
       case ('math')
@@ -162,6 +164,10 @@ contains
          run%file_io = .true.
       case ('matrix_elements')
          run%matrix_elements = .true.
+      case ('xgrid')
+         run%xgrid = .true.
+      case ('xhdf5')
+         run%xhdf5 = .true.
 
       case default
          call terminate_mpi_env(mpi_env, 'Unrecognised unit test name: '&

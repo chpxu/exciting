@@ -1,19 +1,19 @@
-*> \brief \b SLAED7
+*> \brief \b SLAED7 used by SSTEDC. Computes the updated eigensystem of a diagonal matrix after modification by a rank-one symmetric matrix. Used when the original matrix is dense.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAED7 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed7.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed7.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed7.f"> 
+*> Download SLAED7 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed7.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed7.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed7.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          LDQ, INDXQ, RHO, CUTPNT, QSTORE, QPTR, PRMPTR,
 *                          PERM, GIVPTR, GIVCOL, GIVNUM, WORK, IWORK,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            CURLVL, CURPBM, CUTPNT, ICOMPQ, INFO, LDQ, N,
 *      $                   QSIZ, TLVLS
@@ -34,7 +34,7 @@
 *       REAL               D( * ), GIVNUM( 2, * ), Q( LDQ, * ),
 *      $                   QSTORE( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -59,7 +59,7 @@
 *>
 *>       The first stage consists of deflating the size of the problem
 *>       when there are multiple eigenvalues or if there is a zero in
-*>       the Z vector.  For each such occurence the dimension of the
+*>       the Z vector.  For each such occurrence the dimension of the
 *>       secular equation problem is reduced by one.  This stage is
 *>       performed by the routine SLAED8.
 *>
@@ -239,12 +239,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -260,10 +258,9 @@
      $                   PERM, GIVPTR, GIVCOL, GIVNUM, WORK, IWORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            CURLVL, CURPBM, CUTPNT, ICOMPQ, INFO, LDQ, N,
@@ -304,7 +301,7 @@
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
       ELSE IF( ICOMPQ.EQ.1 .AND. QSIZ.LT.N ) THEN
-         INFO = -4
+         INFO = -3
       ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
          INFO = -9
       ELSE IF( MIN( 1, N ).GT.CUTPNT .OR. N.LT.CUTPNT ) THEN

@@ -92,7 +92,7 @@ if (.true.) then
               End Do
             endif
 !else
-            fr(1:nr)=pot (1, :, ias)
+            fr(1:nr)=pot (1, 1:nr, ias)
             Call fderiv (1, nr, spr(:, is), fr, gr, cf)
             fr(1:nr)=rmtable (1:nr)
             Call fderiv (1, nr, spr(:, is), fr, gr, cf)

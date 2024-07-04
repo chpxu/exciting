@@ -6,7 +6,13 @@ Subroutine readspeciesxml
   Use modspdeflist
   Use FoX_dom
   Use modspdb
-  Use modmpi
+  Use modmpi, only: mpiglobal, rank, barrier, ierr
+  Use errors_warnings, only: terminate_if_true
+  Use mod_muffin_tin, only: idx_species_fixed_rmt
+#ifdef MPI
+  Use mpi, only: MPI_COMM_WORLD 
+#endif
+
 
   Implicit None
 ! local variables
@@ -16,12 +22,14 @@ Subroutine readspeciesxml
   character(2048) :: command
   character(256)  :: spfile_string
   character(256)  :: string
+! Number of fixed rmt cases as set in the input files
+  integer :: nr_fixrmt
+  logical, allocatable:: fixrmt_array(:)
 
   if (allocated(speziesdeflist)) deallocate(speziesdeflist)
   Allocate(speziesdeflist(nspecies))
   config => newDOMConfig ()
   parseerror = .False.
-
 ! parse xml and create derived type for species definitions  speziesdeflist
   Do is = 1, nspecies
     spfile_string=""
@@ -81,9 +89,19 @@ Subroutine readspeciesxml
     speziesdeflist(is)%sp => getstructsp (speciesnp)
     Call destroy (doc)
   End Do
-!
-!
-!
+  ! Count number of fixed rmt for automatic muffin-tin calculation
+  allocate(fixrmt_array(nspecies))
+  fixrmt_array = [(input%structure%speciesarray(is)%species%fixrmt, is = 1, nspecies)]
+  nr_fixrmt = count(fixrmt_array)
+
+  call terminate_if_true(mpiglobal, (nr_fixrmt > 1), &
+                        "Error(readspeciesxml): Input parameter fixrmt set to true for more than one species.")
+  call terminate_if_true(mpiglobal, (nr_fixrmt == 1) .and. (.not. input%structure%autormt), &
+                        "Error(readspeciesxml): To invoke usage of the input parameter fixrmt, &
+                        the input parameter autormt needs to be set to true.")
+                        
+  idx_species_fixed_rmt = 0
+
   Do is = 1, nspecies
      spsymb(is) = trim(speziesdeflist(is)%sp%chemicalSymbol)
      input%structure%speciesarray(is)%species%chemicalSymbol = spsymb (is)
@@ -92,9 +110,15 @@ Subroutine readspeciesxml
      spmass(is) = speziesdeflist(is)%sp%mass
      sprmin(is) = speziesdeflist(is)%sp%muffinTin%rmin
      rmt(is) = speziesdeflist(is)%sp%muffinTin%radius
-     If (input%structure%speciesarray(is)%species%rmt .Gt. 0) Then
+     if (input%structure%speciesarray(is)%species%rmt .Gt. 0) then
         rmt(is) = input%structure%speciesarray(is)%species%rmt
-     End If
+     end if
+
+     ! If required, set index of species with fixed rmt
+     if (input%structure%speciesarray(is)%species%fixrmt .and. (input%structure%autormt)) then 
+         idx_species_fixed_rmt = is 
+     end if 
+
      sprmax(is) = speziesdeflist(is)%sp%muffinTin%rinf
      nrmt(is) = speziesdeflist(is)%sp%muffinTin%radialmeshPoints
      If (sprmin(is) .Le. 0.d0) Then
@@ -187,6 +211,10 @@ Subroutine readspeciesxml
 !    Default definitions
 !----------------------------
 
+!    Setting principal quantum number of all (L)APWs to -1 (default) 
+!    to avoid automatic calculations of trial energies.
+     apwn(1:maxapword, 0:maxlapw, is) = default_apwn
+     
      if (size(speziesdeflist(is)%sp%basis%default%wfarray)>0) then
        
 !      DEFAULT: Element wf is specified
@@ -270,10 +298,10 @@ Subroutine readspeciesxml
         Write (*,*)
         Stop
      End If
-
+     
      nlo = 0
      Do ilx = 1, nlx
-        
+
         lx = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%l
         If (lx .Lt. 0) Then
            Write (*,*)
@@ -318,6 +346,7 @@ Subroutine readspeciesxml
              Stop
           End If
           Do io = 1, apword (lx, is)
+             apwn(io, lx, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%wfarray(io)%wf%n  
              apwe0(io, lx, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%wfarray(io)%wf%trialEnergy
              apwdm(io, lx, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%wfarray(io)%wf%matchingOrder
              apwve(io, lx, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%wfarray(io)%wf%searchE
@@ -347,6 +376,7 @@ Subroutine readspeciesxml
           end if
           Do io = 1, apword(lx, is)
              apwe0(io, lx, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%trialEnergy
+             apwn(io, lx, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%n
              apwdm(io, lx, is) = io-1
              apwve(io, lx, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%searchE
              mine0=min(apwe0(io,lx,is),mine0)
@@ -355,8 +385,9 @@ Subroutine readspeciesxml
 !         lo in APW+lo method
 !
           if (string .eq. 'apw+lo') then
-            nlo = nlo+1
-            lorbl(nlo, is) = lx
+             nlo = nlo+1
+             lorbl(nlo, is) = lx
+             lorbk(nlo, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%kappa
 	    !custom defined APW+lo orbitals are not used for Wannier-projection yet
             lorbwfproj(nlo, is) = .FALSE.
             if (lorbl(nlo, is) .Gt. input%groundstate%lmaxmat) then
@@ -367,11 +398,25 @@ Subroutine readspeciesxml
               write (*,*)
               stop
             end if
+            if ( (lorbk(nlo, is) /= 0) .and. (lorbk(nlo, is) /= lorbl(nlo, is)) &
+                 .and. (lorbk(nlo, is) /= -lorbl(nlo, is)-1) ) then 
+               write(*,*)
+               write(*,'("Error(readinput): kappa and l do not match : ")')
+               write(*,'(" l = ", I3, " kappa = ", I3)') lorbl(nlo, is), lorbk(nlo, is)
+               write(*, '(" for species ", I4)') is
+               Write (*, '(" and exception number ", I4),"."') nlo
+               write(*, '("A valid kappa must be either equal to l or to -(l+1).")')
+               write(*, '("It can be calculated as follows: kappa = (l-j)(2j+1)")')
+               write (*,*)
+               stop
+             end if
             lorbord(nlo, is) = 2
             do io = 1, lorbord(nlo, is)
               lorbe0(io, nlo, is) = apwe0(1, lx, is)
+              lorbn(io, nlo, is) = speziesdeflist(is)%sp%basis%customarray(ilx)%custom%n
               lorbdm(io, nlo, is) = io-1
               lorbve(io, nlo, is) = apwve(1, lx, is)
+              wfkappa(io, nlo, is) = lorbk(nlo, is)
             end do
             mine0=min(lorbe0(io,nlo,is),mine0)
           end if
@@ -434,8 +479,10 @@ Subroutine readspeciesxml
         End If
         Do io = 1, lorbord(ilo, is)
            lorbe0(io, ilo, is) = speziesdeflist(is)%sp%basis%loarray(ilx)%lo%wfarray(io)%wf%trialEnergy
+           lorbn(io, ilo, is)  = speziesdeflist(is)%sp%basis%loarray(ilx)%lo%wfarray(io)%wf%n
            lorbdm(io, ilo, is) = speziesdeflist(is)%sp%basis%loarray(ilx)%lo%wfarray(io)%wf%matchingOrder
            lorbve(io, ilo, is) = speziesdeflist(is)%sp%basis%loarray(ilx)%lo%wfarray(io)%wf%searchE
+           wfkappa(io, ilo, is) = speziesdeflist(is)%sp%basis%loarray(ilx)%lo%wfarray(io)%wf%kappa
            If (lorbdm(io, ilo, is) .Lt. 0) Then
               Write (*,*)
               Write (*, '("Error(readinput): lorbdm < 0 : ", I8)') lorbdm(io, ilo, is)
@@ -445,6 +492,19 @@ Subroutine readspeciesxml
               Write (*,*)
               Stop
            End If
+           if ( (wfkappa(io, ilo, is) /= 0) .and. (wfkappa(io, ilo, is) /= lorbl(ilo, is)) &
+           .and. (wfkappa(io, ilo, is) /= -lorbl(ilo, is)-1) ) then 
+               write(*,*)
+               write(*,'("Error(readinput): kappa and l do not match : ")') 
+               write(*,'(" l = ", I3, " kappa = ", I3)') lorbl(ilo, is), wfkappa(io, ilo, is)
+               write(*, '(" for species ", I4)') is
+               Write (*, '(" local-orbital ", I4)') ilo
+               Write (*, '(" and order ", I4, ".")') io
+               write(*, '("A valid kappa must be either equal to l or to -(l+1).")')
+               write(*, '("It can be calculated as follows: kappa = (l-j)(2j+1)")')
+               write (*,*)
+               stop
+            end if
            mine0=min(lorbe0(io,ilo,is),mine0)
         End Do
      End Do

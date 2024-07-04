@@ -1,25 +1,25 @@
-*> \brief \b SLACON
+*> \brief \b SLACON estimates the 1-norm of a square matrix, using reverse communication for evaluating matrix-vector products.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLACON + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slacon.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slacon.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slacon.f"> 
+*> Download SLACON + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slacon.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slacon.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slacon.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLACON( N, V, X, ISGN, EST, KASE )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KASE, N
 *       REAL               EST
@@ -28,7 +28,7 @@
 *       INTEGER            ISGN( * )
 *       REAL               V( * ), X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -75,7 +75,7 @@
 *>          EST is REAL
 *>         On entry with KASE = 1 or 2 and JUMP = 3, EST should be
 *>         unchanged from the previous call to SLACON.
-*>         On exit, EST is an estimate (a lower bound) for norm(A). 
+*>         On exit, EST is an estimate (a lower bound) for norm(A).
 *> \endverbatim
 *>
 *> \param[in,out] KASE
@@ -90,12 +90,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHERauxiliary
 *
@@ -115,10 +113,9 @@
 *  =====================================================================
       SUBROUTINE SLACON( N, V, X, ISGN, EST, KASE )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            KASE, N

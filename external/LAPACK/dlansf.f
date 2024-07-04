@@ -1,25 +1,25 @@
-*> \brief \b DLANSF
+*> \brief \b DLANSF returns the value of the 1-norm, or the Frobenius norm, or the infinity norm, or the element of largest absolute value of a symmetric matrix in RFP format.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLANSF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlansf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlansf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlansf.f"> 
+*> Download DLANSF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlansf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlansf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlansf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION DLANSF( NORM, TRANSR, UPLO, N, A, WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM, TRANSR, UPLO
 *       INTEGER            N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   A( 0: * ), WORK( 0: * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -110,12 +110,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -209,10 +207,9 @@
 *  =====================================================================
       DOUBLE PRECISION FUNCTION DLANSF( NORM, TRANSR, UPLO, N, A, WORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM, TRANSR, UPLO
@@ -230,12 +227,11 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, J, IFM, ILU, NOE, N1, K, L, LDA
-      DOUBLE PRECISION   SCALE, S, VALUE, AA
+      DOUBLE PRECISION   SCALE, S, VALUE, AA, TEMP
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      INTEGER            IDAMAX
-      EXTERNAL           LSAME, IDAMAX
+      LOGICAL            LSAME, DISNAN
+      EXTERNAL           LSAME, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLASSQ
@@ -247,6 +243,9 @@
 *
       IF( N.EQ.0 ) THEN
          DLANSF = ZERO
+         RETURN
+      ELSE IF( N.EQ.1 ) THEN
+         DLANSF = ABS( A(0) )
          RETURN
       END IF
 *
@@ -296,14 +295,18 @@
 *           A is n by k
                DO J = 0, K - 1
                   DO I = 0, N - 1
-                     VALUE = MAX( VALUE, ABS( A( I+J*LDA ) ) )
+                     TEMP = ABS( A( I+J*LDA ) )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
                   END DO
                END DO
             ELSE
 *              xpose case; A is k by n
                DO J = 0, N - 1
                   DO I = 0, K - 1
-                     VALUE = MAX( VALUE, ABS( A( I+J*LDA ) ) )
+                     TEMP = ABS( A( I+J*LDA ) )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
                   END DO
                END DO
             END IF
@@ -313,14 +316,18 @@
 *              A is n+1 by k
                DO J = 0, K - 1
                   DO I = 0, N
-                     VALUE = MAX( VALUE, ABS( A( I+J*LDA ) ) )
+                     TEMP = ABS( A( I+J*LDA ) )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
                   END DO
                END DO
             ELSE
 *              xpose case; A is k by n+1
                DO J = 0, N
                   DO I = 0, K - 1
-                     VALUE = MAX( VALUE, ABS( A( I+J*LDA ) ) )
+                     TEMP = ABS( A( I+J*LDA ) )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
                   END DO
                END DO
             END IF
@@ -366,8 +373,12 @@
                      WORK( J ) = WORK( J ) + S
                   END DO
    10             CONTINUE
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                ELSE
 *                 ilu = 1
                   K = K + 1
@@ -404,8 +415,12 @@
                      END DO
                      WORK( J ) = WORK( J ) + S
                   END DO
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                END IF
             ELSE
 *              n is even
@@ -438,8 +453,12 @@
                      END DO
                      WORK( J ) = WORK( J ) + S
                   END DO
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                ELSE
 *                 ilu = 1
                   DO I = K, N - 1
@@ -472,8 +491,12 @@
                      END DO
                      WORK( J ) = WORK( J ) + S
                   END DO
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                END IF
             END IF
          ELSE
@@ -534,8 +557,12 @@
                      END DO
                      WORK( J ) = WORK( J ) + S
                   END DO
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                ELSE
 *                 ilu=1
                   K = K + 1
@@ -595,8 +622,12 @@
                      END DO
                      WORK( J ) = WORK( J ) + S
                   END DO
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                END IF
             ELSE
 *              n is even
@@ -664,8 +695,12 @@
 *                 A(k-1,k-1)
                   S = S + AA
                   WORK( I ) = WORK( I ) + S
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                ELSE
 *                 ilu=1
                   DO I = K, N - 1
@@ -733,8 +768,12 @@
                      END DO
                      WORK( J-1 ) = WORK( J-1 ) + S
                   END DO
-                  I = IDAMAX( N, WORK, 1 )
-                  VALUE = WORK( I-1 )
+                  VALUE = WORK( 0 )
+                  DO I = 1, N-1
+                     TEMP = WORK( I )
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
+     $                    VALUE = TEMP
+                  END DO
                END IF
             END IF
          END IF

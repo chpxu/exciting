@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DSYEVR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsyevr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dsyevr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsyevr.f"> 
+*> Download DSYEVR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsyevr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dsyevr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsyevr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DSYEVR( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
 *                          ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK,
 *                          IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, RANGE, UPLO
 *       INTEGER            IL, INFO, IU, LDA, LDZ, LIWORK, LWORK, M, N
@@ -31,7 +31,7 @@
 *       INTEGER            ISUPPZ( * ), IWORK( * )
 *       DOUBLE PRECISION   A( LDA, * ), W( * ), WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -88,7 +88,7 @@
 *>
 *> Note 1 : DSYEVR calls DSTEMR when the full spectrum is requested
 *> on machines which conform to the ieee-754 floating point standard.
-*> DSYEVR calls DSTEBZ and SSTEIN on non-ieee machines and
+*> DSYEVR calls DSTEBZ and DSTEIN on non-ieee machines and
 *> when partial spectrum requests are made.
 *>
 *> Normal execution of DSTEMR may create NaNs and infinities and
@@ -153,12 +153,15 @@
 *> \param[in] VL
 *> \verbatim
 *>          VL is DOUBLE PRECISION
+*>          If RANGE='V', the lower bound of the interval to
+*>          be searched for eigenvalues. VL < VU.
+*>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
 *>          VU is DOUBLE PRECISION
-*>          If RANGE='V', the lower and upper bounds of the interval to
+*>          If RANGE='V', the upper bound of the interval to
 *>          be searched for eigenvalues. VL < VU.
 *>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
@@ -166,13 +169,17 @@
 *> \param[in] IL
 *> \verbatim
 *>          IL is INTEGER
+*>          If RANGE='I', the index of the
+*>          smallest eigenvalue to be returned.
+*>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
+*>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
 *>
 *> \param[in] IU
 *> \verbatim
 *>          IU is INTEGER
-*>          If RANGE='I', the indices (in ascending order) of the
-*>          smallest and largest eigenvalues to be returned.
+*>          If RANGE='I', the index of the
+*>          largest eigenvalue to be returned.
 *>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
 *>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
@@ -249,7 +256,9 @@
 *>          The support of the eigenvectors in Z, i.e., the indices
 *>          indicating the nonzero elements in Z. The i-th eigenvector
 *>          is nonzero only in elements ISUPPZ( 2*i-1 ) through
-*>          ISUPPZ( 2*i ).
+*>          ISUPPZ( 2*i ). This is an output of DSTEMR (tridiagonal
+*>          matrix). The support of the eigenvectors of A is typically
+*>          1:N because of the orthogonal transformations applied by DORMTR.
 *>          Implemented only for RANGE = 'A' or 'I' and IU - IL = N - 1
 *> \endverbatim
 *>
@@ -301,12 +310,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleSYeigen
 *
@@ -325,10 +332,9 @@
      $                   ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK,
      $                   IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
@@ -539,7 +545,7 @@
 *     returns INFO > 0.
       INDIFL = INDISP + N
 *     INDIWO is the offset of the remaining integer workspace.
-      INDIWO = INDISP + N
+      INDIWO = INDIFL + N
 
 *
 *     Call DSYTRD to reduce symmetric matrix to tridiagonal form.
@@ -573,7 +579,7 @@
 *
 *
 *        Apply orthogonal matrix used in reduction to tridiagonal
-*        form to eigenvectors returned by DSTEIN.
+*        form to eigenvectors returned by DSTEMR.
 *
             IF( WANTZ .AND. INFO.EQ.0 ) THEN
                INDWKN = INDE

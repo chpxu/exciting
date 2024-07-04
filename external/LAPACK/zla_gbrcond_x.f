@@ -1,19 +1,19 @@
-*> \brief \b ZLA_GBRCOND_X
+*> \brief \b ZLA_GBRCOND_X computes the infinity norm condition number of op(A)*diag(x) for general banded matrices.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_GBRCOND_X + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gbrcond_x.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gbrcond_x.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gbrcond_x.f"> 
+*> Download ZLA_GBRCOND_X + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gbrcond_x.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gbrcond_x.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gbrcond_x.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       DOUBLE PRECISION FUNCTION ZLA_GBRCOND_X( TRANS, N, KL, KU, AB,
 *                                                LDAB, AFB, LDAFB, IPIV,
 *                                                X, INFO, WORK, RWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            N, KL, KU, KD, KE, LDAB, LDAFB, INFO
@@ -31,8 +31,8 @@
 *       COMPLEX*16         AB( LDAB, * ), AFB( LDAFB, * ), WORK( * ),
 *      $                   X( * )
 *       DOUBLE PRECISION   RWORK( * )
-*  
-*  
+*
+*
 *
 *> \par Purpose:
 *  =============
@@ -126,13 +126,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX*16 array, dimension (2*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] RWORK
+*> \param[out] RWORK
 *> \verbatim
 *>          RWORK is DOUBLE PRECISION array, dimension (N).
 *>     Workspace.
@@ -141,12 +141,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GBcomputational
 *
@@ -155,10 +153,9 @@
      $                                         LDAB, AFB, LDAFB, IPIV,
      $                                         X, INFO, WORK, RWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -317,5 +314,7 @@
      $   ZLA_GBRCOND_X = 1.0D+0 / AINVNM
 *
       RETURN
+*
+*     End of ZLA_GBRCOND_X
 *
       END

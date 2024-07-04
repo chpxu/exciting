@@ -1,19 +1,19 @@
-*> \brief \b DLASD7
+*> \brief \b DLASD7 merges the two sets of singular values together into a single sorted set. Then it tries to deflate the size of the problem. Used by sbdsdc.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLASD7 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasd7.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasd7.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasd7.f"> 
+*> Download DLASD7 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasd7.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasd7.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasd7.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          VLW, ALPHA, BETA, DSIGMA, IDX, IDXP, IDXQ,
 *                          PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
 *                          C, S, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDGCOL, LDGNUM, NL,
 *      $                   NR, SQRE
@@ -35,7 +35,7 @@
 *      $                   VF( * ), VFW( * ), VL( * ), VLW( * ), Z( * ),
 *      $                   ZW( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -259,14 +259,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -280,10 +278,9 @@
      $                   PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
      $                   C, S, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDGCOL, LDGNUM, NL,
@@ -400,7 +397,7 @@
          VL( I ) = VLW( IDXI )
    50 CONTINUE
 *
-*     Calculate the allowable deflation tolerence
+*     Calculate the allowable deflation tolerance
 *
       EPS = DLAMCH( 'Epsilon' )
       TOL = MAX( ABS( ALPHA ), ABS( BETA ) )

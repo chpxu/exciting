@@ -37,6 +37,7 @@
   	 
     <phonon_screening
       excitation_energy="12.161"
+      alat_qe="5.3797"
       phonon_file="lif.eig"
       zstar_file="lif.dyn1" />
 

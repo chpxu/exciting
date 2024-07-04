@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CTGSJA + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctgsja.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctgsja.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctgsja.f"> 
+*> Download CTGSJA + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctgsja.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctgsja.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctgsja.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CTGSJA( JOBU, JOBV, JOBQ, M, P, N, K, L, A, LDA, B,
 *                          LDB, TOLA, TOLB, ALPHA, BETA, U, LDU, V, LDV,
 *                          Q, LDQ, WORK, NCYCLE, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBQ, JOBU, JOBV
 *       INTEGER            INFO, K, L, LDA, LDB, LDQ, LDU, LDV, M, N,
@@ -33,7 +33,7 @@
 *       COMPLEX            A( LDA, * ), B( LDB, * ), Q( LDQ, * ),
 *      $                   U( LDU, * ), V( LDV, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -346,12 +346,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -379,10 +377,9 @@
      $                   LDB, TOLA, TOLB, ALPHA, BETA, U, LDU, V, LDV,
      $                   Q, LDQ, WORK, NCYCLE, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBQ, JOBU, JOBV
@@ -401,7 +398,7 @@
 *     .. Parameters ..
       INTEGER            MAXIT
       PARAMETER          ( MAXIT = 40 )
-      REAL               ZERO, ONE
+      REAL               ZERO, ONE, HUGENUM
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
       COMPLEX            CZERO, CONE
       PARAMETER          ( CZERO = ( 0.0E+0, 0.0E+0 ),
@@ -424,7 +421,8 @@
      $                   SLARTG, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, CONJG, MAX, MIN, REAL
+      INTRINSIC          ABS, CONJG, MAX, MIN, REAL, HUGE
+      PARAMETER          ( HUGENUM = HUGE(ZERO) )
 *     ..
 *     .. Executable Statements ..
 *
@@ -610,9 +608,9 @@
 *
          A1 = REAL( A( K+I, N-L+I ) )
          B1 = REAL( B( I, N-L+I ) )
+         GAMMA = B1 / A1
 *
-         IF( A1.NE.ZERO ) THEN
-            GAMMA = B1 / A1
+         IF( (GAMMA.LE.HUGENUM).AND.(GAMMA.GE.-HUGENUM) ) THEN
 *
             IF( GAMMA.LT.ZERO ) THEN
                CALL CSSCAL( L-I+1, -ONE, B( I, N-L+I ), LDB )

@@ -1,25 +1,25 @@
-*> \brief \b ZLASCL
+*> \brief \b ZLASCL multiplies a general rectangular matrix by a real scalar defined as cto/cfrom.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLASCL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlascl.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlascl.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlascl.f"> 
+*> Download ZLASCL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlascl.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlascl.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlascl.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLASCL( TYPE, KL, KU, CFROM, CTO, M, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TYPE
 *       INTEGER            INFO, KL, KU, LDA, M, N
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -114,7 +114,11 @@
 *> \param[in] LDA
 *> \verbatim
 *>          LDA is INTEGER
-*>          The leading dimension of the array A.  LDA >= max(1,M).
+*>          The leading dimension of the array A.
+*>          If TYPE = 'G', 'L', 'U', 'H', LDA >= max(1,M);
+*>             TYPE = 'B', LDA >= KL+1;
+*>             TYPE = 'Q', LDA >= KU+1;
+*>             TYPE = 'Z', LDA >= 2*KL+KU+1.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -127,22 +131,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZLASCL( TYPE, KL, KU, CFROM, CTO, M, N, A, LDA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TYPE
@@ -271,6 +272,8 @@
          ELSE
             MUL = CTOC / CFROMC
             DONE = .TRUE.
+            IF (MUL .EQ. ONE)
+     $         RETURN
          END IF
       END IF
 *

@@ -1,26 +1,26 @@
-*> \brief \b ZLA_SYAMV
+*> \brief \b ZLA_SYAMV computes a matrix-vector product using a symmetric indefinite matrix to calculate error bounds.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_SYAMV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_syamv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_syamv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_syamv.f"> 
+*> Download ZLA_SYAMV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_syamv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_syamv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_syamv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLA_SYAMV( UPLO, N, ALPHA, A, LDA, X, INCX, BETA, Y,
 *                             INCY )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   ALPHA, BETA
 *       INTEGER            INCX, INCY, LDA, N
@@ -30,7 +30,7 @@
 *       COMPLEX*16         A( LDA, * ), X( * )
 *       DOUBLE PRECISION   Y( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -90,7 +90,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is COMPLEX*16 array, DIMENSION ( LDA, n ).
+*>          A is COMPLEX*16 array, dimension ( LDA, n ).
 *>           Before entry, the leading m by n part of the array A must
 *>           contain the matrix of coefficients.
 *>           Unchanged on exit.
@@ -107,7 +107,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is COMPLEX*16 array, DIMENSION at least
+*>          X is COMPLEX*16 array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) )
 *>           Before entry, the incremented array X must contain the
 *>           vector x.
@@ -150,12 +150,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16SYcomputational
 *
@@ -179,10 +177,9 @@
       SUBROUTINE ZLA_SYAMV( UPLO, N, ALPHA, A, LDA, X, INCX, BETA, Y,
      $                      INCY )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   ALPHA, BETA
@@ -241,7 +238,7 @@
          INFO = 10
       END IF
       IF( INFO.NE.0 )THEN
-         CALL XERBLA( 'DSYMV ', INFO )
+         CALL XERBLA( 'ZLA_SYAMV', INFO )
          RETURN
       END IF
 *

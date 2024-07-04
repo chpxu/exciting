@@ -1,29 +1,29 @@
-*> \brief \b SLARTGP
+*> \brief \b SLARTGP generates a plane rotation so that the diagonal is nonnegative.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLARTGP + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slartgp.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slartgp.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slartgp.f"> 
+*> Download SLARTGP + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slartgp.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slartgp.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slartgp.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLARTGP( F, G, CS, SN, R )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               CS, F, G, R, SN
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -83,22 +83,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE SLARTGP( F, G, CS, SN, R )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       REAL               CS, F, G, R, SN
@@ -161,7 +158,7 @@
             F1 = F1*SAFMN2
             G1 = G1*SAFMN2
             SCALE = MAX( ABS( F1 ), ABS( G1 ) )
-            IF( SCALE.GE.SAFMX2 )
+            IF( SCALE.GE.SAFMX2 .AND. COUNT .LT. 20)
      $         GO TO 10
             R = SQRT( F1**2+G1**2 )
             CS = F1 / R
@@ -197,6 +194,6 @@
       END IF
       RETURN
 *
-*     End of SLARTG
+*     End of SLARTGP
 *
       END

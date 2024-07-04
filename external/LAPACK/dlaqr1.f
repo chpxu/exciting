@@ -1,25 +1,25 @@
-*> \brief \b DLAQR1
+*> \brief \b DLAQR1 sets a scalar multiple of the first column of the product of 2-by-2 or 3-by-3 matrix H and specified shifts.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAQR1 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaqr1.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaqr1.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaqr1.f"> 
+*> Download DLAQR1 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaqr1.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaqr1.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaqr1.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAQR1( N, H, LDH, SR1, SI1, SR2, SI2, V )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   SI1, SI2, SR1, SR2
 *       INTEGER            LDH, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   H( LDH, * ), V( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -55,21 +55,21 @@
 *
 *> \param[in] N
 *> \verbatim
-*>          N is integer
+*>          N is INTEGER
 *>              Order of the matrix H. N must be either 2 or 3.
 *> \endverbatim
 *>
 *> \param[in] H
 *> \verbatim
-*>          H is DOUBLE PRECISION array of dimension (LDH,N)
+*>          H is DOUBLE PRECISION array, dimension (LDH,N)
 *>              The 2-by-2 or 3-by-3 matrix H in (*).
 *> \endverbatim
 *>
 *> \param[in] LDH
 *> \verbatim
-*>          LDH is integer
+*>          LDH is INTEGER
 *>              The leading dimension of H as declared in
-*>              the calling procedure.  LDH.GE.N
+*>              the calling procedure.  LDH >= N
 *> \endverbatim
 *>
 *> \param[in] SR1
@@ -95,7 +95,7 @@
 *>
 *> \param[out] V
 *> \verbatim
-*>          V is DOUBLE PRECISION array of dimension N
+*>          V is DOUBLE PRECISION array, dimension (N)
 *>              A scalar multiple of the first column of the
 *>              matrix K in (*).
 *> \endverbatim
@@ -103,12 +103,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERauxiliary
 *
@@ -121,10 +119,9 @@
 *  =====================================================================
       SUBROUTINE DLAQR1( N, H, LDH, SR1, SI1, SR2, SI2, V )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   SI1, SI2, SR1, SR2
@@ -147,6 +144,13 @@
       INTRINSIC          ABS
 *     ..
 *     .. Executable Statements ..
+*
+*     Quick return if possible
+*
+      IF( N.NE.2 .AND. N.NE.3 ) THEN
+         RETURN
+      END IF
+*
       IF( N.EQ.2 ) THEN
          S = ABS( H( 1, 1 )-SR2 ) + ABS( SI2 ) + ABS( H( 2, 1 ) )
          IF( S.EQ.ZERO ) THEN

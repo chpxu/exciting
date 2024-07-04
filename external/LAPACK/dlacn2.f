@@ -1,25 +1,25 @@
-*> \brief \b DLACN2
+*> \brief \b DLACN2 estimates the 1-norm of a square matrix, using reverse communication for evaluating matrix-vector products.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLACN2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlacn2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlacn2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlacn2.f"> 
+*> Download DLACN2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlacn2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlacn2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlacn2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLACN2( N, V, X, ISGN, EST, KASE, ISAVE )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KASE, N
 *       DOUBLE PRECISION   EST
@@ -28,7 +28,7 @@
 *       INTEGER            ISGN( * ), ISAVE( 3 )
 *       DOUBLE PRECISION   V( * ), X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -75,7 +75,7 @@
 *>          EST is DOUBLE PRECISION
 *>         On entry with KASE = 1 or 2 and ISAVE(1) = 3, EST should be
 *>         unchanged from the previous call to DLACN2.
-*>         On exit, EST is an estimate (a lower bound) for norm(A). 
+*>         On exit, EST is an estimate (a lower bound) for norm(A).
 *> \endverbatim
 *>
 *> \param[in,out] KASE
@@ -96,12 +96,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERauxiliary
 *
@@ -136,10 +134,9 @@
 *  =====================================================================
       SUBROUTINE DLACN2( N, V, X, ISGN, EST, KASE, ISAVE )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            KASE, N
@@ -160,7 +157,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, JLAST
-      DOUBLE PRECISION   ALTSGN, ESTOLD, TEMP
+      DOUBLE PRECISION   ALTSGN, ESTOLD, TEMP, XS
 *     ..
 *     .. External Functions ..
       INTEGER            IDAMAX
@@ -171,7 +168,7 @@
       EXTERNAL           DCOPY
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE, NINT, SIGN
+      INTRINSIC          ABS, DBLE, NINT
 *     ..
 *     .. Executable Statements ..
 *
@@ -199,7 +196,11 @@
       EST = DASUM( N, X, 1 )
 *
       DO 30 I = 1, N
-         X( I ) = SIGN( ONE, X( I ) )
+         IF( X(I).GE.ZERO ) THEN
+            X(I) = ONE
+         ELSE
+            X(I) = -ONE
+         END IF
          ISGN( I ) = NINT( X( I ) )
    30 CONTINUE
       KASE = 2
@@ -232,7 +233,12 @@
       ESTOLD = EST
       EST = DASUM( N, V, 1 )
       DO 80 I = 1, N
-         IF( NINT( SIGN( ONE, X( I ) ) ).NE.ISGN( I ) )
+         IF( X(I).GE.ZERO ) THEN
+            XS = ONE
+         ELSE
+            XS = -ONE
+         END IF
+         IF( NINT( XS ).NE.ISGN( I ) )
      $      GO TO 90
    80 CONTINUE
 *     REPEATED SIGN VECTOR DETECTED, HENCE ALGORITHM HAS CONVERGED.
@@ -244,7 +250,11 @@
      $   GO TO 120
 *
       DO 100 I = 1, N
-         X( I ) = SIGN( ONE, X( I ) )
+         IF( X(I).GE.ZERO ) THEN
+            X(I) = ONE
+         ELSE
+            X(I) = -ONE
+         END IF
          ISGN( I ) = NINT( X( I ) )
   100 CONTINUE
       KASE = 2

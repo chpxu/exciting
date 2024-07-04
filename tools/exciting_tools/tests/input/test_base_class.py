@@ -1,4 +1,10 @@
-"""Test exi class and its methods."""
+"""Test exiting input base class and its methods.
+
+NOTE:
+All attribute tests should assert on the XML tree content's as the attribute
+order is not preserved by the ElementTree.tostring method. Elements appear to
+be fine.
+"""
 
 import pathlib
 
@@ -19,7 +25,7 @@ def test_query_exciting_version(tmp_path):
     exciting_root = pathlib.Path(tmp_path)
     src = exciting_root / "src"
     src.mkdir()
-    assert exciting_root.is_dir(), ("exciting_root tmp_path directory does not exist")
+    assert exciting_root.is_dir(), "exciting_root tmp_path directory does not exist"
 
     version_inc = exciting_root / "src" / "version.inc"
     version_inc.write_text(version_inc_contents)

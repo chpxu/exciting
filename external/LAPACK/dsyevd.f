@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DSYEVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsyevd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dsyevd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsyevd.f"> 
+*> Download DSYEVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsyevd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dsyevd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsyevd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
 *                          LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, LDA, LIWORK, LWORK, N
@@ -29,7 +29,7 @@
 *       INTEGER            IWORK( * )
 *       DOUBLE PRECISION   A( LDA, * ), W( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -162,12 +162,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleSYeigen
 *
@@ -185,10 +183,9 @@
       SUBROUTINE DSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
      $                   LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -260,7 +257,7 @@
                LWMIN = 2*N + 1
             END IF
             LOPT = MAX( LWMIN, 2*N +
-     $                  ILAENV( 1, 'DSYTRD', UPLO, N, -1, -1, -1 ) )
+     $                  N*ILAENV( 1, 'DSYTRD', UPLO, N, -1, -1, -1 ) )
             LIOPT = LIWMIN
          END IF
          WORK( 1 ) = LOPT
@@ -326,7 +323,6 @@
 *
       CALL DSYTRD( UPLO, N, A, LDA, W, WORK( INDE ), WORK( INDTAU ),
      $             WORK( INDWRK ), LLWORK, IINFO )
-      LOPT = 2*N + WORK( INDWRK )
 *
 *     For eigenvalues only, call DSTERF.  For eigenvectors, first call
 *     DSTEDC to generate the eigenvector matrix, WORK(INDWRK), of the
@@ -341,7 +337,6 @@
          CALL DORMTR( 'L', UPLO, 'N', N, N, A, LDA, WORK( INDTAU ),
      $                WORK( INDWRK ), N, WORK( INDWK2 ), LLWRK2, IINFO )
          CALL DLACPY( 'A', N, N, WORK( INDWRK ), N, A, LDA )
-         LOPT = MAX( LOPT, 1+6*N+2*N**2 )
       END IF
 *
 *     If matrix was scaled, then rescale eigenvalues appropriately.

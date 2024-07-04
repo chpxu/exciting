@@ -24,7 +24,7 @@ module os_utils_test
       !> Test report object
       type(unit_test_type) :: test_report
       !> Number of assertions
-      integer, parameter :: n_assertions = 4
+      integer, parameter :: n_assertions = 8
 
       character(:), allocatable :: c
 
@@ -34,6 +34,7 @@ module os_utils_test
       ! Run and assert tests
       call test_make_dir(test_report, mpiglobal)
       call test_remove_dir(test_report, mpiglobal)
+      call test_join_paths(test_report)
 
       ! report results
       if (present(kill_on_failure)) then
@@ -57,8 +58,10 @@ module os_utils_test
       logical :: exists
 
       ierr = make_directory(TEST_DIR, comm)
+
       call test_report%assert( ierr == 0, &
         'Expected: Return value 0 in `make_directory`.')
+
       call test_report%assert( path_exists(TEST_DIR, ierr), &
         'Expected: Test directory does exist.')
     end subroutine test_make_dir
@@ -71,12 +74,36 @@ module os_utils_test
       type(mpiinfo), intent(inout) :: comm
 
       integer :: ierr
-      logical :: exists
 
       ierr = remove_directory(TEST_DIR, comm)
+
       call test_report%assert( ierr == 0, &
         'Expected: Return value 0 in `remove_directory`.')
+
       call test_report%assert( .not. path_exists(TEST_DIR, ierr), &
         'Expected: Test directory does not exist.')
     end subroutine test_remove_dir
+
+    !> Test 'join paths'
+    subroutine test_join_paths(test_report)
+      !> Unit test report
+      type(unit_test_type), intent(inout) :: test_report
+
+      call test_report%assert(join_paths('path/one/', 'path/two') == 'path/one/path/two', &
+              "join_paths('path/one/', 'path/two') /= 'path/one/path/two'")
+
+      call test_report%assert(join_paths('path/one', 'path/two') == 'path/one/path/two', &
+              "join_paths('path/one', 'path/two') /= 'path/one/path/two'")
+
+      call test_report%assert(join_paths('path/one', '/path/two') == 'path/one/path/two', &
+              "join_paths('path/one', '/path/two') /= 'path/one/path/two'")
+
+      call test_report%assert(join_paths('path/one/', '/path/two') == 'path/one/path/two', &
+              "join_paths('path/one/', '/path/two') /= 'path/one/path/two'")
+
+      ! Todo(Bene #161): Fix this test.
+      !call test_report%assert(join_paths('path/one////', '///path/two') == 'path/one/path/two', &
+      !        "join_paths('path/one////', '///path/two') /= 'path/one/path/two'")
+    end subroutine test_join_paths
+
 end module os_utils_test

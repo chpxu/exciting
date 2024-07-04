@@ -25,6 +25,13 @@ Module mod_APW_LO
       Real (8), Allocatable :: apwe (:, :, :)
 ! APW derivative order
       Integer :: apwdm (maxapword, 0:maxlapw, maxspecies)
+! APW principal quantum number
+! If a principal quantum number is speciefied for a custom (L)APW in the species file,
+! it is used to calculate the according trial energy automatically.
+! If it is not specified, the principal quantum number is set to -1 by default.
+      Integer :: apwn (maxapword, 0:maxlapw, maxspecies)
+! Default (L)APW principal quantum number
+      Integer, parameter :: default_apwn = -1
 ! apwve is .true. if the linearisation energies are allowed to vary
       Logical :: apwve (maxapword, 0:maxlapw, maxspecies)
 ! APW radial functions
@@ -45,6 +52,14 @@ Module mod_APW_LO
       Integer :: lorbord (maxlorb, maxspecies)
 ! local-orbital angular momentum
       Integer :: lorbl (maxlorb, maxspecies)
+! local-orbital principle quantum number                                                               
+      Integer :: lorbn (maxlorbord, maxlorb, maxspecies)
+! Default local orbital principal quantum number
+      Integer, parameter :: default_lorbn = -1
+! local-orbital relativistic quantum number kappa = (l-j)(2j+1)                                                                                         
+      Integer :: lorbk (maxlorb,maxspecies)
+! wave-function relativistic quantum number kappa = (l-j)(2j+1)     
+      Integer :: wfkappa (maxlorbord, maxlorb, maxspecies)
 ! maximum lorbl over all species
       Integer :: lolmax
 ! (lolmax+1)^2
@@ -88,20 +103,20 @@ Contains
       Use mod_muffin_tin
       Use mod_atoms
 ! !DESCRIPTION:
-! Initialises storage for basis functions in the muffin-tin region.
+! Initialises storage for basis functions in the muffin-tin region. 
 !
 ! !REVISION HISTORY:
 !   Created June 2019 (Andris)
 !EOP
 !BOC
-      implicit none
+      implicit none 
       type (apw_lo_basis_type) :: mt_basis
 
       nullify(mt_basis%apwfr)
       allocate (mt_basis%apwfr(nrmtmax, 2, apwordmax, 0:input%groundstate%lmaxapw, natmtot))
       nullify(mt_basis%lofr)
       allocate (mt_basis%lofr(nrmtmax, 2, nlomax, natmtot))
-
+      
       end subroutine MTBasisInit
 
 !
@@ -115,7 +130,7 @@ Contains
       subroutine MTBasisRelease(mt_basis)
 ! !USES:
 ! !DESCRIPTION:
-! Releases storage for basis functions in the muffin-tin region.
+! Releases storage for basis functions in the muffin-tin region. 
 !
 ! !REVISION HISTORY:
 !   Created June 2019 (Andris)

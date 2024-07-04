@@ -1,25 +1,25 @@
-*> \brief \b CLAHR2
+*> \brief \b CLAHR2 reduces the specified number of first columns of a general rectangular matrix A so that elements below the specified subdiagonal are zero, and returns auxiliary matrices which are needed to apply the transformation to the unreduced part of A.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLAHR2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clahr2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clahr2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clahr2.f"> 
+*> Download CLAHR2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clahr2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clahr2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clahr2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CLAHR2( N, K, NB, A, LDA, TAU, T, LDT, Y, LDY )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            K, LDA, LDT, LDY, N, NB
 *       ..
@@ -27,7 +27,7 @@
 *       COMPLEX            A( LDA, * ), T( LDT, NB ), TAU( NB ),
 *      $                   Y( LDY, NB )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -118,12 +118,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -164,11 +162,11 @@
 *>  modified element of the upper Hessenberg matrix H, and vi denotes an
 *>  element of the vector defining H(i).
 *>
-*>  This subroutine is a slight modification of LAPACK-3.0's DLAHRD
+*>  This subroutine is a slight modification of LAPACK-3.0's CLAHRD
 *>  incorporating improvements proposed by Quintana-Orti and Van de
 *>  Gejin. Note that the entries of A(1:K,2:NB) differ from those
-*>  returned by the original LAPACK-3.0's DLAHRD routine. (This
-*>  subroutine is not backward compatible with LAPACK-3.0's DLAHRD.)
+*>  returned by the original LAPACK-3.0's CLAHRD routine. (This
+*>  subroutine is not backward compatible with LAPACK-3.0's CLAHRD.)
 *> \endverbatim
 *
 *> \par References:
@@ -181,10 +179,9 @@
 *  =====================================================================
       SUBROUTINE CLAHR2( N, K, NB, A, LDA, TAU, T, LDT, Y, LDY )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            K, LDA, LDT, LDY, N, NB
@@ -198,7 +195,7 @@
 *
 *     .. Parameters ..
       COMPLEX            ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ), 
+      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ),
      $                     ONE = ( 1.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
@@ -226,10 +223,10 @@
 *
 *           Update I-th column of A - Y * V**H
 *
-            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA ) 
+            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA )
             CALL CGEMV( 'NO TRANSPOSE', N-K, I-1, -ONE, Y(K+1,1), LDY,
      $                  A( K+I-1, 1 ), LDA, ONE, A( K+1, I ), 1 )
-            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA ) 
+            CALL CLACGV( I-1, A( K+I-1, 1 ), LDA )
 *
 *           Apply I - V * T**H * V**H to this column (call it b) from the
 *           left, using the last column of T as workspace
@@ -242,31 +239,31 @@
 *           w := V1**H * b1
 *
             CALL CCOPY( I-1, A( K+1, I ), 1, T( 1, NB ), 1 )
-            CALL CTRMV( 'Lower', 'Conjugate transpose', 'UNIT', 
+            CALL CTRMV( 'Lower', 'Conjugate transpose', 'UNIT',
      $                  I-1, A( K+1, 1 ),
      $                  LDA, T( 1, NB ), 1 )
 *
 *           w := w + V2**H * b2
 *
-            CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1, 
+            CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1,
      $                  ONE, A( K+I, 1 ),
      $                  LDA, A( K+I, I ), 1, ONE, T( 1, NB ), 1 )
 *
 *           w := T**H * w
 *
-            CALL CTRMV( 'Upper', 'Conjugate transpose', 'NON-UNIT', 
+            CALL CTRMV( 'Upper', 'Conjugate transpose', 'NON-UNIT',
      $                  I-1, T, LDT,
      $                  T( 1, NB ), 1 )
 *
 *           b2 := b2 - V2*w
 *
-            CALL CGEMV( 'NO TRANSPOSE', N-K-I+1, I-1, -ONE, 
+            CALL CGEMV( 'NO TRANSPOSE', N-K-I+1, I-1, -ONE,
      $                  A( K+I, 1 ),
      $                  LDA, T( 1, NB ), 1, ONE, A( K+I, I ), 1 )
 *
 *           b1 := b1 - V1*w
 *
-            CALL CTRMV( 'Lower', 'NO TRANSPOSE', 
+            CALL CTRMV( 'Lower', 'NO TRANSPOSE',
      $                  'UNIT', I-1,
      $                  A( K+1, 1 ), LDA, T( 1, NB ), 1 )
             CALL CAXPY( I-1, -ONE, T( 1, NB ), 1, A( K+1, I ), 1 )
@@ -284,13 +281,13 @@
 *
 *        Compute  Y(K+1:N,I)
 *
-         CALL CGEMV( 'NO TRANSPOSE', N-K, N-K-I+1, 
+         CALL CGEMV( 'NO TRANSPOSE', N-K, N-K-I+1,
      $               ONE, A( K+1, I+1 ),
      $               LDA, A( K+I, I ), 1, ZERO, Y( K+1, I ), 1 )
-         CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1, 
+         CALL CGEMV( 'Conjugate transpose', N-K-I+1, I-1,
      $               ONE, A( K+I, 1 ), LDA,
      $               A( K+I, I ), 1, ZERO, T( 1, I ), 1 )
-         CALL CGEMV( 'NO TRANSPOSE', N-K, I-1, -ONE, 
+         CALL CGEMV( 'NO TRANSPOSE', N-K, I-1, -ONE,
      $               Y( K+1, 1 ), LDY,
      $               T( 1, I ), 1, ONE, Y( K+1, I ), 1 )
          CALL CSCAL( N-K, TAU( I ), Y( K+1, I ), 1 )
@@ -298,7 +295,7 @@
 *        Compute T(1:I,I)
 *
          CALL CSCAL( I-1, -TAU( I ), T( 1, I ), 1 )
-         CALL CTRMV( 'Upper', 'No Transpose', 'NON-UNIT', 
+         CALL CTRMV( 'Upper', 'No Transpose', 'NON-UNIT',
      $               I-1, T, LDT,
      $               T( 1, I ), 1 )
          T( I, I ) = TAU( I )
@@ -309,15 +306,15 @@
 *     Compute Y(1:K,1:NB)
 *
       CALL CLACPY( 'ALL', K, NB, A( 1, 2 ), LDA, Y, LDY )
-      CALL CTRMM( 'RIGHT', 'Lower', 'NO TRANSPOSE', 
+      CALL CTRMM( 'RIGHT', 'Lower', 'NO TRANSPOSE',
      $            'UNIT', K, NB,
      $            ONE, A( K+1, 1 ), LDA, Y, LDY )
       IF( N.GT.K+NB )
-     $   CALL CGEMM( 'NO TRANSPOSE', 'NO TRANSPOSE', K, 
+     $   CALL CGEMM( 'NO TRANSPOSE', 'NO TRANSPOSE', K,
      $               NB, N-K-NB, ONE,
      $               A( 1, 2+NB ), LDA, A( K+1+NB, 1 ), LDA, ONE, Y,
      $               LDY )
-      CALL CTRMM( 'RIGHT', 'Upper', 'NO TRANSPOSE', 
+      CALL CTRMM( 'RIGHT', 'Upper', 'NO TRANSPOSE',
      $            'NON-UNIT', K, NB,
      $            ONE, T, LDT, Y, LDY )
 *

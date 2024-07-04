@@ -562,8 +562,8 @@ contains
 
         do iexc = 1, n_exc
             energy_denominator(iexc, :) = &
-                -lorentzian(broadening, frequencies, exc_eigvals(iexc)) &
-                + lorentzian(broadening, frequencies, -exc_eigvals(iexc))
+                -lorentzian(frequencies, broadening, exc_eigvals(iexc)) &
+                + lorentzian(frequencies, broadening, -exc_eigvals(iexc))
         end do
 
         call complex_tensor_contraction_dp(osci_strengths_k, &

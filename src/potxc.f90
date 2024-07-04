@@ -46,11 +46,11 @@ real(8), allocatable :: mag(:,:),bxc(:,:)
 
 if ( associated(input%groundstate%sirius) .and. sirius_options%use_xc ) then
 
-  call set_exchange_correlation_sirius(lmmaxvr, nrmtmax, ngrtot, rhoir, &
+  call set_exchange_correlation_sirius(lmmaxvr, nrmtmax, ngrid, rhoir, &
                                      & vxcmt, vxcir, exmt, exir, ecmt, ecir)
 
   if (ndmag /= 0) then
-    call set_xc_magnetic_sirius(ndmag, lmmaxvr, nrmtmax, ngrtot, bxcmt, bxcir)
+    call set_xc_magnetic_sirius(ndmag, lmmaxvr, nrmtmax, ngrid, bxcmt, bxcir)
   endif
 
   return

@@ -1,26 +1,26 @@
-*> \brief \b DLAHQR
+*> \brief \b DLAHQR computes the eigenvalues and Schur factorization of an upper Hessenberg matrix, using the double-shift/single-shift QR algorithm.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAHQR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlahqr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlahqr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlahqr.f"> 
+*> Download DLAHQR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlahqr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlahqr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlahqr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
 *                          ILOZ, IHIZ, Z, LDZ, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, N
 *       LOGICAL            WANTT, WANTZ
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   H( LDH, * ), WI( * ), WR( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -150,26 +150,26 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>           =   0: successful exit
-*>          .GT. 0: If INFO = i, DLAHQR failed to compute all the
+*>           = 0:  successful exit
+*>           > 0:  If INFO = i, DLAHQR failed to compute all the
 *>                  eigenvalues ILO to IHI in a total of 30 iterations
 *>                  per eigenvalue; elements i+1:ihi of WR and WI
 *>                  contain those eigenvalues which have been
 *>                  successfully computed.
 *>
-*>                  If INFO .GT. 0 and WANTT is .FALSE., then on exit,
+*>                  If INFO > 0 and WANTT is .FALSE., then on exit,
 *>                  the remaining unconverged eigenvalues are the
 *>                  eigenvalues of the upper Hessenberg matrix rows
-*>                  and columns ILO thorugh INFO of the final, output
+*>                  and columns ILO through INFO of the final, output
 *>                  value of H.
 *>
-*>                  If INFO .GT. 0 and WANTT is .TRUE., then on exit
+*>                  If INFO > 0 and WANTT is .TRUE., then on exit
 *>          (*)       (initial value of H)*U  = U*(final value of H)
-*>                  where U is an orthognal matrix.    The final
+*>                  where U is an orthogonal matrix.    The final
 *>                  value of H is upper Hessenberg and triangular in
 *>                  rows and columns INFO+1 through IHI.
 *>
-*>                  If INFO .GT. 0 and WANTZ is .TRUE., then on exit
+*>                  If INFO > 0 and WANTZ is .TRUE., then on exit
 *>                      (final value of Z)  = (initial value of Z)*U
 *>                  where U is the orthogonal matrix in (*)
 *>                  (regardless of the value of WANTT.)
@@ -178,12 +178,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERauxiliary
 *
@@ -206,11 +204,11 @@
 *  =====================================================================
       SUBROUTINE DLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      $                   ILOZ, IHIZ, Z, LDZ, INFO )
+      IMPLICIT NONE
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, N
@@ -223,19 +221,20 @@
 *  =========================================================
 *
 *     .. Parameters ..
-      INTEGER            ITMAX
-      PARAMETER          ( ITMAX = 30 )
       DOUBLE PRECISION   ZERO, ONE, TWO
       PARAMETER          ( ZERO = 0.0d0, ONE = 1.0d0, TWO = 2.0d0 )
       DOUBLE PRECISION   DAT1, DAT2
       PARAMETER          ( DAT1 = 3.0d0 / 4.0d0, DAT2 = -0.4375d0 )
+      INTEGER            KEXSH
+      PARAMETER          ( KEXSH = 10 )
 *     ..
 *     .. Local Scalars ..
       DOUBLE PRECISION   AA, AB, BA, BB, CS, DET, H11, H12, H21, H21S,
      $                   H22, RT1I, RT1R, RT2I, RT2R, RTDISC, S, SAFMAX,
      $                   SAFMIN, SMLNUM, SN, SUM, T1, T2, T3, TR, TST,
      $                   ULP, V2, V3
-      INTEGER            I, I1, I2, ITS, J, K, L, M, NH, NR, NZ
+      INTEGER            I, I1, I2, ITS, ITMAX, J, K, L, M, NH, NR, NZ,
+     $                   KDEFL 
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   V( 3 )
@@ -291,6 +290,14 @@
          I1 = 1
          I2 = N
       END IF
+*
+*     ITMAX is the total number of QR iterations allowed.
+*
+      ITMAX = 30 * MAX( 10, NH )
+*
+*     KDEFL counts the number of iterations since a deflation
+*
+      KDEFL = 0
 *
 *     The main loop begins here. I is the loop index and decreases from
 *     IHI to ILO in steps of 1 or 2. Each iteration of the loop works
@@ -351,6 +358,7 @@
 *
          IF( L.GE.I-1 )
      $      GO TO 150
+         KDEFL = KDEFL + 1
 *
 *        Now the active submatrix is in rows and columns L to I. If
 *        eigenvalues only are being computed, only the active submatrix
@@ -361,21 +369,21 @@
             I2 = I
          END IF
 *
-         IF( ITS.EQ.10 ) THEN
-*
-*           Exceptional shift.
-*
-            S = ABS( H( L+1, L ) ) + ABS( H( L+2, L+1 ) )
-            H11 = DAT1*S + H( L, L )
-            H12 = DAT2*S
-            H21 = S
-            H22 = H11
-         ELSE IF( ITS.EQ.20 ) THEN
+         IF( MOD(KDEFL,2*KEXSH).EQ.0 ) THEN
 *
 *           Exceptional shift.
 *
             S = ABS( H( I, I-1 ) ) + ABS( H( I-1, I-2 ) )
             H11 = DAT1*S + H( I, I )
+            H12 = DAT2*S
+            H21 = S
+            H22 = H11
+         ELSE IF( MOD(KDEFL,KEXSH).EQ.0 ) THEN
+*
+*           Exceptional shift.
+*
+            S = ABS( H( L+1, L ) ) + ABS( H( L+2, L+1 ) )
+            H11 = DAT1*S + H( L, L )
             H12 = DAT2*S
             H21 = S
             H22 = H11
@@ -597,6 +605,8 @@
             CALL DROT( NZ, Z( ILOZ, I-1 ), 1, Z( ILOZ, I ), 1, CS, SN )
          END IF
       END IF
+*     reset deflation counter
+      KDEFL = 0
 *
 *     return to start of the main loop with new value of I.
 *

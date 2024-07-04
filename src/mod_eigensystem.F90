@@ -56,6 +56,12 @@ Module mod_eigensystem
    !> ARPACK seed vector
    complex(8), allocatable :: arpackseed(:, :)
 
+! singular components for the Davidson algorithm
+   integer :: nsingular
+   complex(8),allocatable :: singular(:,:,:)
+   real(8),allocatable :: evalsingular(:,:)
+
+
    !> Matrix-elements for muffin-tin functions
    Type MTHamiltonianType
       complex(8), pointer :: aa(:, :, :), alo(:, :, :), loa(:, :, :), lolo(:, :, :)

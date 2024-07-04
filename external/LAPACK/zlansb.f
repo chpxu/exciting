@@ -1,26 +1,26 @@
-*> \brief \b ZLANSB
+*> \brief \b ZLANSB returns the value of the 1-norm, or the Frobenius norm, or the infinity norm, or the element of largest absolute value of a symmetric band matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLANSB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlansb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlansb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlansb.f"> 
+*> Download ZLANSB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlansb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlansb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlansb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZLANSB( NORM, UPLO, N, K, AB, LDAB,
 *                        WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM, UPLO
 *       INTEGER            K, LDAB, N
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   WORK( * )
 *       COMPLEX*16         AB( LDAB, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -117,12 +117,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -130,10 +128,9 @@
       DOUBLE PRECISION FUNCTION ZLANSB( NORM, UPLO, N, K, AB, LDAB,
      $                 WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM, UPLO
@@ -155,8 +152,8 @@
       DOUBLE PRECISION   ABSA, SCALE, SUM, VALUE
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      LOGICAL            LSAME, DISNAN
+      EXTERNAL           LSAME, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZLASSQ
@@ -176,13 +173,15 @@
          IF( LSAME( UPLO, 'U' ) ) THEN
             DO 20 J = 1, N
                DO 10 I = MAX( K+2-J, 1 ), K + 1
-                  VALUE = MAX( VALUE, ABS( AB( I, J ) ) )
+                  SUM = ABS( AB( I, J ) )
+                  IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    10          CONTINUE
    20       CONTINUE
          ELSE
             DO 40 J = 1, N
                DO 30 I = 1, MIN( N+1-J, K+1 )
-                  VALUE = MAX( VALUE, ABS( AB( I, J ) ) )
+                  SUM = ABS( AB( I, J ) )
+                  IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    30          CONTINUE
    40       CONTINUE
          END IF
@@ -204,7 +203,8 @@
                WORK( J ) = SUM + ABS( AB( K+1, J ) )
    60       CONTINUE
             DO 70 I = 1, N
-               VALUE = MAX( VALUE, WORK( I ) )
+               SUM = WORK( I )
+               IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    70       CONTINUE
          ELSE
             DO 80 I = 1, N
@@ -218,7 +218,7 @@
                   SUM = SUM + ABSA
                   WORK( I ) = WORK( I ) + ABSA
    90          CONTINUE
-               VALUE = MAX( VALUE, SUM )
+               IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
   100       CONTINUE
          END IF
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN

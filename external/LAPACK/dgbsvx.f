@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGBSVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgbsvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgbsvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgbsvx.f"> 
+*> Download DGBSVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgbsvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgbsvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgbsvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DGBSVX( FACT, TRANS, N, KL, KU, NRHS, AB, LDAB, AFB,
 *                          LDAFB, IPIV, EQUED, R, C, B, LDB, X, LDX,
 *                          RCOND, FERR, BERR, WORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          EQUED, FACT, TRANS
 *       INTEGER            INFO, KL, KU, LDAB, LDAFB, LDB, LDX, N, NRHS
@@ -33,7 +33,7 @@
 *      $                   BERR( * ), C( * ), FERR( * ), R( * ),
 *      $                   WORK( * ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -172,7 +172,7 @@
 *>
 *> \param[in,out] AFB
 *> \verbatim
-*>          AFB is or output) DOUBLE PRECISION array, dimension (LDAFB,N)
+*>          AFB is DOUBLE PRECISION array, dimension (LDAFB,N)
 *>          If FACT = 'F', then AFB is an input argument and on entry
 *>          contains details of the LU factorization of the band matrix
 *>          A, as computed by DGBTRF.  U is stored as an upper triangular
@@ -198,7 +198,7 @@
 *>
 *> \param[in,out] IPIV
 *> \verbatim
-*>          IPIV is or output) INTEGER array, dimension (N)
+*>          IPIV is INTEGER array, dimension (N)
 *>          If FACT = 'F', then IPIV is an input argument and on entry
 *>          contains the pivot indices from the factorization A = L*U
 *>          as computed by DGBTRF; row i of the matrix was interchanged
@@ -215,7 +215,7 @@
 *>
 *> \param[in,out] EQUED
 *> \verbatim
-*>          EQUED is or output) CHARACTER*1
+*>          EQUED is CHARACTER*1
 *>          Specifies the form of equilibration that was done.
 *>          = 'N':  No equilibration (always true if FACT = 'N').
 *>          = 'R':  Row equilibration, i.e., A has been premultiplied by
@@ -230,7 +230,7 @@
 *>
 *> \param[in,out] R
 *> \verbatim
-*>          R is or output) DOUBLE PRECISION array, dimension (N)
+*>          R is DOUBLE PRECISION array, dimension (N)
 *>          The row scale factors for A.  If EQUED = 'R' or 'B', A is
 *>          multiplied on the left by diag(R); if EQUED = 'N' or 'C', R
 *>          is not accessed.  R is an input argument if FACT = 'F';
@@ -240,7 +240,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is or output) DOUBLE PRECISION array, dimension (N)
+*>          C is DOUBLE PRECISION array, dimension (N)
 *>          The column scale factors for A.  If EQUED = 'C' or 'B', A is
 *>          multiplied on the right by diag(C); if EQUED = 'N' or 'R', C
 *>          is not accessed.  C is an input argument if FACT = 'F';
@@ -355,12 +355,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGBsolve
 *
@@ -369,10 +367,9 @@
      $                   LDAFB, IPIV, EQUED, R, C, B, LDB, X, LDX,
      $                   RCOND, FERR, BERR, WORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, TRANS

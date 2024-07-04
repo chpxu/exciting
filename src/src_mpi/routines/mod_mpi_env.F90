@@ -48,11 +48,12 @@ contains
     this%rank= 0
 #endif
 
+
     ! Root process is always defined as 0
     ! Assumes local indexing of root ids for sub-communicators
     this%root = 0
     this%is_root = this%rank == this%root
 
-   end subroutine xmpi_init
+    end subroutine xmpi_init
 
 end module mod_mpi_env

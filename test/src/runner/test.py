@@ -12,11 +12,11 @@ from excitingtools.utils.dict_utils import delete_nested_key
 from ..exciting_settings.constants import keys_to_remove, Defaults, RunProperties, ExcitingRunProperties, main_output
 from ..io.file_system import create_run_dir, copy_calculation_inputs, flatten_directory
 from ..io.parsers import read_output_file, get_compiler_type
+from ..io.yaml_configuration import Group
 from ..io.tolerances import get_json_tolerances
 from ..tester.compare import ErrorFinder
 from ..tester.failure import Failure
 from ..tester.report import TestResults, SummariseTests
-from ..runner.configure_tests import TestGroup
 from ..runner.set_tests import TestLists
 from ..runner.profile import Compiler
 from .execute import execute_job
@@ -164,12 +164,19 @@ def run_single_test(test_dir,
     :return TestResults test_results: Test case results object.
     """
     method, test_name = test_dir.split('/')[-2:]
-    print('Run test %s:' % test_name)
+    cmd_line_args = test_properties['cmd_line_args']
+
+    user_msg = f'Run test {test_name}'
+    if len(cmd_line_args) > 0:
+        user_msg += f", with cmd line arguments: {cmd_line_args}"
+    print(user_msg)
+
+    exe_str = input_options['executable'] + ' ' + cmd_line_args
 
     # Repackage properties common to a calculation
     # One could also define a calculation instance per test case, and just pass that
     # to `execute_and_compare_single_test`
-    calculation = ExcitingRunProperties(input_options['executable'],
+    calculation = ExcitingRunProperties(exe_str.strip(),
                                         settings.max_time,
                                         ref_dir=os.path.join(test_dir, settings.ref_dir),
                                         run_dir=os.path.join(test_dir, settings.run_dir),
@@ -286,7 +293,7 @@ def run_tests(settings: Defaults,
     # with that used to generate the reference data.
     if 'GW_INTEL' in all_tests.groups:
         gw_tests = [test for test, properties in all_tests.run.items()
-                    if properties['group'] == TestGroup.GW_INTEL]
+                    if properties['group'] == Group.GW_INTEL]
         check_gw_test_spec(gw_tests, input_options['mkl_threads'])
 
     report = SummariseTests()

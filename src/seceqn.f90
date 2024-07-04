@@ -52,6 +52,8 @@ Subroutine seceqn (ik, evalfv, evecfv, evecsv)
   ! swapped in the following arrays: ngk, igkig, vgkl, vgkc, gkc, tpgkc, sfacgk
   !
       Do ispn = 1, nspnfv
+         current_igkig => igkig(:,ispn,ik)
+         current_vgkc => vgkc(:,:,ispn,ik)
      ! find the matching coefficients
          Call timesec(ts0)
          Call match (ngk(ispn, ik), gkc(:, ispn, ik), tpgkc(:, :, ispn, &

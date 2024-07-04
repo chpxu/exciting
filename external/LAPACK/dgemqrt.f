@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGEMQRT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgemqrt.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgemqrt.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgemqrt.f"> 
+*> Download DGEMQRT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgemqrt.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgemqrt.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgemqrt.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT, 
+*       SUBROUTINE DGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT,
 *                          C, LDC, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER SIDE, TRANS
 *       INTEGER   INFO, K, LDV, LDC, M, N, NB, LDT
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION V( LDV, * ), C( LDC, * ), T( LDT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -46,7 +46,7 @@
 *>
 *>       Q = H(1) H(2) . . . H(K) = I - V T V**T
 *>
-*> generated using the compact WY representation as returned by DGEQRT. 
+*> generated using the compact WY representation as returned by DGEQRT.
 *>
 *> Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
 *> \endverbatim
@@ -94,7 +94,7 @@
 *>          NB is INTEGER
 *>          The block size used for the storage of T.  K >= NB >= 1.
 *>          This must be the same value of NB used to generate T
-*>          in CGEQRT.
+*>          in DGEQRT.
 *> \endverbatim
 *>
 *> \param[in] V
@@ -102,7 +102,7 @@
 *>          V is DOUBLE PRECISION array, dimension (LDV,K)
 *>          The i-th column must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
-*>          CGEQRT in the first K columns of its array argument A.
+*>          DGEQRT in the first K columns of its array argument A.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -117,7 +117,7 @@
 *> \verbatim
 *>          T is DOUBLE PRECISION array, dimension (LDT,K)
 *>          The upper triangular factors of the block reflectors
-*>          as returned by CGEQRT, stored as a NB-by-N matrix.
+*>          as returned by DGEQRT, stored as a NB-by-N matrix.
 *> \endverbatim
 *>
 *> \param[in] LDT
@@ -155,23 +155,20 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGEcomputational
 *
 *  =====================================================================
-      SUBROUTINE DGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT, 
+      SUBROUTINE DGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT,
      $                   C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS
@@ -207,7 +204,7 @@
       RIGHT  = LSAME( SIDE,  'R' )
       TRAN   = LSAME( TRANS, 'T' )
       NOTRAN = LSAME( TRANS, 'N' )
-*      
+*
       IF( LEFT ) THEN
          LDWORK = MAX( 1, N )
          Q = M
@@ -225,7 +222,7 @@
          INFO = -4
       ELSE IF( K.LT.0 .OR. K.GT.Q ) THEN
          INFO = -5
-      ELSE IF( NB.LT.1 .OR. NB.GT.K ) THEN
+      ELSE IF( NB.LT.1 .OR. (NB.GT.K .AND. K.GT.0)) THEN
          INFO = -6
       ELSE IF( LDV.LT.MAX( 1, Q ) ) THEN
          INFO = -8
@@ -248,17 +245,17 @@
 *
          DO I = 1, K, NB
             IB = MIN( NB, K-I+1 )
-            CALL DLARFB( 'L', 'T', 'F', 'C', M-I+1, N, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            CALL DLARFB( 'L', 'T', 'F', 'C', M-I+1, N, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( I, 1 ), LDC, WORK, LDWORK )
          END DO
-*         
+*
       ELSE IF( RIGHT .AND. NOTRAN ) THEN
 *
          DO I = 1, K, NB
             IB = MIN( NB, K-I+1 )
-            CALL DLARFB( 'R', 'N', 'F', 'C', M, N-I+1, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            CALL DLARFB( 'R', 'N', 'F', 'C', M, N-I+1, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( 1, I ), LDC, WORK, LDWORK )
          END DO
 *
@@ -266,9 +263,9 @@
 *
          KF = ((K-1)/NB)*NB+1
          DO I = KF, 1, -NB
-            IB = MIN( NB, K-I+1 )         
-            CALL DLARFB( 'L', 'N', 'F', 'C', M-I+1, N, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            IB = MIN( NB, K-I+1 )
+            CALL DLARFB( 'L', 'N', 'F', 'C', M-I+1, N, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( I, 1 ), LDC, WORK, LDWORK )
          END DO
 *
@@ -276,9 +273,9 @@
 *
          KF = ((K-1)/NB)*NB+1
          DO I = KF, 1, -NB
-            IB = MIN( NB, K-I+1 )         
-            CALL DLARFB( 'R', 'T', 'F', 'C', M, N-I+1, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            IB = MIN( NB, K-I+1 )
+            CALL DLARFB( 'R', 'T', 'F', 'C', M, N-I+1, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( 1, I ), LDC, WORK, LDWORK )
          END DO
 *

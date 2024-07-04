@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CUNMLQ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cunmlq.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cunmlq.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cunmlq.f"> 
+*> Download CUNMLQ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cunmlq.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cunmlq.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cunmlq.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CUNMLQ( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS
 *       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
@@ -29,7 +29,7 @@
 *       COMPLEX            A( LDA, * ), C( LDC, * ), TAU( * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -97,7 +97,6 @@
 *>          The i-th row must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
 *>          CGELQF in the first k rows of its array argument A.
-*>          A is modified by the routine but restored on exit.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -138,9 +137,7 @@
 *>          The dimension of the array WORK.
 *>          If SIDE = 'L', LWORK >= max(1,N);
 *>          if SIDE = 'R', LWORK >= max(1,M).
-*>          For optimum performance LWORK >= N*NB if SIDE 'L', and
-*>          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
-*>          blocksize.
+*>          For good performance, LWORK should generally be larger.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -158,12 +155,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -171,10 +166,9 @@
       SUBROUTINE CUNMLQ( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS
@@ -188,17 +182,15 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            NBMAX, LDT
-      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
+      INTEGER            NBMAX, LDT, TSIZE
+      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1,
+     $                     TSIZE = LDT*NBMAX )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, LQUERY, NOTRAN
       CHARACTER          TRANST
-      INTEGER            I, I1, I2, I3, IB, IC, IINFO, IWS, JC, LDWORK,
+      INTEGER            I, I1, I2, I3, IB, IC, IINFO, IWT, JC, LDWORK,
      $                   LWKOPT, MI, NB, NBMIN, NI, NQ, NW
-*     ..
-*     .. Local Arrays ..
-      COMPLEX            T( LDT, NBMAX )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -224,10 +216,10 @@
 *
       IF( LEFT ) THEN
          NQ = M
-         NW = N
+         NW = MAX( 1, N )
       ELSE
          NQ = N
-         NW = M
+         NW = MAX( 1, M )
       END IF
       IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
          INFO = -1
@@ -243,18 +235,21 @@
          INFO = -7
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
          INFO = -10
-      ELSE IF( LWORK.LT.MAX( 1, NW ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.NW .AND. .NOT.LQUERY ) THEN
          INFO = -12
       END IF
 *
       IF( INFO.EQ.0 ) THEN
 *
-*        Determine the block size.  NB may be at most NBMAX, where NBMAX
-*        is used to define the local array T.
+*        Compute the workspace requirements
 *
-         NB = MIN( NBMAX, ILAENV( 1, 'CUNMLQ', SIDE // TRANS, M, N, K,
-     $             -1 ) )
-         LWKOPT = MAX( 1, NW )*NB
+         IF( M.EQ.0 .OR. N.EQ.0 .OR. K.EQ.0 ) THEN
+            LWKOPT = 1
+         ELSE
+            NB = MIN( NBMAX, ILAENV( 1, 'CUNMLQ', SIDE // TRANS, M, N,
+     $                               K, -1 ) )
+            LWKOPT = NW*NB + TSIZE
+         END IF
          WORK( 1 ) = LWKOPT
       END IF
 *
@@ -268,21 +263,19 @@
 *     Quick return if possible
 *
       IF( M.EQ.0 .OR. N.EQ.0 .OR. K.EQ.0 ) THEN
-         WORK( 1 ) = 1
          RETURN
       END IF
+*
+*     Determine the block size
 *
       NBMIN = 2
       LDWORK = NW
       IF( NB.GT.1 .AND. NB.LT.K ) THEN
-         IWS = NW*NB
-         IF( LWORK.LT.IWS ) THEN
-            NB = LWORK / LDWORK
+         IF( LWORK.LT.LWKOPT ) THEN
+            NB = (LWORK-TSIZE) / LDWORK
             NBMIN = MAX( 2, ILAENV( 2, 'CUNMLQ', SIDE // TRANS, M, N, K,
      $              -1 ) )
          END IF
-      ELSE
-         IWS = NW
       END IF
 *
       IF( NB.LT.NBMIN .OR. NB.GE.K ) THEN
@@ -295,6 +288,7 @@
 *
 *        Use blocked code
 *
+         IWT = 1 + NW*NB
          IF( ( LEFT .AND. NOTRAN ) .OR.
      $       ( .NOT.LEFT .AND. .NOT.NOTRAN ) ) THEN
             I1 = 1
@@ -327,7 +321,7 @@
 *           H = H(i) H(i+1) . . . H(i+ib-1)
 *
             CALL CLARFT( 'Forward', 'Rowwise', NQ-I+1, IB, A( I, I ),
-     $                   LDA, TAU( I ), T, LDT )
+     $                   LDA, TAU( I ), WORK( IWT ), LDT )
             IF( LEFT ) THEN
 *
 *              H or H**H is applied to C(i:m,1:n)
@@ -345,8 +339,8 @@
 *           Apply H or H**H
 *
             CALL CLARFB( SIDE, TRANST, 'Forward', 'Rowwise', MI, NI, IB,
-     $                   A( I, I ), LDA, T, LDT, C( IC, JC ), LDC, WORK,
-     $                   LDWORK )
+     $                   A( I, I ), LDA, WORK( IWT ), LDT,
+     $                   C( IC, JC ), LDC, WORK, LDWORK )
    10    CONTINUE
       END IF
       WORK( 1 ) = LWKOPT

@@ -1,26 +1,26 @@
-*> \brief \b SLAED3
+*> \brief \b SLAED3 used by SSTEDC. Finds the roots of the secular equation and updates the eigenvectors. Used when the original matrix is tridiagonal.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAED3 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed3.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed3.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed3.f"> 
+*> Download SLAED3 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed3.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed3.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed3.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAED3( K, N, N1, D, Q, LDQ, RHO, DLAMDA, Q2, INDX,
 *                          CTOT, W, S, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, K, LDQ, N, N1
 *       REAL               RHO
@@ -30,7 +30,7 @@
 *       REAL               D( * ), DLAMDA( * ), Q( LDQ, * ), Q2( * ),
 *      $                   S( * ), W( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -116,7 +116,7 @@
 *>
 *> \param[in] Q2
 *> \verbatim
-*>          Q2 is REAL array, dimension (LDQ2, N)
+*>          Q2 is REAL array, dimension (LDQ2*N)
 *>          The first K columns of this matrix contain the non-deflated
 *>          eigenvectors for the split problem.
 *> \endverbatim
@@ -165,12 +165,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -185,10 +183,9 @@
       SUBROUTINE SLAED3( K, N, N1, D, Q, LDQ, RHO, DLAMDA, Q2, INDX,
      $                   CTOT, W, S, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDQ, N, N1

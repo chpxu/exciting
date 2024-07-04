@@ -1,25 +1,25 @@
-*> \brief \b CLATRD
+*> \brief \b CLATRD reduces the first nb rows and columns of a symmetric/Hermitian matrix A to real tridiagonal form by an unitary similarity transformation.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLATRD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clatrd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clatrd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clatrd.f"> 
+*> Download CLATRD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clatrd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clatrd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clatrd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CLATRD( UPLO, N, NB, A, LDA, E, TAU, W, LDW )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            LDA, LDW, N, NB
@@ -28,7 +28,7 @@
 *       REAL               E( * )
 *       COMPLEX            A( LDA, * ), TAU( * ), W( LDW, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -135,12 +135,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -199,10 +197,9 @@
 *  =====================================================================
       SUBROUTINE CLATRD( UPLO, N, NB, A, LDA, E, TAU, W, LDW )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -271,7 +268,7 @@
 *
                ALPHA = A( I-1, I )
                CALL CLARFG( I-1, ALPHA, A( 1, I ), 1, TAU( I-1 ) )
-               E( I-1 ) = ALPHA
+               E( I-1 ) = REAL( ALPHA )
                A( I-1, I ) = ONE
 *
 *              Compute W(1:i-1,i)
@@ -325,7 +322,7 @@
                ALPHA = A( I+1, I )
                CALL CLARFG( N-I, ALPHA, A( MIN( I+2, N ), I ), 1,
      $                      TAU( I ) )
-               E( I ) = ALPHA
+               E( I ) = REAL( ALPHA )
                A( I+1, I ) = ONE
 *
 *              Compute W(i+1:n,i)

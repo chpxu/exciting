@@ -35,7 +35,8 @@ diff_condition = {int: lambda x, y: abs(x - y),
                   float: lambda x, y: abs(x - y),
                   str: strings_equal,
                   list: lambda x, y: np.abs(np.array(x) - np.array(y)),
-                  np.ndarray: lambda x, y: np.abs(x - y)
+                  np.ndarray: lambda x, y: np.abs(x - y),
+                  bool: lambda x, y: abs(x - y)
                   }
 
 
@@ -55,7 +56,8 @@ comparison_function = {int: lambda diff, tol: diff <= tol,
                        float: lambda diff, tol: diff <= tol,
                        str: lambda diff, unused_tol: diff == '',
                        list: all_close_to_zero,
-                       np.ndarray: all_close_to_zero
+                       np.ndarray: all_close_to_zero,
+                       bool: lambda diff, unused_tol: diff == 0
                        }
 
 

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGGES + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgges.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgges.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgges.f"> 
+*> Download SGGES + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgges.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgges.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgges.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SGGES( JOBVSL, JOBVSR, SORT, SELCTG, N, A, LDA, B, LDB,
 *                         SDIM, ALPHAR, ALPHAI, BETA, VSL, LDVSL, VSR,
 *                         LDVSR, WORK, LWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBVSL, JOBVSR, SORT
 *       INTEGER            INFO, LDA, LDB, LDVSL, LDVSR, LWORK, N, SDIM
@@ -36,7 +36,7 @@
 *       LOGICAL            SELCTG
 *       EXTERNAL           SELCTG
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -106,7 +106,7 @@
 *>
 *> \param[in] SELCTG
 *> \verbatim
-*>          SELCTG is procedure) LOGICAL FUNCTION of three REAL arguments
+*>          SELCTG is a LOGICAL FUNCTION of three REAL arguments
 *>          SELCTG must be declared EXTERNAL in the calling subroutine.
 *>          If SORT = 'N', SELCTG is not referenced.
 *>          If SORT = 'S', SELCTG is used to select eigenvalues to sort
@@ -270,12 +270,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGEeigen
 *
@@ -284,10 +282,9 @@
      $                  SDIM, ALPHAR, ALPHAI, BETA, VSL, LDVSL, VSR,
      $                  LDVSR, WORK, LWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVSL, JOBVSR, SORT
@@ -577,13 +574,13 @@
      $   CALL SGGBAK( 'P', 'R', N, ILO, IHI, WORK( ILEFT ),
      $                WORK( IRIGHT ), N, VSR, LDVSR, IERR )
 *
-*     Check if unscaling would cause over/underflow, if so, rescale 
-*     (ALPHAR(I),ALPHAI(I),BETA(I)) so BETA(I) is on the order of 
+*     Check if unscaling would cause over/underflow, if so, rescale
+*     (ALPHAR(I),ALPHAI(I),BETA(I)) so BETA(I) is on the order of
 *     B(I,I) and ALPHAR(I) and ALPHAI(I) are on the order of A(I,I)
 *
       IF( ILASCL )THEN
-         DO 50 I = 1, N 
-            IF( ALPHAI( I ).NE.ZERO ) THEN 
+         DO 50 I = 1, N
+            IF( ALPHAI( I ).NE.ZERO ) THEN
                IF( ( ALPHAR( I )/SAFMAX ).GT.( ANRMTO/ANRM ) .OR.
      $             ( SAFMIN/ALPHAR( I ) ).GT.( ANRM/ANRMTO ) ) THEN
                   WORK( 1 ) = ABS( A( I, I )/ALPHAR( I ) )
@@ -599,9 +596,9 @@
                END IF
             END IF
    50    CONTINUE
-      END IF 
+      END IF
 *
-      IF( ILBSCL )THEN 
+      IF( ILBSCL )THEN
          DO 60 I = 1, N
             IF( ALPHAI( I ).NE.ZERO ) THEN
                 IF( ( BETA( I )/SAFMAX ).GT.( BNRMTO/BNRM ) .OR.
@@ -610,10 +607,10 @@
                    BETA( I ) = BETA( I )*WORK( 1 )
                    ALPHAR( I ) = ALPHAR( I )*WORK( 1 )
                    ALPHAI( I ) = ALPHAI( I )*WORK( 1 )
-                END IF 
+                END IF
              END IF
-   60    CONTINUE 
-      END IF 
+   60    CONTINUE
+      END IF
 *
 *     Undo scaling
 *

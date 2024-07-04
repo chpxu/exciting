@@ -1,40 +1,40 @@
-*> \brief \b ZLA_GERPVGRW
+*> \brief \b ZLA_GERPVGRW multiplies a square real matrix by a complex matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_GERPVGRW + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gerpvgrw.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gerpvgrw.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gerpvgrw.f"> 
+*> Download ZLA_GERPVGRW + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gerpvgrw.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gerpvgrw.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gerpvgrw.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZLA_GERPVGRW( N, NCOLS, A, LDA, AF,
-*                LDAF )
-* 
+*                                               LDAF )
+*
 *       .. Scalar Arguments ..
 *       INTEGER            N, NCOLS, LDA, LDAF
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX*16         A( LDA, * ), AF( LDAF, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> 
+*>
 *> ZLA_GERPVGRW computes the reciprocal pivot growth factor
 *> norm(A)/norm(U). The "max absolute element" norm is used. If this is
 *> much less than 1, the stability of the LU factorization of the
@@ -61,7 +61,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is DOUBLE PRECISION array, dimension (LDA,N)
+*>          A is COMPLEX*16 array, dimension (LDA,N)
 *>     On entry, the N-by-N matrix A.
 *> \endverbatim
 *>
@@ -73,7 +73,7 @@
 *>
 *> \param[in] AF
 *> \verbatim
-*>          AF is DOUBLE PRECISION array, dimension (LDAF,N)
+*>          AF is COMPLEX*16 array, dimension (LDAF,N)
 *>     The factors L and U from the factorization
 *>     A = P*L*U as computed by ZGETRF.
 *> \endverbatim
@@ -87,23 +87,20 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GEcomputational
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION ZLA_GERPVGRW( N, NCOLS, A, LDA, AF,
-     $         LDAF )
+     $                                        LDAF )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            N, NCOLS, LDA, LDAF
@@ -146,4 +143,7 @@
          END IF
       END DO
       ZLA_GERPVGRW = RPVGRW
+*
+*     End of ZLA_GERPVGRW
+*
       END

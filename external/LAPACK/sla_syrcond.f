@@ -1,26 +1,26 @@
-*> \brief \b SLA_SYRCOND
+*> \brief \b SLA_SYRCOND estimates the Skeel condition number for a symmetric indefinite matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLA_SYRCOND + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrcond.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrcond.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrcond.f"> 
+*> Download SLA_SYRCOND + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrcond.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrcond.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrcond.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       REAL FUNCTION SLA_SYRCOND( UPLO, N, A, LDA, AF, LDAF, IPIV, CMODE,
 *                                  C, INFO, WORK, IWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            N, LDA, LDAF, INFO, CMODE
@@ -29,7 +29,7 @@
 *       INTEGER            IWORK( * ), IPIV( * )
 *       REAL               A( LDA, * ), AF( LDAF, * ), WORK( * ), C( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -118,13 +118,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is REAL array, dimension (3*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] IWORK
+*> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (N).
 *>     Workspace.
@@ -133,12 +133,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYcomputational
 *
@@ -146,10 +144,9 @@
       REAL FUNCTION SLA_SYRCOND( UPLO, N, A, LDA, AF, LDAF, IPIV, CMODE,
      $                           C, INFO, WORK, IWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -173,12 +170,11 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ISAMAX
       REAL               SLAMCH
-      EXTERNAL           LSAME, ISAMAX, SLAMCH
+      EXTERNAL           LSAME, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLACN2, SLATRS, SRSCL, XERBLA, SSYTRS
+      EXTERNAL           SLACN2, XERBLA, SSYTRS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX
@@ -190,6 +186,10 @@
       INFO = 0
       IF( N.LT.0 ) THEN
          INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( LDAF.LT.MAX( 1, N ) ) THEN
+         INFO = -6
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SLA_SYRCOND', -INFO )
@@ -332,5 +332,7 @@
      $   SLA_SYRCOND = ( 1.0 / AINVNM )
 *
       RETURN
+*
+*     End of SLA_SYRCOND
 *
       END

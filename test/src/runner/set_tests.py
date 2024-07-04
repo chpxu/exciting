@@ -1,80 +1,25 @@
 """
 Module containing functions that define or modify a list of test cases.
 """
-import os
 import re
-from typing import List, Set
-import yaml
+from typing import List
 
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
-
+from ..io.file_system import get_all_test_cases
 from ..io.parsers import get_compiler_type
+from ..io.yaml_configuration import yaml_load, group_tag, enum_group_constructor, build_tag, \
+    enum_compiler_build_constructor, default_attributes
 from ..runner.profile import Compiler, BuildType, CompilerBuild, build_type_str_to_enum
 from ..exciting_settings.constants import Defaults
 from ..runner.configure_tests import configure_all_tests, find_tests_to_skip_by_group, find_tests_with_attribute
 from ..utilities.warnings_errors import warnings_as_errors
+from ..tolerance.tol_classes import tol_file_name
 
 
-def get_test_directories(test_farm_root: str, basename=False) -> List[str]:
-    """
-    Get test directories from the test farm root.
-
-    Test farm has the directory structure:
-     test_farm/method/test_directory
-
-    :param str test_farm_root: Test farm root directory name
-    :param bool basename: Only return test directory base names
-    :return List[str] test_dirs: List of test directories, given relative to test_farm_root
-    if basename is false.
-    """
-
-    method_dirs = next(os.walk(test_farm_root))[1]
-
-    if basename:
-        test_dirs = []
-        for method_dir in method_dirs:
-            method_dir = os.path.join(test_farm_root, method_dir)
-            test_dirs += next(os.walk(method_dir))[1]
-        return test_dirs
-
-    else:
-        full_dirs = []
-        for method_dir in method_dirs:
-            method_dir = os.path.join(test_farm_root, method_dir)
-            test_dirs = next(os.walk(method_dir))[1]
-            full_dirs += [os.path.join(method_dir, t) for t in test_dirs]
-        return full_dirs
-
-
-def get_all_test_cases(test_farm: str) -> Set[str]:
-    """
-    Get all test cases present in the test_farm directory by file system inspection.
-
-    This *assumes* a specific test farm subdirectory structure.
-
-    :param str test_farm: Test farm directory.
-    :return Set[str] test_cases: All test cases present in test_farm, with names prepended by `test_farm/method`.
-    """
-    methods = next(os.walk(test_farm))[1]
-
-    test_cases = []
-    for method in methods:
-        directory = os.path.join(test_farm, method)
-        test_names = next(os.walk(directory))[1]
-        test_cases += [os.path.join(test_farm, method, name) for name in test_names]
-
-    return set(test_cases)
-
-
-def partial_test_name_matches(all_tests: List[str], input_tests: List[str]) -> List[str]:
-    """
-    Given a list of strings, return any full or partial matches in the test_farm
+def partial_test_name_matches(all_tests, input_tests: List[str]) -> List[str]:
+    """Given a list of strings, return any full or partial matches in the test_farm
     subdirectories.
 
-    :param List[str] all_tests: All tests in the test_farm
+    :param all_tests: All tests in the test_farm
     :param List[str] input_tests: List of partial test names, provided from input
     :return List[str] tests_to_run: List of tests to run
     """
@@ -173,14 +118,17 @@ def get_test_cases_from_config(settings: Defaults) -> dict:
     :return tests_in_config: Dict of tests defined in the configuration file,
     `settings.tests_file`.
     """
-    # Load defaults file and test configuration file
-    with open(settings.defaults_file, 'r') as file_handle:
-        defaults_str = file_handle.read()
+    # Load default files under test
+    config_defaults = yaml_load(settings.defaults_file)
+    default_files_under_test = config_defaults['default_files_under_test']
+    check_default_files_under_test(default_files_under_test)
 
-    with open(settings.tests_file, 'r') as file_handle:
-        tests_str = file_handle.read()
+    # Define string fields to be converted to enums during parsing
+    custom_constructor = {group_tag: enum_group_constructor, build_tag: enum_compiler_build_constructor}
+    # Load file defining test cases
+    config_data = yaml_load(settings.tests_file, custom_constructor=custom_constructor)
 
-    tests_in_config = configure_all_tests(tests_str, defaults_str)
+    tests_in_config = configure_all_tests(config_data, default_files_under_test)
     test_names_in_config = set(tests_in_config.keys())
 
     # Check config file and test cases in the farm are consistent
@@ -192,6 +140,30 @@ def get_test_cases_from_config(settings: Defaults) -> dict:
         warnings_as_errors(msg, ValueError, settings.SAFE_MODE)
 
     return tests_in_config
+
+
+def check_default_files_under_test(default_files_under_test: dict):
+    """
+    Check that all methods have "default files under test" specified in config.
+
+    Expect an input of the form:
+      default_files_under_test = {'groundstate': ["INFO.OUT","evalcore.xml", "geometry.xml", "eigval.xml", "atoms.xml"],
+                                   ...
+                                  'method': files_under_test_for_method
+                                  }
+
+    :param dict default_files_under_test: Files under test for all methods
+    """
+    tabulated_methods = {m.lower() for m in tol_file_name.keys()}
+    methods_from_config = {m.lower() for m in default_files_under_test.keys()}
+
+    missing_methods = tabulated_methods - methods_from_config
+    if missing_methods:
+        raise ValueError(f"Missing default_files_under_test in config, for methods: {missing_methods}")
+
+    missing_methods = methods_from_config - tabulated_methods
+    if missing_methods:
+        raise ValueError(f"Missing tabulated methods in tol_classes.py, for methods: {missing_methods}")
 
 
 def set_tests_to_run(settings: Defaults, input_options: dict, tests_in_config: dict) -> TestLists:
@@ -235,9 +207,7 @@ def set_tests_to_run(settings: Defaults, input_options: dict, tests_in_config: d
 
     # Tests in groups to skip
     # Note, duplicate work occurring - sorting through group dict twice
-    with open(settings.defaults_file, 'r') as file_handle:
-        defaults_str = file_handle.read()
-    config_defaults = yaml.load(defaults_str, Loader=Loader)
+    config_defaults = yaml_load(settings.defaults_file)
     groups_to_run = [name for name, to_run in config_defaults['group_execution'].items() if to_run]
     tests_to_skip_by_group: set = find_tests_to_skip_by_group(specified_tests_to_run,
                                                               config_defaults['group_execution'])
@@ -255,7 +225,7 @@ def set_tests_to_run(settings: Defaults, input_options: dict, tests_in_config: d
     tests_to_run = {name: specified_tests_to_run[name] for name in test_names_to_run}
 
     # Tests to repeat
-    test_names_to_repeat = list(find_tests_with_attribute(tests_to_run, 'repeat', False).keys())
+    test_names_to_repeat = list(find_tests_with_attribute(tests_to_run, 'repeat', default_attributes.repeat).keys())
     n_repeats = input_options['repeat_tests']
     tests_to_repeat = {name: n_repeats for name in test_names_to_repeat}
 

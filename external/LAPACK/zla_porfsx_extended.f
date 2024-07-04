@@ -1,19 +1,19 @@
-*> \brief \b ZLA_PORFSX_EXTENDED
+*> \brief \b ZLA_PORFSX_EXTENDED improves the computed solution to a system of linear equations for symmetric or Hermitian positive-definite matrices by performing extra-precise iterative refinement and provides error bounds and backward error estimates for the solution.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_PORFSX_EXTENDED + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_porfsx_extended.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_porfsx_extended.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_porfsx_extended.f"> 
+*> Download ZLA_PORFSX_EXTENDED + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_porfsx_extended.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_porfsx_extended.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_porfsx_extended.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -25,7 +25,7 @@
 *                                       AYB, DY, Y_TAIL, RCOND, ITHRESH,
 *                                       RTHRESH, DZ_UB, IGNORE_CWISE,
 *                                       INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDAF, LDB, LDY, N, NRHS, PREC_TYPE,
 *      $                   N_NORMS, ITHRESH
@@ -40,7 +40,7 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -54,7 +54,7 @@
 *> In addition to normwise error bound, the code provides maximum
 *> componentwise error bound if possible. See comments for ERR_BNDS_NORM
 *> and ERR_BNDS_COMP for details of the error bounds. Note that this
-*> subroutine is only resonsible for setting the second fields of
+*> subroutine is only responsible for setting the second fields of
 *> ERR_BNDS_NORM and ERR_BNDS_COMP.
 *> \endverbatim
 *
@@ -65,11 +65,11 @@
 *> \verbatim
 *>          PREC_TYPE is INTEGER
 *>     Specifies the intermediate precision to be used in refinement.
-*>     The value is defined by ILAPREC(P) where P is a CHARACTER and
-*>     P    = 'S':  Single
+*>     The value is defined by ILAPREC(P) where P is a CHARACTER and P
+*>          = 'S':  Single
 *>          = 'D':  Double
 *>          = 'I':  Indigenous
-*>          = 'X', 'E':  Extra
+*>          = 'X' or 'E':  Extra
 *> \endverbatim
 *>
 *> \param[in] UPLO
@@ -153,8 +153,7 @@
 *>
 *> \param[in,out] Y
 *> \verbatim
-*>          Y is COMPLEX*16 array, dimension
-*>                    (LDY,NRHS)
+*>          Y is COMPLEX*16 array, dimension (LDY,NRHS)
 *>     On entry, the solution matrix X, as computed by ZPOTRS.
 *>     On exit, the improved solution matrix Y.
 *> \endverbatim
@@ -186,8 +185,7 @@
 *>
 *> \param[in,out] ERR_BNDS_NORM
 *> \verbatim
-*>          ERR_BNDS_NORM is DOUBLE PRECISION array, dimension
-*>                    (NRHS, N_ERR_BNDS)
+*>          ERR_BNDS_NORM is DOUBLE PRECISION array, dimension (NRHS, N_ERR_BNDS)
 *>     For each right-hand side, this array contains information about
 *>     various error bounds and condition numbers corresponding to the
 *>     normwise relative error, which is defined as follows:
@@ -233,8 +231,7 @@
 *>
 *> \param[in,out] ERR_BNDS_COMP
 *> \verbatim
-*>          ERR_BNDS_COMP is DOUBLE PRECISION array, dimension
-*>                    (NRHS, N_ERR_BNDS)
+*>          ERR_BNDS_COMP is DOUBLE PRECISION array, dimension (NRHS, N_ERR_BNDS)
 *>     For each right-hand side, this array contains information about
 *>     various error bounds and condition numbers corresponding to the
 *>     componentwise relative error, which is defined as follows:
@@ -249,7 +246,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -348,7 +345,7 @@
 *>          DZ_UB is DOUBLE PRECISION
 *>     Determines when to start considering componentwise convergence.
 *>     Componentwise convergence is only considered after each component
-*>     of the solution Y is stable, which we definte as the relative
+*>     of the solution Y is stable, which we define as the relative
 *>     change in each component being less than DZ_UB. The default value
 *>     is 0.25, requiring the first bit to be stable. See LAWN 165 for
 *>     more details.
@@ -372,12 +369,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16POcomputational
 *
@@ -390,10 +385,9 @@
      $                                RTHRESH, DZ_UB, IGNORE_CWISE,
      $                                INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDAF, LDB, LDY, N, NRHS, PREC_TYPE,
@@ -688,4 +682,7 @@
       END DO
 *
       RETURN
+*
+*     End of ZLA_PORFSX_EXTENDED
+*
       END

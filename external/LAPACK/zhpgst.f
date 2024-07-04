@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZHPGST + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhpgst.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhpgst.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhpgst.f"> 
+*> Download ZHPGST + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhpgst.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhpgst.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhpgst.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZHPGST( ITYPE, UPLO, N, AP, BP, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, ITYPE, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16         AP( * ), BP( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -101,22 +101,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE ZHPGST( ITYPE, UPLO, N, AP, BP, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -185,7 +182,7 @@
 *              Compute the j-th column of the upper triangle of A
 *
                AP( JJ ) = DBLE( AP( JJ ) )
-               BJJ = BP( JJ )
+               BJJ = DBLE( BP( JJ ) )
                CALL ZTPSV( UPLO, 'Conjugate transpose', 'Non-unit', J,
      $                     BP, AP( J1 ), 1 )
                CALL ZHPMV( UPLO, J-1, -CONE, AP, BP( J1 ), 1, CONE,
@@ -206,8 +203,8 @@
 *
 *              Update the lower triangle of A(k:n,k:n)
 *
-               AKK = AP( KK )
-               BKK = BP( KK )
+               AKK = DBLE( AP( KK ) )
+               BKK = DBLE( BP( KK ) )
                AKK = AKK / BKK**2
                AP( KK ) = AKK
                IF( K.LT.N ) THEN
@@ -237,8 +234,8 @@
 *
 *              Update the upper triangle of A(1:k,1:k)
 *
-               AKK = AP( KK )
-               BKK = BP( KK )
+               AKK = DBLE( AP( KK ) )
+               BKK = DBLE( BP( KK ) )
                CALL ZTPMV( UPLO, 'No transpose', 'Non-unit', K-1, BP,
      $                     AP( K1 ), 1 )
                CT = HALF*AKK
@@ -261,8 +258,8 @@
 *
 *              Compute the j-th column of the lower triangle of A
 *
-               AJJ = AP( JJ )
-               BJJ = BP( JJ )
+               AJJ = DBLE( AP( JJ ) )
+               BJJ = DBLE( BP( JJ ) )
                AP( JJ ) = AJJ*BJJ + ZDOTC( N-J, AP( JJ+1 ), 1,
      $                    BP( JJ+1 ), 1 )
                CALL ZDSCAL( N-J, BJJ, AP( JJ+1 ), 1 )

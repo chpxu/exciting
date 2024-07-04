@@ -29,9 +29,14 @@
     lmaxvr="8" lmaxmat="8" lmaxapw="8" 
     radialgridtype="expocubic" 
     tforce="true">
-   <!-- <sirius xc="true" vha="true" eigenstates="true" density="true" densityinit="false" cfun="true" /> -->
-      <!-- <libxc correlation="XC_GGA_C_PBE" exchange="XC_GGA_X_PBE"/> -->
+    <sirius 
+       xc="true" 
+       vha="true" 
+       eigenstates="true" 
+       density="true" 
+       densityinit="false" 
+       cfun="true" 
+    />
   </groundstate>
-  <!--relax maxsteps="3"/-->
 
 </input>

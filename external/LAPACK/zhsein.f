@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZHSEIN + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhsein.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhsein.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhsein.f"> 
+*> Download ZHSEIN + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhsein.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhsein.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhsein.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE ZHSEIN( SIDE, EIGSRC, INITV, SELECT, N, H, LDH, W, VL,
 *                          LDVL, VR, LDVR, MM, M, WORK, RWORK, IFAILL,
 *                          IFAILR, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          EIGSRC, INITV, SIDE
 *       INTEGER            INFO, LDH, LDVL, LDVR, M, MM, N
@@ -33,7 +33,7 @@
 *       COMPLEX*16         H( LDH, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   W( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -104,6 +104,7 @@
 *> \verbatim
 *>          H is COMPLEX*16 array, dimension (LDH,N)
 *>          The upper Hessenberg matrix H.
+*>          If a NaN is detected in H, the routine will return with INFO=-6.
 *> \endverbatim
 *>
 *> \param[in] LDH
@@ -220,12 +221,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -244,10 +243,9 @@
      $                   LDVL, VR, LDVR, MM, M, WORK, RWORK, IFAILL,
      $                   IFAILR, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          EIGSRC, INITV, SIDE
@@ -276,9 +274,9 @@
       COMPLEX*16         CDUM, WK
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            LSAME, DISNAN
       DOUBLE PRECISION   DLAMCH, ZLANHS
-      EXTERNAL           LSAME, DLAMCH, ZLANHS
+      EXTERNAL           LSAME, DLAMCH, ZLANHS, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZLAEIN
@@ -399,7 +397,10 @@
 *              has not ben computed before.
 *
                HNORM = ZLANHS( 'I', KR-KL+1, H( KL, KL ), LDH, RWORK )
-               IF( HNORM.GT.RZERO ) THEN
+               IF( DISNAN( HNORM ) ) THEN
+                  INFO = -6
+                  RETURN
+               ELSE IF( HNORM.GT.RZERO ) THEN
                   EPS3 = HNORM*ULP
                ELSE
                   EPS3 = SMLNUM

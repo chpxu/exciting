@@ -2,11 +2,19 @@
 subroutine init_hybrids()
     use modinput
     use modgw
-    use modmpi, only : rank
+    use modmpi, only : rank, mpiglobal
+    use vx_enums, only: HYB_PBE0, HYB_HSE
+    use mod_lattice, only : omega !unit cell volume
+    use errors_warnings, only: terminate_if_false
+    use precision, only: dp, str_16 
+    use hse_singularity , only : hse_singularity_exact_solution, hse_singularity_Taylor_expansion    
     implicit none
     integer :: lmax, ik
-
-
+    integer :: number_k_points
+    real(dp) :: omega_hse
+    real(dp) :: integral_singularity_hse
+    real(dp) :: volume_unit_cell
+    character(str_16) :: hse_singularity_method
     ! Time for the self-energy calculations
     call init_timing()
     !---------------------------------------
@@ -47,10 +55,19 @@ subroutine init_hybrids()
     !--------------------------------------------------------------
     ! Calculate the integrals to treat the singularities at G+q->0
     !--------------------------------------------------------------
-    if (xctype(1) == 408) then
-        ! singular term in HSE
-        singc2 = pi/input%groundstate%Hybrid%omega**2 / (4.d0*pi*dble(kqset%nkpt))
-    else
+    call terminate_if_false(mpiglobal, (xctype(1) == HYB_HSE) .or. (xctype(1) == HYB_PBE0), "The functional selected is not an hybrid functional.")
+    if (xctype(1) == HYB_HSE) then
+        omega_hse = input%groundstate%Hybrid%omega
+        number_k_points = kqset%nkpt
+        hse_singularity_method = input%groundstate%Hybrid%HSEsingularity
+        if (hse_singularity_method=="Exact") then
+          volume_unit_cell = omega
+          integral_singularity_hse = hse_singularity_exact_solution(omega_hse, volume_unit_cell, number_k_points)  
+        else if (hse_singularity_method=="Taylor") then 
+          integral_singularity_hse = hse_singularity_Taylor_expansion(omega_hse)   
+        endif
+        singc2= integral_singularity_hse / (4.d0*pi*dble(number_k_points))
+    else if (xctype(1) == HYB_PBE0) then
         call setsingc()
     end if
 

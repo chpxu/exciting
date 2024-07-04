@@ -1,19 +1,19 @@
-*> \brief \b SLA_SYRFSX_EXTENDED
+*> \brief \b SLA_SYRFSX_EXTENDED improves the computed solution to a system of linear equations for symmetric indefinite matrices by performing extra-precise iterative refinement and provides error bounds and backward error estimates for the solution.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLA_SYRFSX_EXTENDED + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrfsx_extended.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrfsx_extended.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrfsx_extended.f"> 
+*> Download SLA_SYRFSX_EXTENDED + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrfsx_extended.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrfsx_extended.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrfsx_extended.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -25,7 +25,7 @@
 *                                       AYB, DY, Y_TAIL, RCOND, ITHRESH,
 *                                       RTHRESH, DZ_UB, IGNORE_CWISE,
 *                                       INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDAF, LDB, LDY, N, NRHS, PREC_TYPE,
 *      $                   N_NORMS, ITHRESH
@@ -41,14 +41,14 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> 
+*>
 *> SLA_SYRFSX_EXTENDED improves the computed solution to a system of
 *> linear equations by performing extra-precise iterative refinement
 *> and provides error bounds and backward error estimates for the solution.
@@ -56,7 +56,7 @@
 *> In addition to normwise error bound, the code provides maximum
 *> componentwise error bound if possible. See comments for ERR_BNDS_NORM
 *> and ERR_BNDS_COMP for details of the error bounds. Note that this
-*> subroutine is only resonsible for setting the second fields of
+*> subroutine is only responsible for setting the second fields of
 *> ERR_BNDS_NORM and ERR_BNDS_COMP.
 *> \endverbatim
 *
@@ -67,11 +67,11 @@
 *> \verbatim
 *>          PREC_TYPE is INTEGER
 *>     Specifies the intermediate precision to be used in refinement.
-*>     The value is defined by ILAPREC(P) where P is a CHARACTER and
-*>     P    = 'S':  Single
+*>     The value is defined by ILAPREC(P) where P is a CHARACTER and P
+*>          = 'S':  Single
 *>          = 'D':  Double
 *>          = 'I':  Indigenous
-*>          = 'X', 'E':  Extra
+*>          = 'X' or 'E':  Extra
 *> \endverbatim
 *>
 *> \param[in] UPLO
@@ -255,7 +255,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -354,7 +354,7 @@
 *>          DZ_UB is REAL
 *>     Determines when to start considering componentwise convergence.
 *>     Componentwise convergence is only considered after each component
-*>     of the solution Y is stable, which we definte as the relative
+*>     of the solution Y is stable, which we define as the relative
 *>     change in each component being less than DZ_UB. The default value
 *>     is 0.25, requiring the first bit to be stable. See LAWN 165 for
 *>     more details.
@@ -371,19 +371,17 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>       = 0:  Successful exit.
-*>       < 0:  if INFO = -i, the ith argument to SSYTRS had an illegal
+*>       < 0:  if INFO = -i, the ith argument to SLA_SYRFSX_EXTENDED had an illegal
 *>             value
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYcomputational
 *
@@ -396,10 +394,9 @@
      $                                RTHRESH, DZ_UB, IGNORE_CWISE,
      $                                INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDAF, LDB, LDY, N, NRHS, PREC_TYPE,
@@ -425,7 +422,7 @@
      $                   DZRAT, PREVNORMDX, PREV_DZ_Z, DXRATMAX,
      $                   DZRATMAX, DX_X, DZ_Z, FINAL_DX_X, FINAL_DZ_Z,
      $                   EPS, HUGEVAL, INCR_THRESH
-      LOGICAL            INCR_PREC
+      LOGICAL            INCR_PREC, UPPER
 *     ..
 *     .. Parameters ..
       INTEGER            UNSTABLE_STATE, WORKING_STATE, CONV_STATE,
@@ -469,7 +466,27 @@
 *     ..
 *     .. Executable Statements ..
 *
-      IF ( INFO.NE.0 ) RETURN
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -2
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( NRHS.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -6
+      ELSE IF( LDAF.LT.MAX( 1, N ) ) THEN
+         INFO = -8
+      ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
+         INFO = -13
+      ELSE IF( LDY.LT.MAX( 1, N ) ) THEN
+         INFO = -15
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLA_SYRFSX_EXTENDED', -INFO )
+         RETURN
+      END IF
       EPS = SLAMCH( 'Epsilon' )
       HUGEVAL = SLAMCH( 'Overflow' )
 *     Force HUGEVAL to Inf
@@ -522,7 +539,7 @@
                CALL BLAS_SSYMV2_X(UPLO2, N, -1.0, A, LDA,
      $              Y(1, J), Y_TAIL, 1, 1.0, RES, 1, PREC_TYPE)
             END IF
-            
+
 !         XXX: RES is no longer needed.
             CALL SCOPY( N, RES, 1, DY, 1 )
             CALL SSYTRS( UPLO, N, 1, AF, LDAF, IPIV, DY, N, INFO )
@@ -534,11 +551,11 @@
             NORMDX = 0.0
             DZ_Z = 0.0
             YMIN = HUGEVAL
-            
+
             DO I = 1, N
                YK = ABS( Y( I, J ) )
                DYK = ABS( DY( I ) )
-               
+
                IF ( YK .NE. 0.0 ) THEN
                   DZ_Z = MAX( DZ_Z, DYK / YK )
                ELSE IF ( DYK .NE. 0.0 ) THEN
@@ -637,7 +654,7 @@
             ELSE
                CALL SLA_WWADDW( N, Y(1,J), Y_TAIL, DY )
             END IF
-            
+
          END DO
 *        Target of "IF (Z_STOP .AND. X_STOP)".  Sun's f77 won't EXIT.
  666     CONTINUE
@@ -667,7 +684,7 @@
 *            op(A) = A, A**T, or A**H depending on TRANS (and type).
          CALL SCOPY( N, B( 1, J ), 1, RES, 1 )
          CALL SSYMV( UPLO, N, -1.0, A, LDA, Y(1,J), 1, 1.0, RES, 1 )
-         
+
          DO I = 1, N
             AYB( I ) = ABS( B( I, J ) )
          END DO
@@ -676,7 +693,7 @@
 *
          CALL SLA_SYAMV( UPLO2, N, 1.0,
      $        A, LDA, Y(1, J), 1, 1.0, AYB, 1 )
-         
+
          CALL SLA_LIN_BERR( N, N, 1, RES, AYB, BERR_OUT( J ) )
 *
 *     End of loop for each RHS.
@@ -684,4 +701,7 @@
       END DO
 *
       RETURN
+*
+*     End of SLA_SYRFSX_EXTENDED
+*
       END

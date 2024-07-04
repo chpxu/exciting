@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHEEVR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cheevr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cheevr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cheevr.f"> 
+*> Download CHEEVR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cheevr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cheevr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cheevr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CHEEVR( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
 *                          ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK,
 *                          RWORK, LRWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, RANGE, UPLO
 *       INTEGER            IL, INFO, IU, LDA, LDZ, LIWORK, LRWORK, LWORK,
@@ -33,7 +33,7 @@
 *       REAL               RWORK( * ), W( * )
 *       COMPLEX            A( LDA, * ), WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -75,7 +75,7 @@
 *> The desired accuracy of the output can be specified by the input
 *> parameter ABSTOL.
 *>
-*> For more details, see DSTEMR's documentation and:
+*> For more details, see CSTEMR's documentation and:
 *> - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
 *>   to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
 *>   Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
@@ -155,12 +155,15 @@
 *> \param[in] VL
 *> \verbatim
 *>          VL is REAL
+*>          If RANGE='V', the lower bound of the interval to
+*>          be searched for eigenvalues. VL < VU.
+*>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
 *>          VU is REAL
-*>          If RANGE='V', the lower and upper bounds of the interval to
+*>          If RANGE='V', the upper bound of the interval to
 *>          be searched for eigenvalues. VL < VU.
 *>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
@@ -168,13 +171,17 @@
 *> \param[in] IL
 *> \verbatim
 *>          IL is INTEGER
+*>          If RANGE='I', the index of the
+*>          smallest eigenvalue to be returned.
+*>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
+*>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
 *>
 *> \param[in] IU
 *> \verbatim
 *>          IU is INTEGER
-*>          If RANGE='I', the indices (in ascending order) of the
-*>          smallest and largest eigenvalues to be returned.
+*>          If RANGE='I', the index of the
+*>          largest eigenvalue to be returned.
 *>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
 *>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
@@ -203,7 +210,7 @@
 *>          eigenvalues are computed to high relative accuracy when
 *>          possible in future releases.  The current code does not
 *>          make any guarantees about high relative accuracy, but
-*>          furutre releases will. See J. Barlow and J. Demmel,
+*>          future releases will. See J. Barlow and J. Demmel,
 *>          "Computing Accurate Eigensystems of Scaled Diagonally
 *>          Dominant Matrices", LAPACK Working Note #7, for a discussion
 *>          of which matrices define their eigenvalues to high relative
@@ -250,7 +257,9 @@
 *>          The support of the eigenvectors in Z, i.e., the indices
 *>          indicating the nonzero elements in Z. The i-th eigenvector
 *>          is nonzero only in elements ISUPPZ( 2*i-1 ) through
-*>          ISUPPZ( 2*i ).
+*>          ISUPPZ( 2*i ). This is an output of CSTEMR (tridiagonal
+*>          matrix). The support of the eigenvectors of A is typically
+*>          1:N because of the unitary transformations applied by CUNMTR.
 *>          Implemented only for RANGE = 'A' or 'I' and IU - IL = N - 1
 *> \endverbatim
 *>
@@ -324,12 +333,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexHEeigen
 *
@@ -348,10 +355,9 @@
      $                   ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK,
      $                   RWORK, LRWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
@@ -579,7 +585,7 @@
 *     returns INFO > 0.
       INDIFL = INDISP + N
 *     INDIWO is the offset of the remaining integer workspace.
-      INDIWO = INDISP + N
+      INDIWO = INDIFL + N
 
 *
 *     Call CHETRD to reduce Hermitian matrix to tridiagonal form.
@@ -617,7 +623,7 @@
      $                   IWORK, LIWORK, INFO )
 *
 *           Apply unitary matrix used in reduction to tridiagonal
-*           form to eigenvectors returned by CSTEIN.
+*           form to eigenvectors returned by CSTEMR.
 *
             IF( WANTZ .AND. INFO.EQ.0 ) THEN
                INDWKN = INDWK

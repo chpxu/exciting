@@ -6,8 +6,9 @@ module grid_utils_test
    use unit_test_framework, only: unit_test_type
    use math_utils, only: all_close, all_zero, mod1
    use grid_utils, only: mesh_1d, linspace, concatenate, grid_3d, phase, fft_frequencies, &
-                         partial_grid, n_grid_diff, flattened_map, point_in_triangle,&
-                         index_column_vector_in_array,  indices_zero_vectors, indices_finite_vectors
+                         partial_grid, n_grid_diff, flattened_map, point_in_triangle, &
+                         index_column_vector_in_array,  indices_zero_vectors, indices_finite_vectors, &
+                         first_element, last_element
     use multi_index_conversion, only: indices_to_composite_index, composite_index_to_indices
    implicit none
 
@@ -26,7 +27,7 @@ contains
       !> Test report object
       type(unit_test_type) :: test_report
       !> Number of assertions
-      integer, parameter :: n_assertions = 43
+      integer, parameter :: n_assertions = 51
 
       call test_report%init(n_assertions, mpiglobal)
 
@@ -52,6 +53,8 @@ contains
       call test_partial_grid(test_report)
 
       call test_flattened_map(test_report)
+
+      call test_first_last_element(test_report)
 
       if (present(kill_on_failure)) then
          call test_report%report('grid_utils', kill_on_failure)
@@ -599,5 +602,25 @@ contains
     call test_report%assert(all(A_3 == reshape(A_flat, N_A_3)), 'Test flattened_map for rank-4 arrays. Expeted: &
             all(A == reshape(A_flat, N_A)).')
   end subroutine test_flattened_map
+
+  !> Test first_element and last_element.
+  subroutine test_first_last_element(test_report)
+    !> Test report object
+    type(unit_test_type), intent(inout) :: test_report
+
+    integer, parameter :: n_elements(6) = [1, 2, 5, 8, 1, 3]
+
+    call test_report%assert(first_element(n_elements, 1) == 1, 'Test first_element([1, 2, 5, 8, 1, 3], 1). Expected result: 1.')
+    call test_report%assert(last_element(n_elements, 1) == 1, 'Test last_element([1, 2, 5, 8, 1, 3], 1). Expected result: 1.')
+
+    call test_report%assert(first_element(n_elements, 3) == 4, 'Test first_element([1, 2, 5, 8, 1, 3], 1). Expected result: 4.')
+    call test_report%assert(last_element(n_elements, 3) == 8, 'Test last_element([1, 2, 5, 8, 1, 3], 1). Expected result: 8.')
+
+    call test_report%assert(first_element(n_elements, 5) == 17, 'Test first_element([1, 2, 5, 8, 1, 3], 1). Expected result: 17.')
+    call test_report%assert(last_element(n_elements, 5) == 17, 'Test last_element([1, 2, 5, 8, 1, 3], 1). Expected result: 17.')
+
+    call test_report%assert(first_element(n_elements, 6) == 18, 'Test first_element([1, 2, 5, 8, 1, 3], 1). Expected result: 18.')
+    call test_report%assert(last_element(n_elements, 6) == 20, 'Test last_element([1, 2, 5, 8, 1, 3], 1). Expected result: 20.')
+  end subroutine
 
 end module grid_utils_test

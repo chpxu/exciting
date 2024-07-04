@@ -1,19 +1,19 @@
-*> \brief \b SLASD2
+*> \brief \b SLASD2 merges the two sets of singular values together into a single sorted set. Used by sbdsdc.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASD2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasd2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasd2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasd2.f"> 
+*> Download SLASD2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasd2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasd2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasd2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SLASD2( NL, NR, SQRE, K, D, Z, ALPHA, BETA, U, LDU, VT,
 *                          LDVT, DSIGMA, U2, LDU2, VT2, LDVT2, IDXP, IDX,
 *                          IDXC, IDXQ, COLTYP, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, K, LDU, LDU2, LDVT, LDVT2, NL, NR, SQRE
 *       REAL               ALPHA, BETA
@@ -33,7 +33,7 @@
 *      $                   U2( LDU2, * ), VT( LDVT, * ), VT2( LDVT2, * ),
 *      $                   Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -249,14 +249,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -269,10 +267,9 @@
      $                   LDVT, DSIGMA, U2, LDU2, VT2, LDVT2, IDXP, IDX,
      $                   IDXC, IDXQ, COLTYP, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDU, LDU2, LDVT, LDVT2, NL, NR, SQRE

@@ -1,19 +1,19 @@
-*> \brief \b DLARRF
+*> \brief \b DLARRF finds a new relatively robust representation such that at least one of the eigenvalues is relatively isolated.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLARRF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarrf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarrf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarrf.f"> 
+*> Download DLARRF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarrf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarrf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarrf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          W, WGAP, WERR,
 *                          SPDIAM, CLGAPL, CLGAPR, PIVMIN, SIGMA,
 *                          DPLUS, LPLUS, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            CLSTRT, CLEND, INFO, N
 *       DOUBLE PRECISION   CLGAPL, CLGAPR, PIVMIN, SIGMA, SPDIAM
@@ -31,7 +31,7 @@
 *       DOUBLE PRECISION   D( * ), DPLUS( * ), L( * ), LD( * ),
 *      $          LPLUS( * ), W( * ), WGAP( * ), WERR( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -51,7 +51,7 @@
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>          The order of the matrix (subblock, if the matrix splitted).
+*>          The order of the matrix (subblock, if the matrix split).
 *> \endverbatim
 *>
 *> \param[in] D
@@ -169,14 +169,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -193,10 +191,9 @@
      $                   SPDIAM, CLGAPL, CLGAPR, PIVMIN, SIGMA,
      $                   DPLUS, LPLUS, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            CLSTRT, CLEND, INFO, N
@@ -210,10 +207,9 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   FOUR, MAXGROWTH1, MAXGROWTH2, ONE, QUART, TWO,
-     $                   ZERO
-      PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0, TWO = 2.0D0,
-     $                     FOUR = 4.0D0, QUART = 0.25D0,
+      DOUBLE PRECISION   FOUR, MAXGROWTH1, MAXGROWTH2, ONE, QUART, TWO
+      PARAMETER          ( ONE = 1.0D0, TWO = 2.0D0, FOUR = 4.0D0,
+     $                     QUART = 0.25D0,
      $                     MAXGROWTH1 = 8.D0,
      $                     MAXGROWTH2 = 8.D0 )
 *     ..
@@ -240,6 +236,13 @@
 *     .. Executable Statements ..
 *
       INFO = 0
+*
+*     Quick return if possible
+*
+      IF( N.LE.0 ) THEN
+         RETURN
+      END IF
+*
       FACT = DBLE(2**KTRYMAX)
       EPS = DLAMCH( 'Precision' )
       SHIFT = 0
@@ -258,7 +261,8 @@
 
 *     Decide whether the code should accept the best among all
 *     representations despite large element growth or signal INFO=1
-      NOFAIL = .TRUE.
+*     Setting NOFAIL to .FALSE. for quick fix for bug 113
+      NOFAIL = .FALSE.
 *
 
 *     Compute the average gap length of the cluster

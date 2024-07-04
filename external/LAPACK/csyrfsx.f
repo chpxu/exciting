@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CSYRFSX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/csyrfsx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/csyrfsx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/csyrfsx.f"> 
+*> Download CSYRFSX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/csyrfsx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/csyrfsx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/csyrfsx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                           S, B, LDB, X, LDX, RCOND, BERR, N_ERR_BNDS,
 *                           ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
 *                           WORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO, EQUED
 *       INTEGER            INFO, LDA, LDAF, LDB, LDX, N, NRHS, NPARAMS,
@@ -37,7 +37,7 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -124,7 +124,7 @@
 *>     The factored form of the matrix A.  AF contains the block
 *>     diagonal matrix D and the multipliers used to obtain the
 *>     factor U or L from the factorization A = U*D*U**T or A =
-*>     L*D*L**T as computed by SSYTRF.
+*>     L*D*L**T as computed by CSYTRF.
 *> \endverbatim
 *>
 *> \param[in] LDAF
@@ -137,12 +137,12 @@
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
 *>     Details of the interchanges and the block structure of D
-*>     as determined by SSYTRF.
+*>     as determined by CSYTRF.
 *> \endverbatim
 *>
 *> \param[in,out] S
 *> \verbatim
-*>          S is or output) REAL array, dimension (N)
+*>          S is REAL array, dimension (N)
 *>     The scale factors for A.  If EQUED = 'Y', A is multiplied on
 *>     the left and right by diag(S).  S is an input argument if FACT =
 *>     'F'; otherwise, S is an output argument.  If FACT = 'F' and EQUED
@@ -171,7 +171,7 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is COMPLEX array, dimension (LDX,NRHS)
-*>     On entry, the solution matrix X, as computed by SGETRS.
+*>     On entry, the solution matrix X, as computed by CGETRS.
 *>     On exit, the improved solution matrix X.
 *> \endverbatim
 *>
@@ -271,7 +271,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -307,14 +307,14 @@
 *> \param[in] NPARAMS
 *> \verbatim
 *>          NPARAMS is INTEGER
-*>     Specifies the number of parameters set in PARAMS.  If .LE. 0, the
+*>     Specifies the number of parameters set in PARAMS.  If <= 0, the
 *>     PARAMS array is never referenced and default values are used.
 *> \endverbatim
 *>
 *> \param[in,out] PARAMS
 *> \verbatim
-*>          PARAMS is / output) REAL array, dimension NPARAMS
-*>     Specifies algorithm parameters.  If an entry is .LT. 0.0, then
+*>          PARAMS is REAL array, dimension NPARAMS
+*>     Specifies algorithm parameters.  If an entry is < 0.0, then
 *>     that entry will be filled with default value used for that
 *>     parameter.  Only positions up to NPARAMS are accessed; defaults
 *>     are used for higher-numbered parameters.
@@ -322,9 +322,9 @@
 *>       PARAMS(LA_LINRX_ITREF_I = 1) : Whether to perform iterative
 *>            refinement or not.
 *>         Default: 1.0
-*>            = 0.0 : No refinement is performed, and no error bounds are
+*>            = 0.0:  No refinement is performed, and no error bounds are
 *>                    computed.
-*>            = 1.0 : Use the double-precision refinement algorithm,
+*>            = 1.0:  Use the double-precision refinement algorithm,
 *>                    possibly with doubled-single computations if the
 *>                    compilation environment does not support DOUBLE
 *>                    PRECISION.
@@ -387,12 +387,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexSYcomputational
 *
@@ -402,10 +400,9 @@
      $                    ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
      $                    WORK, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, EQUED
@@ -463,12 +460,11 @@
       INTRINSIC          MAX, SQRT, TRANSFER
 *     ..
 *     .. External Functions ..
-      EXTERNAL           LSAME, BLAS_FPINFO_X, ILATRANS, ILAPREC
+      EXTERNAL           LSAME, ILAPREC
       EXTERNAL           SLAMCH, CLANSY, CLA_SYRCOND_X, CLA_SYRCOND_C
       REAL               SLAMCH, CLANSY, CLA_SYRCOND_X, CLA_SYRCOND_C
       LOGICAL            LSAME
-      INTEGER            BLAS_FPINFO_X
-      INTEGER            ILATRANS, ILAPREC
+      INTEGER            ILAPREC
 *     ..
 *     .. Executable Statements ..
 *
@@ -535,9 +531,9 @@
       ELSE IF( LDAF.LT.MAX( 1, N ) ) THEN
         INFO = -8
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
-        INFO = -11
+        INFO = -12
       ELSE IF( LDX.LT.MAX( 1, N ) ) THEN
-        INFO = -13
+        INFO = -14
       END IF
       IF( INFO.NE.0 ) THEN
         CALL XERBLA( 'CSYRFSX', -INFO )
@@ -680,7 +676,7 @@
             IF ( RCOND_TMP .LT. ILLRCOND_THRESH ) THEN
                ERR_BNDS_COMP( J, LA_LINRX_ERR_I ) = 1.0
                ERR_BNDS_COMP( J, LA_LINRX_TRUST_I ) = 0.0
-               IF ( PARAMS( LA_LINRX_CWISE_I ) .EQ. 1.0
+               IF ( .NOT. IGNORE_CWISE
      $              .AND. INFO.LT.N + J ) INFO = N + J
             ELSE IF ( ERR_BNDS_COMP( J, LA_LINRX_ERR_I )
      $              .LT. ERR_LBND ) THEN

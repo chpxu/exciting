@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYTRI2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytri2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytri2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytri2.f"> 
+*> Download SSYTRI2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytri2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytri2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytri2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYTRI2( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, LWORK, N
@@ -28,14 +28,14 @@
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> SSYTRI2 computes the inverse of a REAL hermitian indefinite matrix
+*> SSYTRI2 computes the inverse of a REAL symmetric indefinite matrix
 *> A using the factorization A = U*D*U**T or A = L*D*L**T computed by
 *> SSYTRF. SSYTRI2 sets the LEADING DIMENSION of the workspace
 *> before calling SSYTRI2X that actually computes the inverse.
@@ -62,7 +62,7 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is REAL array, dimension (LDA,N)
-*>          On entry, the NB diagonal matrix D and the multipliers
+*>          On entry, the block diagonal matrix D and the multipliers
 *>          used to obtain the factor U or L as computed by SSYTRF.
 *>
 *>          On exit, if INFO = 0, the (symmetric) inverse of the original
@@ -82,7 +82,7 @@
 *> \param[in] IPIV
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
-*>          Details of the interchanges and the NB structure of D
+*>          Details of the interchanges and the block structure of D
 *>          as determined by SSYTRF.
 *> \endverbatim
 *>
@@ -96,11 +96,11 @@
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
 *>          WORK is size >= (N+NB+1)*(NB+3)
-*>          If LDWORK = -1, then a workspace query is assumed; the routine
+*>          If LWORK = -1, then a workspace query is assumed; the routine
 *>           calculates:
 *>              - the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array,
-*>              - and no error message related to LDWORK is issued by XERBLA.
+*>              - and no error message related to LWORK is issued by XERBLA.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -115,22 +115,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYcomputational
 *
 *  =====================================================================
       SUBROUTINE SSYTRI2( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -153,7 +150,7 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SSYTRI2X
+      EXTERNAL           SSYTRI, SSYTRI2X, XERBLA
 *     ..
 *     .. Executable Statements ..
 *
@@ -192,7 +189,7 @@
       END IF
       IF( N.EQ.0 )
      $   RETURN
-      
+
       IF( NBMAX .GE. N ) THEN
          CALL SSYTRI( UPLO, N, A, LDA, IPIV, WORK, INFO )
       ELSE

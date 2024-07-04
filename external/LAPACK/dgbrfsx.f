@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGBRFSX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgbrfsx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgbrfsx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgbrfsx.f"> 
+*> Download DGBRFSX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgbrfsx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgbrfsx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgbrfsx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -23,7 +23,7 @@
 *                           BERR, N_ERR_BNDS, ERR_BNDS_NORM,
 *                           ERR_BNDS_COMP, NPARAMS, PARAMS, WORK, IWORK,
 *                           INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS, EQUED
 *       INTEGER            INFO, LDAB, LDAFB, LDB, LDX, N, KL, KU, NRHS,
@@ -38,7 +38,7 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -159,7 +159,7 @@
 *>
 *> \param[in,out] R
 *> \verbatim
-*>          R is or output) DOUBLE PRECISION array, dimension (N)
+*>          R is DOUBLE PRECISION array, dimension (N)
 *>     The row scale factors for A.  If EQUED = 'R' or 'B', A is
 *>     multiplied on the left by diag(R); if EQUED = 'N' or 'C', R
 *>     is not accessed.  R is an input argument if FACT = 'F';
@@ -177,7 +177,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is or output) DOUBLE PRECISION array, dimension (N)
+*>          C is DOUBLE PRECISION array, dimension (N)
 *>     The column scale factors for A.  If EQUED = 'C' or 'B', A is
 *>     multiplied on the right by diag(C); if EQUED = 'N' or 'R', C
 *>     is not accessed.  C is an input argument if FACT = 'F';
@@ -308,7 +308,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -344,14 +344,14 @@
 *> \param[in] NPARAMS
 *> \verbatim
 *>          NPARAMS is INTEGER
-*>     Specifies the number of parameters set in PARAMS.  If .LE. 0, the
+*>     Specifies the number of parameters set in PARAMS.  If <= 0, the
 *>     PARAMS array is never referenced and default values are used.
 *> \endverbatim
 *>
 *> \param[in,out] PARAMS
 *> \verbatim
-*>          PARAMS is / output) DOUBLE PRECISION array, dimension (NPARAMS)
-*>     Specifies algorithm parameters.  If an entry is .LT. 0.0, then
+*>          PARAMS is DOUBLE PRECISION array, dimension (NPARAMS)
+*>     Specifies algorithm parameters.  If an entry is < 0.0, then
 *>     that entry will be filled with default value used for that
 *>     parameter.  Only positions up to NPARAMS are accessed; defaults
 *>     are used for higher-numbered parameters.
@@ -359,9 +359,9 @@
 *>       PARAMS(LA_LINRX_ITREF_I = 1) : Whether to perform iterative
 *>            refinement or not.
 *>         Default: 1.0D+0
-*>            = 0.0 : No refinement is performed, and no error bounds are
+*>            = 0.0:  No refinement is performed, and no error bounds are
 *>                    computed.
-*>            = 1.0 : Use the double-precision refinement algorithm,
+*>            = 1.0:  Use the double-precision refinement algorithm,
 *>                    possibly with doubled-single computations if the
 *>                    compilation environment does not support DOUBLE
 *>                    PRECISION.
@@ -424,12 +424,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGBcomputational
 *
@@ -440,10 +438,9 @@
      $                    ERR_BNDS_COMP, NPARAMS, PARAMS, WORK, IWORK,
      $                    INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS, EQUED
@@ -502,11 +499,10 @@
       INTRINSIC          MAX, SQRT
 *     ..
 *     .. External Functions ..
-      EXTERNAL           LSAME, BLAS_FPINFO_X, ILATRANS, ILAPREC
+      EXTERNAL           LSAME, ILATRANS, ILAPREC
       EXTERNAL           DLAMCH, DLANGB, DLA_GBRCOND
       DOUBLE PRECISION   DLAMCH, DLANGB, DLA_GBRCOND
       LOGICAL            LSAME
-      INTEGER            BLAS_FPINFO_X
       INTEGER            ILATRANS, ILAPREC
 *     ..
 *     .. Executable Statements ..
@@ -646,7 +642,7 @@
 *
 *     Perform refinement on each right-hand side
 *
-      IF (REF_TYPE .NE. 0) THEN
+      IF ( REF_TYPE .NE. 0 .AND. INFO .EQ. 0 ) THEN
 
          PREC_TYPE = ILAPREC( 'E' )
 

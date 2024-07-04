@@ -1,26 +1,26 @@
-*> \brief \b SLASY2
+*> \brief \b SLASY2 solves the Sylvester matrix equation where the matrices are of order 1 or 2.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASY2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasy2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasy2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasy2.f"> 
+*> Download SLASY2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasy2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasy2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasy2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLASY2( LTRANL, LTRANR, ISGN, N1, N2, TL, LDTL, TR,
 *                          LDTR, B, LDB, SCALE, X, LDX, XNORM, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            LTRANL, LTRANR
 *       INTEGER            INFO, ISGN, LDB, LDTL, LDTR, LDX, N1, N2
@@ -30,7 +30,7 @@
 *       REAL               B( LDB, * ), TL( LDTL, * ), TR( LDTR, * ),
 *      $                   X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -161,12 +161,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realSYauxiliary
 *
@@ -174,10 +172,9 @@
       SUBROUTINE SLASY2( LTRANL, LTRANR, ISGN, N1, N2, TL, LDTL, TR,
      $                   LDTR, B, LDB, SCALE, X, LDX, XNORM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       LOGICAL            LTRANL, LTRANR
@@ -438,8 +435,10 @@
    80       CONTINUE
    90    CONTINUE
   100 CONTINUE
-      IF( ABS( T16( 4, 4 ) ).LT.SMIN )
-     $   T16( 4, 4 ) = SMIN
+      IF( ABS( T16( 4, 4 ) ).LT.SMIN ) THEN
+         INFO = 1
+         T16( 4, 4 ) = SMIN
+      END IF
       SCALE = ONE
       IF( ( EIGHT*SMLNUM )*ABS( BTMP( 1 ) ).GT.ABS( T16( 1, 1 ) ) .OR.
      $    ( EIGHT*SMLNUM )*ABS( BTMP( 2 ) ).GT.ABS( T16( 2, 2 ) ) .OR.

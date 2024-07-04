@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZHEEVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zheevx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zheevx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zheevx.f"> 
+*> Download ZHEEVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zheevx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zheevx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zheevx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE ZHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
 *                          ABSTOL, M, W, Z, LDZ, WORK, LWORK, RWORK,
 *                          IWORK, IFAIL, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, RANGE, UPLO
 *       INTEGER            IL, INFO, IU, LDA, LDZ, LWORK, M, N
@@ -32,7 +32,7 @@
 *       DOUBLE PRECISION   RWORK( * ), W( * )
 *       COMPLEX*16         A( LDA, * ), WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -99,12 +99,15 @@
 *> \param[in] VL
 *> \verbatim
 *>          VL is DOUBLE PRECISION
+*>          If RANGE='V', the lower bound of the interval to
+*>          be searched for eigenvalues. VL < VU.
+*>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
 *>          VU is DOUBLE PRECISION
-*>          If RANGE='V', the lower and upper bounds of the interval to
+*>          If RANGE='V', the upper bound of the interval to
 *>          be searched for eigenvalues. VL < VU.
 *>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
@@ -112,13 +115,17 @@
 *> \param[in] IL
 *> \verbatim
 *>          IL is INTEGER
+*>          If RANGE='I', the index of the
+*>          smallest eigenvalue to be returned.
+*>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
+*>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
 *>
 *> \param[in] IU
 *> \verbatim
 *>          IU is INTEGER
-*>          If RANGE='I', the indices (in ascending order) of the
-*>          smallest and largest eigenvalues to be returned.
+*>          If RANGE='I', the index of the
+*>          largest eigenvalue to be returned.
 *>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
 *>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
@@ -238,12 +245,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16HEeigen
 *
@@ -252,10 +257,9 @@
      $                   ABSTOL, M, W, Z, LDZ, WORK, LWORK, RWORK,
      $                   IWORK, IFAIL, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
@@ -374,12 +378,12 @@
       IF( N.EQ.1 ) THEN
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
-            W( 1 ) = A( 1, 1 )
+            W( 1 ) = DBLE( A( 1, 1 ) )
          ELSE IF( VALEIG ) THEN
             IF( VL.LT.DBLE( A( 1, 1 ) ) .AND. VU.GE.DBLE( A( 1, 1 ) ) )
      $           THEN
                M = 1
-               W( 1 ) = A( 1, 1 )
+               W( 1 ) = DBLE( A( 1, 1 ) )
             END IF
          END IF
          IF( WANTZ )

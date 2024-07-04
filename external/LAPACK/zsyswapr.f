@@ -2,31 +2,31 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZSYSWAPR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsyswapr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zsyswapr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsyswapr.f"> 
+*> Download ZSYSWAPR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsyswapr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zsyswapr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsyswapr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZSYSWAPR( UPLO, N, A, LDA, I1, I2)
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER        UPLO
 *       INTEGER          I1, I2, LDA, N
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX*16       A( LDA, N )
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -57,16 +57,14 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX*16 array, dimension (LDA,N)
-*>          On entry, the NB diagonal matrix D and the multipliers
-*>          used to obtain the factor U or L as computed by ZSYTRF.
-*>
-*>          On exit, if INFO = 0, the (symmetric) inverse of the original
-*>          matrix.  If UPLO = 'U', the upper triangular part of the
-*>          inverse is formed and the part of A below the diagonal is not
-*>          referenced; if UPLO = 'L' the lower triangular part of the
-*>          inverse is formed and the part of A above the diagonal is
-*>          not referenced.
+*>          A is COMPLEX*16 array, dimension (LDA,*)
+*>          On entry, the N-by-N matrix A. On exit, the permuted matrix
+*>          where the rows I1 and I2 and columns I1 and I2 are interchanged.
+*>          If UPLO = 'U', the interchanges are applied to the upper
+*>          triangular part and the strictly lower triangular part of A is
+*>          not referenced; if UPLO = 'L', the interchanges are applied to
+*>          the lower triangular part and the part of A above the diagonal
+*>          is not referenced.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -90,36 +88,32 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16SYauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZSYSWAPR( UPLO, N, A, LDA, I1, I2)
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER        UPLO
       INTEGER          I1, I2, LDA, N
 *     ..
 *     .. Array Arguments ..
-      COMPLEX*16       A( LDA, N )
+      COMPLEX*16       A( LDA, * )
 *
 *  =====================================================================
 *
 *     ..
 *     .. Local Scalars ..
       LOGICAL            UPPER
-      INTEGER            I
       COMPLEX*16         TMP
 *
 *     .. External Functions ..
@@ -136,57 +130,43 @@
 *
 *         UPPER
 *         first swap
-*          - swap column I1 and I2 from I1 to I1-1 
+*          - swap column I1 and I2 from I1 to I1-1
          CALL ZSWAP( I1-1, A(1,I1), 1, A(1,I2), 1 )
 *
 *          second swap :
 *          - swap A(I1,I1) and A(I2,I2)
-*          - swap row I1 from I1+1 to I2-1 with col I2 from I1+1 to I2-1     
+*          - swap row I1 from I1+1 to I2-1 with col I2 from I1+1 to I2-1
          TMP=A(I1,I1)
          A(I1,I1)=A(I2,I2)
          A(I2,I2)=TMP
 *
-         DO I=1,I2-I1-1
-            TMP=A(I1,I1+I)
-            A(I1,I1+I)=A(I1+I,I2)
-            A(I1+I,I2)=TMP
-         END DO
+         CALL ZSWAP( I2-I1-1, A(I1,I1+1), LDA, A(I1+1,I2), 1 )
 *
 *          third swap
 *          - swap row I1 and I2 from I2+1 to N
-         DO I=I2+1,N
-            TMP=A(I1,I)
-            A(I1,I)=A(I2,I)
-            A(I2,I)=TMP
-         END DO
+         IF ( I2.LT.N )
+     $      CALL ZSWAP( N-I2, A(I1,I2+1), LDA, A(I2,I2+1), LDA )
 *
         ELSE
 *
 *         LOWER
 *         first swap
-*          - swap row I1 and I2 from I1 to I1-1 
+*          - swap row I1 and I2 from I1 to I1-1
          CALL ZSWAP( I1-1, A(I1,1), LDA, A(I2,1), LDA )
 *
 *         second swap :
 *          - swap A(I1,I1) and A(I2,I2)
-*          - swap col I1 from I1+1 to I2-1 with row I2 from I1+1 to I2-1     
+*          - swap col I1 from I1+1 to I2-1 with row I2 from I1+1 to I2-1
           TMP=A(I1,I1)
           A(I1,I1)=A(I2,I2)
           A(I2,I2)=TMP
 *
-          DO I=1,I2-I1-1
-             TMP=A(I1+I,I1)
-             A(I1+I,I1)=A(I2,I1+I)
-             A(I2,I1+I)=TMP
-          END DO
+          CALL ZSWAP( I2-I1-1, A(I1+1,I1), 1, A(I2,I1+1), LDA )
 *
 *         third swap
 *          - swap col I1 and I2 from I2+1 to N
-          DO I=I2+1,N
-             TMP=A(I,I1)
-             A(I,I1)=A(I,I2)
-             A(I,I2)=TMP
-          END DO
+         IF ( I2.LT.N )
+     $      CALL ZSWAP( N-I2, A(I2+1,I1), 1, A(I2+1,I2), 1 )
 *
       ENDIF
       END SUBROUTINE ZSYSWAPR

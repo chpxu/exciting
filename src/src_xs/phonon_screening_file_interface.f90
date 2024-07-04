@@ -118,20 +118,26 @@ contains
     end subroutine qe_read_eps_inf_zstar
 
     !> Read phonon frequencies and eigenvectors
-    !> from Quantum Espressomatdyn.x output (xxx.eig)
+    !> from Quantum Espresso matdyn.x output (xxx.eig)
     !> xxxx.eig is the dynamical matrix at the Gamma point
-    subroutine qe_read_phonon(natoms, fname, freq_ph, evec_ph_out)
+    subroutine qe_read_phonon(alat_qe, qvecs_in, natoms, fname, freq_ph, evec_ph_out)
 
         use m_getunit, only: getunit
         use unit_conversion, only: hartree_to_thz
         use errors_warnings, only: terminate_if_false
         use modmpi, only: mpiinfo
+        use math_utils, only: all_close
+        use constants, only: twopi
 
         ! I/O
         !> Number of atoms per species
         integer(sp), intent(in) :: natoms(:)
         !> filename
         character(len=40), intent(in) :: fname
+        !> qvecs for which to read
+        real(dp), intent(in)  :: qvecs_in(:, :)
+        !> Lattice constant as used by quantum espresso
+        real(dp), intent(in)  :: alat_qe
         !> phonon frequencies
         real(dp), intent(out)  :: freq_ph(:, :)
         !> phonon eigenvectors for output
@@ -172,12 +178,17 @@ contains
         type(mpiinfo) :: mpiglobal
         !> Number of phonon modes
         integer(sp) :: n_phonon_modes
+        !> q-vectors as read from file (for comparison with expected q-vectors)
+        real(dp), allocatable :: qvecs_read(:, :)
+
 
         ! Get some infos
         natmtot = size(freq_ph, dim=1)/3._dp
         nspecies = size(natoms)
         nqpoints = size(freq_ph, dim=2)
         n_phonon_modes = 3*natmtot
+
+        allocate(qvecs_read(3, nqpoints))
 
         allocate (evec_ph_local(3, natmtot, n_phonon_modes, nqpoints))
         ! Define format for reading QE output file
@@ -193,9 +204,15 @@ contains
 
         do iq = 1, nqpoints
             ! Skip file info
-            do ilines = 1, 4
+            do ilines = 1, 2
                 read (fid, *)
             end do
+
+            ! Read q-vector
+            read (fid, '(A10,3F10.5)') char(1), qvecs_read(:, iq)
+
+            ! Skip line
+            read (fid, *)
 
             !Read frequencies
             do imode = 1, n_phonon_modes
@@ -232,6 +249,10 @@ contains
         call terminate_if_false(mpiglobal, ias == natmtot, &
                                 error_message=' Total number of atoms not &
                                 correct when reading: '//trim(fname))
+
+        ! Check if read qvecs match expected ones
+        call terminate_if_false(mpiglobal, all_close(qvecs_read * twopi / alat_qe, qvecs_in, tol=1e-3_dp), &
+            error_message=' q-vecs read from file differ from expected q-vecs: '//trim(fname))
 
     end subroutine qe_read_phonon
 
@@ -431,139 +452,6 @@ contains
 
     end subroutine exc_read_phonon
 
-    !> Reads Fouier coefficients of scr Coul. int. from file
-    !> I.e. it reads \( W_{GG'} \) for given qpoint and phonon mode
-    subroutine read_W_ph(filename, iq, qvec, imode, freq_ph, W_ph)
-
-        use m_getunit, only: getunit
-        use math_utils, only: all_close
-        use modmpi, only: mpiglobal, terminate_mpi_env
-
-        !> q-point index (requested)
-        integer(sp), intent(in) :: iq
-        !> q-vector in cartesian coordinates (requested)
-        real(dp), intent(in) :: qvec(3)
-        !> phonon mode index (requested)
-        integer(sp), intent(in) :: imode
-        !> Phonon frequency for given mode and q-vector (requested)
-        real(dp), intent(in) :: freq_ph
-        !>filename
-        character(len=40), intent(in) :: filename
-        !> Fourier coeffs. screened Coulomb int.
-        complex(dp), intent(out) :: W_ph(:, :)
-
-        !> record length fourier coeffs. screened Coulomb int.
-        integer(dp) :: reclen
-        !> read/open status
-        integer(dp) :: stat
-        !>file ID
-        integer :: fid
-        !> Number of (G+q)-vectors (requested)
-        integer(sp) :: n_gqvecs
-
-        !> q-point index (read from file)
-        integer(sp) :: iq_r
-        !> q-vector in cartesian coordinates (read from file)
-        real(dp) :: qvec_r(3)
-        !> phonon mode index (read from file)
-        integer(sp) :: imode_r
-        !> Phonon frequency for given mode and q-vector (read from file)
-        real(dp) :: freq_ph_r
-        !> Number of (G+q)-vectors (read from file)
-        integer(sp) :: n_gqvecs_r
-
-        n_gqvecs = size(W_ph, dim=1)
-
-        !Get record length
-        inquire (iolength=reclen) iq_r, qvec_r, n_gqvecs_r, &
-            imode_r, freq_ph_r, W_ph
-
-        call getunit(fid)
-        open (unit=fid, file=filename, status='old', form='unformatted',&
-                & action='read', access='direct', recl=reclen, iostat=stat)
-
-        if (stat /= 0) then
-            write (*, *) "Error opening file, iostat:", stat, filename
-            call terminate_mpi_env(mpiglobal)
-        end if
-
-        read (fid, rec=imode, iostat=stat) iq_r, qvec_r, n_gqvecs_r, &
-            imode_r, freq_ph_r, W_ph
-
-        if (stat /= 0) then
-            write (*, *) "Error reading file, iostat:", stat, filename
-            call terminate_mpi_env(mpiglobal)
-        end if
-        close (fid)
-
-        ! Check consistency of requested data with saved data
-        if (n_gqvecs_r /= n_gqvecs &
-            .or. .not. all_close(qvec_r, qvec) &
-            .or. iq_r /= iq .or. imode_r /= imode &
-            .or. .not. all_close(freq_ph_r, freq_ph)) then
-
-            write (*, '(a)') 'Error(read_W_ph):&
-              & differring parameters for matrix elements (current/file): '
-            write (*, '(a, 2i6)') 'ngq', n_gqvecs, n_gqvecs_r
-            write (*, '(a, 3f12.6, a, 3f12.6)') 'qvec', qvec, ', ', qvec_r
-            write (*, '(a, 2i6)') 'for q-point :', iq, iq_r
-            write (*, '(a, 2i6)') 'phonon mode :', imode, imode_r
-            write (*, '(a, 2E13.6)') 'phonon freq: ', freq_ph, freq_ph_r
-            write (*, '(a)') ' file: ', trim(filename)
-            call terminate_mpi_env(mpiglobal)
-        end if
-
-    end subroutine read_W_ph
-
-    !> Writes Fouier coefficients of scr Coul. int. to file
-    !> I.e. it writes W_{GG'} for given qpoint and phonon mode
-    subroutine write_W_ph(filename, iq, qvec, imode, freq_ph, W_ph)
-
-        use m_getunit, only: getunit
-
-        !> q-point index
-        integer(sp), intent(in) :: iq
-        !> q-vector in cartesian coordinates
-        real(dp), intent(in) :: qvec(3)
-        !> phonon mode index
-        integer(sp), intent(in) :: imode
-        !> Phonon frequency for given mode and q-vector
-        real(dp), intent(in) :: freq_ph
-        !> Fourier coeffs. screened Coulomb int.
-        complex(dp), intent(in) :: W_ph(:, :)
-        !>filename
-        character(len=40), intent(in) :: filename
-        !> record length fourier coeffs. screened Coulomb int.
-        integer(dp) :: reclen
-        !> read/open status
-        integer(dp) :: stat
-        !>file ID
-        integer(sp) :: fid
-        !> Number of (G+q)-vectors
-        integer(sp) :: n_gqvecs
-
-        n_gqvecs = size(W_ph, dim=1)
-
-        inquire (iolength=reclen) iq, qvec, n_gqvecs, imode, freq_ph, W_ph
-
-        call getunit(fid)
-        open (unit=fid, file=filename, form='unformatted',&
-                & action='write', access='direct', recl=reclen, iostat=stat)
-        if (stat /= 0) then
-            write (*, *) "Error opening file, iostat:", stat, filename
-            call terminate_mpi_env(mpiglobal)
-        end if
-
-        write (fid, rec=imode, iostat=stat) iq, qvec, n_gqvecs, &
-            imode, freq_ph, W_ph
-
-        if (stat /= 0) then
-            write (*, *) "Error writing file, iostat:", stat, filename
-            call terminate_mpi_env(mpiglobal)
-        end if
-        close (fid)
-
-    end subroutine write_W_ph
 
     !> Checks if file is present and terminates if not
     subroutine check_file_existence(filename)

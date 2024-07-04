@@ -1,25 +1,25 @@
-*> \brief \b CLA_LIN_BERR
+*> \brief \b CLA_LIN_BERR computes a component-wise relative backward error.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLA_LIN_BERR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_lin_berr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_lin_berr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_lin_berr.f"> 
+*> Download CLA_LIN_BERR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cla_lin_berr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cla_lin_berr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cla_lin_berr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE CLA_LIN_BERR ( N, NZ, NRHS, RES, AYB, BERR )
-* 
+*       SUBROUTINE CLA_LIN_BERR( N, NZ, NRHS, RES, AYB, BERR )
+*
 *       .. Scalar Arguments ..
 *       INTEGER            N, NZ, NRHS
 *       ..
@@ -27,7 +27,7 @@
 *       REAL               AYB( N, NRHS ), BERR( NRHS )
 *       COMPLEX            RES( N, NRHS )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -67,44 +67,41 @@
 *>
 *> \param[in] RES
 *> \verbatim
-*>          RES is DOUBLE PRECISION array, dimension (N,NRHS)
+*>          RES is COMPLEX array, dimension (N,NRHS)
 *>     The residual matrix, i.e., the matrix R in the relative backward
 *>     error formula above.
 *> \endverbatim
 *>
 *> \param[in] AYB
 *> \verbatim
-*>          AYB is DOUBLE PRECISION array, dimension (N, NRHS)
+*>          AYB is REAL array, dimension (N, NRHS)
 *>     The denominator in the relative backward error formula above, i.e.,
 *>     the matrix abs(op(A_s))*abs(Y) + abs(B_s). The matrices A, Y, and B
 *>     are from iterative refinement (see cla_gerfsx_extended.f).
 *> \endverbatim
-*>     
+*>
 *> \param[out] BERR
 *> \verbatim
-*>          BERR is COMPLEX array, dimension (NRHS)
+*>          BERR is REAL array, dimension (NRHS)
 *>     The componentwise relative backward error from the formula above.
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
-      SUBROUTINE CLA_LIN_BERR ( N, NZ, NRHS, RES, AYB, BERR )
+      SUBROUTINE CLA_LIN_BERR( N, NZ, NRHS, RES, AYB, BERR )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            N, NZ, NRHS
@@ -157,4 +154,7 @@
 *
          END DO
       END DO
+*
+*     End of CLA_LIN_BERR
+*
       END

@@ -6,9 +6,13 @@
 subroutine checkinput
   use modmain
   use modinput
+  use svlo, only: is_input_compatible_with_svlo    
   implicit none
   integer :: is,i
+  logical :: is_compatible_with_svlo
+  character(:), allocatable :: incompatibility_with_svlo_message
   character(1024) :: message
+
   if (input%structure%epslat.le.0.d0) then
     write(*,*)
     write(*,'("Error(checkinput): /input/structure/@epslat <= 0 : ",G18.10)') input%structure%epslat
@@ -357,9 +361,22 @@ subroutine checkinput
     end if
   end if
   if (associated(input%groundstate)) then
+    if (associated(input%groundstate%spin)) then
+      if (input%groundstate%spin%svlo) then
+          call is_input_compatible_with_svlo(input, is_compatible_with_svlo, incompatibility_with_svlo_message)
+          if (.not. is_compatible_with_svlo) then 
+            write(*,*)
+            write(*,'("Error(checkinput): ", A)') incompatibility_with_svlo_message
+            write(*,*)
+            stop
+          end if 
+      end if
+    end if
+  end if
+  if (associated(input%structure)) then
     if ((input%structure%autormtscaling.le.0.d0).or.(input%structure%autormtscaling.gt.1.d0)) then
       write(*,*)
-      write(*,'("Error(checkinput): /input/groundstate/@autormtscaling not in (0,1] : ",G18.10)') input%structure%autormtscaling
+      write(*,'("Error(checkinput): /input/structure/@autormtscaling not in (0,1] : ",G18.10)') input%structure%autormtscaling
       write(*,*)
       stop
     end if

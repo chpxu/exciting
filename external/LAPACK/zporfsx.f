@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZPORFSX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zporfsx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zporfsx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zporfsx.f"> 
+*> Download ZPORFSX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zporfsx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zporfsx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zporfsx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                           LDB, X, LDX, RCOND, BERR, N_ERR_BNDS,
 *                           ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
 *                           WORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO, EQUED
 *       INTEGER            INFO, LDA, LDAF, LDB, LDX, N, NRHS, NPARAMS,
@@ -36,7 +36,7 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -44,7 +44,7 @@
 *> \verbatim
 *>
 *>    ZPORFSX improves the computed solution to a system of linear
-*>    equations when the coefficient matrix is symmetric positive
+*>    equations when the coefficient matrix is Hermitian positive
 *>    definite, and provides error bounds and backward error estimates
 *>    for the solution.  In addition to normwise error bound, the code
 *>    provides maximum componentwise error bound if possible.  See
@@ -103,7 +103,7 @@
 *> \param[in] A
 *> \verbatim
 *>          A is COMPLEX*16 array, dimension (LDA,N)
-*>     The symmetric matrix A.  If UPLO = 'U', the leading N-by-N
+*>     The Hermitian matrix A.  If UPLO = 'U', the leading N-by-N
 *>     upper triangular part of A contains the upper triangular part
 *>     of the matrix A, and the strictly lower triangular part of A
 *>     is not referenced.  If UPLO = 'L', the leading N-by-N lower
@@ -122,7 +122,7 @@
 *> \verbatim
 *>          AF is COMPLEX*16 array, dimension (LDAF,N)
 *>     The triangular factor U or L from the Cholesky factorization
-*>     A = U**T*U or A = L*L**T, as computed by DPOTRF.
+*>     A = U**H*U or A = L*L**H, as computed by ZPOTRF.
 *> \endverbatim
 *>
 *> \param[in] LDAF
@@ -133,8 +133,8 @@
 *>
 *> \param[in,out] S
 *> \verbatim
-*>          S is or output) DOUBLE PRECISION array, dimension (N)
-*>     The row scale factors for A.  If EQUED = 'Y', A is multiplied on
+*>          S is DOUBLE PRECISION array, dimension (N)
+*>     The scale factors for A.  If EQUED = 'Y', A is multiplied on
 *>     the left and right by diag(S).  S is an input argument if FACT =
 *>     'F'; otherwise, S is an output argument.  If FACT = 'F' and EQUED
 *>     = 'Y', each element of S must be positive.  If S is output, each
@@ -162,7 +162,7 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is COMPLEX*16 array, dimension (LDX,NRHS)
-*>     On entry, the solution matrix X, as computed by DGETRS.
+*>     On entry, the solution matrix X, as computed by ZGETRS.
 *>     On exit, the improved solution matrix X.
 *> \endverbatim
 *>
@@ -262,7 +262,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -298,14 +298,14 @@
 *> \param[in] NPARAMS
 *> \verbatim
 *>          NPARAMS is INTEGER
-*>     Specifies the number of parameters set in PARAMS.  If .LE. 0, the
+*>     Specifies the number of parameters set in PARAMS.  If <= 0, the
 *>     PARAMS array is never referenced and default values are used.
 *> \endverbatim
 *>
 *> \param[in,out] PARAMS
 *> \verbatim
-*>          PARAMS is / output) DOUBLE PRECISION array, dimension NPARAMS
-*>     Specifies algorithm parameters.  If an entry is .LT. 0.0, then
+*>          PARAMS is DOUBLE PRECISION array, dimension NPARAMS
+*>     Specifies algorithm parameters.  If an entry is < 0.0, then
 *>     that entry will be filled with default value used for that
 *>     parameter.  Only positions up to NPARAMS are accessed; defaults
 *>     are used for higher-numbered parameters.
@@ -313,9 +313,9 @@
 *>       PARAMS(LA_LINRX_ITREF_I = 1) : Whether to perform iterative
 *>            refinement or not.
 *>         Default: 1.0D+0
-*>            = 0.0 : No refinement is performed, and no error bounds are
+*>            = 0.0:  No refinement is performed, and no error bounds are
 *>                    computed.
-*>            = 1.0 : Use the double-precision refinement algorithm,
+*>            = 1.0:  Use the double-precision refinement algorithm,
 *>                    possibly with doubled-single computations if the
 *>                    compilation environment does not support DOUBLE
 *>                    PRECISION.
@@ -378,12 +378,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16POcomputational
 *
@@ -393,10 +391,9 @@
      $                    ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
      $                    WORK, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, EQUED
@@ -453,12 +450,11 @@
       INTRINSIC          MAX, SQRT, TRANSFER
 *     ..
 *     .. External Functions ..
-      EXTERNAL           LSAME, BLAS_FPINFO_X, ILATRANS, ILAPREC
+      EXTERNAL           LSAME, ILAPREC
       EXTERNAL           DLAMCH, ZLANHE, ZLA_PORCOND_X, ZLA_PORCOND_C
       DOUBLE PRECISION   DLAMCH, ZLANHE, ZLA_PORCOND_X, ZLA_PORCOND_C
       LOGICAL            LSAME
-      INTEGER            BLAS_FPINFO_X
-      INTEGER            ILATRANS, ILAPREC
+      INTEGER            ILAPREC
 *     ..
 *     .. Executable Statements ..
 *

@@ -103,7 +103,7 @@ module sirius_api
       & get_max_num_gkvec_sirius, get_gkvec_arrays_sirius, &
       & get_forces_sirius, generate_coulomb_potential_sirius, &
       & set_exchange_correlation_sirius, set_xc_magnetic_sirius, &
-      & warn_array_sizes_sirius
+      & warn_array_sizes_sirius, set_periodic_function_ptr_sirius
 
   ! Module-scoped variables, required for communicating with the sirius lib
   ! but never exposed to exciting routines. One interacts with them purely
@@ -391,18 +391,6 @@ contains
     call sirius_initialize_kset( ks_handler, count=counts)
     ! Create a ground state executor with the given k-point set
     call sirius_create_ground_state( ks_handler, gs_handler)
-
-    ! set MT pointer aliases to avoid allocating memory twice
-    call sirius_set_periodic_function_ptr( gs_handler, "rho", f_mt=rhomt )
-    call sirius_set_periodic_function_ptr( gs_handler, "veff", f_mt=veffmt )
-    if (ndmag.eq.1) then
-      call sirius_set_periodic_function_ptr( gs_handler, "magz", f_mt=magmt(:, :, :, 1) )
-    end if
-    if (ndmag.eq.3) then
-      call sirius_set_periodic_function_ptr( gs_handler, "magx", f_mt=magmt(:, :, :, 1) )
-      call sirius_set_periodic_function_ptr( gs_handler, "magy", f_mt=magmt(:, :, :, 2) )
-      call sirius_set_periodic_function_ptr( gs_handler, "magz", f_mt=magmt(:, :, :, 3) )
-    end if
     deallocate(counts)
 #endif
 
@@ -441,9 +429,10 @@ contains
   !> The result is returned on the sirius side, and must be accessed with
   !> the `sirius_get_band_energies` routine.
   subroutine solve_seceqn_sirius()
+    use mod_Gvector, only: ngrid
     use mod_potential_and_density, only: veffir
 #ifdef SIRIUS
-    call sirius_set_periodic_function(gs_handler, "veff", f_rg=veffir, f_rg_global=.true.)
+    call sirius_set_periodic_function(gs_handler, "veff", f_rg=veffir, size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
     call sirius_find_eigen_states(gs_handler, ks_handler, precompute_pw=.true., &
                                   precompute_rf=.false., precompute_ri=.true. )
 #endif
@@ -509,14 +498,13 @@ contains
 #endif
   end subroutine 
 
-  subroutine get_periodic_function_sirius(rhoir, ngrtot)
+  subroutine get_periodic_function_sirius(rhoir, ngrid)
     !> Interstitial real-space charge density
-    real(dp), intent(inout) :: rhoir(:)     
-    !> Total number of real space grid points
-    !> One wonders if this is just size(rhoir)
-    integer, intent(inout) :: ngrtot
+    real(dp), intent(inout) :: rhoir(:)
+    !> Number of real space and FFT grid points
+    integer, intent(in) :: ngrid(:)
 #ifdef SIRIUS
-    call sirius_get_periodic_function(gs_handler, "rho", f_rg=rhoir, num_rg_points=ngrtot)
+    call sirius_get_periodic_function(gs_handler, "rho", f_rg=rhoir, size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
 #endif
   end subroutine
 
@@ -580,7 +568,7 @@ contains
 
   !> Get maximum number of Gk vectors
   subroutine get_max_num_gkvec_sirius(ngkmax)
-    integer, intent(out) :: ngkmax        
+    integer, intent(out) :: ngkmax
 #ifdef SIRIUS    
     call sirius_get_max_num_gkvec(ks_handler, ngkmax)
 #else 
@@ -627,7 +615,7 @@ contains
   !> Generate Coulomb Potential for MT and Interstitial Regions.
   !>
   !> Total number of atoms `natmtot` accessed as a global (already loaded in this module).
-  subroutine generate_coulomb_potential_sirius(lmmaxvr, nrmtmax, natmmax, ngrtot, rhoir, vmad, vclmt, vclir)
+  subroutine generate_coulomb_potential_sirius(lmmaxvr, nrmtmax, natmmax, ngrid, rhoir, vmad, vclmt, vclir)
     !> Interstitial real-space charge density
     real(dp), intent(in) :: rhoir(:)  
     !> Madulung potential (excluding the on-site nuclear contribution) 
@@ -644,40 +632,37 @@ contains
     integer, intent(in) :: nrmtmax
     !> Maximum number of atoms over all the species.
     integer, intent(in)  :: natmmax
-    !> Total number of G-vectors.
-    integer, intent(in)  :: ngrtot
+    !> Number of real space and FFT grid points
+    integer, intent(in)  :: ngrid(:)
 
 #ifdef SIRIUS
-    ! Note, was passing as rhoir(1)
-    call sirius_set_periodic_function(gs_handler, "rho", f_rg=rhoir, f_rg_global=.true.)
-    ! Note, was passing as vmad(1)
+    call sirius_set_periodic_function(gs_handler, "rho", f_rg=rhoir, &
+                                     &size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
+
     call sirius_generate_coulomb_potential(gs_handler, vh_el=vmad)
-    ! Note, was passing as vclir(1)
+
     call sirius_get_periodic_function(gs_handler, "vha", f_mt=vclmt, lmmax=lmmaxvr, &
-                                      max_num_mt_points=nrmtmax, num_atoms=natmtot, &
-                                      f_rg=vclir, num_rg_points=ngrtot)
+                                      nrmtmax=nrmtmax, num_atoms=natmtot, &
+                                      f_rg=vclir, size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
 #endif
   end subroutine
 
   !> Set exchange and correlation potential for MT and interstitial regions.
   !>
   !> Total number of atoms `natmtot` accessed as a global (already loaded in this module).
-  subroutine set_exchange_correlation_sirius(lmmaxvr, nrmtmax, ngrtot, rhoir, vxcmt, vxcir, exmt, exir, ecmt, ecir)
-
+  subroutine set_exchange_correlation_sirius(lmmaxvr, nrmtmax, ngrid, rhoir, vxcmt, vxcir, exmt, exir, ecmt, ecir)
     !> Maximum angular momentum for potentials and densities
     integer, intent(in) :: lmmaxvr
     !> Maximum nrmt (radial MT sampling points) over all the species
     integer, intent(in) :: nrmtmax
-    !> Total number of G-vectors
-    integer, intent(in) :: ngrtot
-    
+    !> Number of real space and FFT grid points
+    integer, intent(in) :: ngrid(:)
     !> Interstitial real-space charge density
     real(dp), intent(in) :: rhoir(:)  
     !> Muffin-tin exchange-correlation potential
     real(dp), intent(out) :: vxcmt(:, :, :)
     !> Interstitial real-space exchange-correlation potential
     real(dp), intent(out) :: vxcir(:)
-
     !> Muffin-tin exchange energy density
     real(dp), intent(out):: exmt (:, :, :)
     !> Interstitial real-space exchange energy density
@@ -688,14 +673,15 @@ contains
     real(dp), intent(out)  :: ecir(:)
 
 #ifdef SIRIUS
-    call sirius_set_periodic_function(gs_handler, "rho", f_rg=rhoir, f_rg_global=.true.)
+    call sirius_set_periodic_function(gs_handler, "rho", f_rg=rhoir, &
+                                     &size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
     call sirius_generate_xc_potential(gs_handler)
     call sirius_get_periodic_function(gs_handler, "vxc", f_mt=vxcmt, lmmax=lmmaxvr, &
-                                      max_num_mt_points=nrmtmax, num_atoms=natmtot, &
-                                      f_rg=vxcir, num_rg_points=ngrtot)
+                                      nrmtmax=nrmtmax, num_atoms=natmtot, &
+                                      f_rg=vxcir, size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
     call sirius_get_periodic_function(gs_handler, "exc", f_mt=exmt, lmmax=lmmaxvr, &
-                                      max_num_mt_points=nrmtmax, num_atoms=natmtot,&
-                                      f_rg=exir, num_rg_points=ngrtot)
+                                      nrmtmax=nrmtmax, num_atoms=natmtot,&
+                                      f_rg=exir, size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
     ecmt = 0.d0
     ecir = 0.d0
 #endif
@@ -706,48 +692,31 @@ contains
   !> the influence of a magnetic field.
   !>
   !> Total number of atoms `natmtot` accessed as a global (already loaded in this module).
-  !> 
-  !> TODO(Alex) Refactor the implementation. One could do this more cleanly looping:
-  !>
-  !> if (ndmag == 1) field = ['bz']
-  !> if (ndmag == 3) field = ['bx', 'by', 'bz']
-  !> do i = 1 , ndmag
-  !>   call sirius_get_periodic_function(gs_handler, field(i), f_mt=bxcmt(:, :, :, i),&
-  !>                                     lmmax=lmmaxvr, max_num_mt_points=nrmtmax, num_atoms=natmtot,&
-  !>                                     f_rg=bxcir(:, i), num_rg_points=ngrtot)
-  !> endo
-  subroutine set_xc_magnetic_sirius(ndmag, lmmaxvr, nrmtmax, ngrtot, bxcmt, bxcir)
+  subroutine set_xc_magnetic_sirius(ndmag, lmmaxvr, nrmtmax, ngrid, bxcmt, bxcir)
     !> Dimension of magnetisation and magnetic vector fields (1 or 3)
     integer, intent(in) :: ndmag
     !> Maximum angular momentum for potentials and densities
     integer, intent(in) :: lmmaxvr
     !> Maximum nrmt (radial MT sampling points) over all the species
     integer, intent(in) :: nrmtmax
-    !> Total number of G-vectors
-    integer, intent(in) :: ngrtot
+    !> Number of real space and FFT grid points
+    integer, intent(in) :: ngrid(:)
     !> Muffin-tin exchange-correlation magnetic field
     real(dp), intent(out) :: bxcmt (:, :, :, :)
     !> Interstitial exchange-correlation magnetic field
     real(dp), intent(out) :: bxcir (:, :)
+    !
+    character(2) :: label(3)
+    integer :: i
 
 #ifdef SIRIUS
-  if (ndmag == 1) then
-    call sirius_get_periodic_function(gs_handler, "bz", f_mt=bxcmt(:, :, :, 1),&
-                                      lmmax=lmmaxvr, max_num_mt_points=nrmtmax, num_atoms=natmtot,&
-                                      f_rg=bxcir(:, 1), num_rg_points=ngrtot)
-  end if
-
-  if (ndmag == 3) then
-    call sirius_get_periodic_function(gs_handler, "bx", f_mt=bxcmt(:, :, :, 1),&
-                                      lmmax=lmmaxvr, max_num_mt_points=nrmtmax, num_atoms=natmtot,&
-                                      f_rg=bxcir(:, 1), num_rg_points=ngrtot)
-    call sirius_get_periodic_function(gs_handler, "by", f_mt=bxcmt(:, :, :, 2),&
-                                      lmmax=lmmaxvr, max_num_mt_points=nrmtmax, num_atoms=natmtot,&
-                                      f_rg=bxcir(:, 2), num_rg_points=ngrtot)
-    call sirius_get_periodic_function(gs_handler, "bz", f_mt=bxcmt(:, :, :, 3),&
-                                      lmmax=lmmaxvr, max_num_mt_points=nrmtmax, num_atoms=natmtot,&
-                                      f_rg=bxcir(:, 3), num_rg_points=ngrtot)
-  end if
+  if (ndmag == 1) label(1:1) = ['bz']
+  if (ndmag == 3) label(1:3) = ['bx', 'by', 'bz']
+  do i = 1, ndmag
+    call sirius_get_periodic_function(gs_handler, label(i), f_mt=bxcmt(:, :, :, i),&
+                                      lmmax=lmmaxvr, nrmtmax=nrmtmax, num_atoms=natmtot,&
+                                      f_rg=bxcir(:, i), size_x=ngrid(1), size_y=ngrid(2), size_z=ngrid(3))
+  end do
 #endif
   end subroutine
 
@@ -781,6 +750,42 @@ contains
         write(*,*)'Warning: large sfacg array of ',sfacg_mb, 'Mb'
     end if
 
+  end subroutine
+
+  !> Set pointers to density, potential and magnetization.
+  !> These arrays are large and should not be allocated twice, thus Sirius will use the
+  !> memory space, allocated by the host code.
+  subroutine set_periodic_function_ptr_sirius(rhomt, veffmt, magmt, lmmaxvr, nrmtmax, natmtot)
+    !> Muffin-tin part of charge density
+    real(8), intent(inout) :: rhomt(:, :, :)
+    !> Muffin-tin part of effective potential
+    real(8), intent(inout) :: veffmt(:, :, :)
+    !> Muffin-tin part of magnetization
+    real(8), intent(inout) :: magmt(:, :, :, :)
+    !> Maximum angular momentum for potentials and densities
+    integer, intent(in) :: lmmaxvr
+    !> Maximum number of muffin-tin points
+    integer, intent(in) :: nrmtmax
+    !> Total number of atoms
+    integer, intent(in) :: natmtot
+
+    character(4) :: label(3)
+    integer :: i
+
+#ifdef SIRIUS
+    if (ndmag == 1) label(1:1) = ['magz']
+    if (ndmag == 3) label(1:3) = ['magx', 'magy', 'magz']
+    do i = 1, ndmag
+      call sirius_set_periodic_function_ptr( sctx, label(i), f_mt=magmt(:, :, :, i), lmmax=lmmaxvr, &
+                                      nrmtmax=nrmtmax, num_atoms=natmtot )
+    end do
+
+    ! set MT pointer aliases to avoid allocating memory twice
+    call sirius_set_periodic_function_ptr( sctx, "rho", f_mt=rhomt, lmmax=lmmaxvr, &
+                                      nrmtmax=nrmtmax, num_atoms=natmtot )
+    call sirius_set_periodic_function_ptr( sctx, "veff", f_mt=veffmt, lmmax=lmmaxvr, &
+                                      nrmtmax=nrmtmax, num_atoms=natmtot )
+#endif
   end subroutine
 
 end module sirius_api

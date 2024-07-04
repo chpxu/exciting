@@ -1,26 +1,26 @@
-*> \brief \b DLAED2
+*> \brief \b DLAED2 used by DSTEDC. Merges eigenvalues and deflates secular equation. Used when the original matrix is tridiagonal.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAED2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed2.f"> 
+*> Download DLAED2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMDA, W,
 *                          Q2, INDX, INDXC, INDXP, COLTYP, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, K, LDQ, N, N1
 *       DOUBLE PRECISION   RHO
@@ -31,7 +31,7 @@
 *       DOUBLE PRECISION   D( * ), DLAMDA( * ), Q( LDQ, * ), Q2( * ),
 *      $                   W( * ), Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -192,12 +192,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -212,10 +210,9 @@
       SUBROUTINE DLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMDA, W,
      $                   Q2, INDX, INDXC, INDXP, COLTYP, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDQ, N, N1
@@ -520,10 +517,10 @@
 *     into the last N - K slots of D and Q respectively.
 *
       IF( K.LT.N ) THEN
-         CALL DLACPY( 'A', N, CTOT( 4 ), Q2( IQ1 ), N, 
+         CALL DLACPY( 'A', N, CTOT( 4 ), Q2( IQ1 ), N,
      $                Q( 1, K+1 ), LDQ )
          CALL DCOPY( N-K, Z( K+1 ), 1, D( K+1 ), 1 )
-      END IF         
+      END IF
 *
 *     Copy CTOT into COLTYP for referencing in DLAED3.
 *

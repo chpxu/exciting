@@ -1,26 +1,26 @@
-*> \brief \b STFSM
+*> \brief \b STFSM solves a matrix equation (one operand is a triangular matrix in RFP format).
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download STFSM + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stfsm.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stfsm.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/stfsm.f"> 
+*> Download STFSM + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stfsm.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stfsm.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/stfsm.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE STFSM( TRANSR, SIDE, UPLO, TRANS, DIAG, M, N, ALPHA, A,
 *                         B, LDB )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANSR, DIAG, SIDE, TRANS, UPLO
 *       INTEGER            LDB, M, N
@@ -29,7 +29,7 @@
 *       .. Array Arguments ..
 *       REAL               A( 0: * ), B( 0: LDB-1, 0: * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -159,7 +159,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is REAL array, DIMENSION (LDB,N)
+*>          B is REAL array, dimension (LDB,N)
 *>           Before entry,  the leading  m by n part of the array  B must
 *>           contain  the  right-hand  side  matrix  B,  and  on exit  is
 *>           overwritten by the solution matrix  X.
@@ -177,12 +177,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHERcomputational
 *
@@ -277,10 +275,9 @@
       SUBROUTINE STFSM( TRANSR, SIDE, UPLO, TRANS, DIAG, M, N, ALPHA, A,
      $                  B, LDB )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANSR, DIAG, SIDE, TRANS, UPLO

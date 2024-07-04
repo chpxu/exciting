@@ -3,10 +3,9 @@
 !> DSYMV, ZHEMV, DSYMM, ZHEMM,
 !> provided as subroutine calls.
 module hermitian_matrix_multiplication
-  use precision, only: dp
+  use precision, only: dp, i32
   use constants, only: zone, zzero
   use asserts, only: assert
-  use modmpi, only: terminate_if_false
   use math_utils, only: is_hermitian
   use lapack_f95_interfaces, only: dsymv, zhemv, dsymm, zhemm
 
@@ -21,7 +20,16 @@ module hermitian_matrix_multiplication
   character(len=1), parameter :: uplo_default = 'U'
   !> Default value for side
   character(len=1), parameter :: side_default = 'L'
-
+  !> Default value for alpha (double real) for BLAS calls
+  real(dp), parameter :: alpha_default_real_dp = 1._dp
+  !> Default value for alpha (double complex) for BLAS calls
+  complex(dp), parameter :: alpha_default_complex_dp = zone
+  !> Default value for beta (double real) for BLAS calls
+  real(dp), parameter :: beta_default_real_dp = 0._dp
+  !> Default value for beta (double complex) for BLAS calls
+  complex(dp), parameter :: beta_default_complex_dp = zzero
+  !> Default value for the tolerance used in calls to [[is_hermitian]]
+  real(dp), parameter :: tol_default = 1e-10_dp
 
   !> Calculate the matrix-matrix and matrix-vector product as a subroutine call
   !> \[ \mathbf{C} = \mathbf{A} \cdot \mathbf{B}, \]
@@ -39,13 +47,12 @@ module hermitian_matrix_multiplication
   end interface hermitian_matrix_multiply
 
 contains
-  
   !> Calculate the matrix-vector product between a real symmetric matrix \( \mathbf{A} \)
   !> and a real vector \( \mathbf{b} \):
   !> \[
   !>    \mathbf{c} = \mathbf{A} \cdot \mathbf{b}.
   !> \]
-  subroutine matrix_vector_multiplication_real_dp(A, b, c, uplo)
+  subroutine matrix_vector_multiplication_real_dp(A, b, c, uplo, tol)
     !> Input matrix \( \mathbf{A} \)
     real(dp), intent(in), contiguous :: A(:, :)
     !> Input vector \( \mathbf{b} \)
@@ -61,20 +68,25 @@ contains
     !>
     !> Default is **uplo** = `'U'`.
     character(len=1), intent(in), optional :: uplo
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     character(len=1) :: uplo_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo 
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
-    call assert(is_hermitian(A), 'A needs to be a symmetric matrix.')
+    call assert(is_hermitian(A, tolerance), 'A needs to be a symmetric matrix.')
     call assert(size(A, dim=2) == size(b), 'Number of columns of A needs to be the same as number of elements of b.')
     call assert(size(A, dim=1) == size(c), 'Number of rows of A needs to be the same as number of elements of c.')
-#endif
 
-    call dsymv(uplo_, size(A, dim=1), 1.0_dp, A, size(A, dim=1), b, storage_spacing, 0.0_dp, C, storage_spacing)
+    call dsymv(uplo_, size(A, dim=1), alpha_default_real_dp, A, size(A, dim=1), &
+    b, storage_spacing, beta_default_real_dp, C, storage_spacing)
   end subroutine matrix_vector_multiplication_real_dp
 
 
@@ -83,7 +95,7 @@ contains
   !> \[
   !>    \mathbf{c} = \mathbf{A} \cdot \mathbf{b}.
   !> \]
-  subroutine matrix_vector_multiplication_complex_dp(A, b, c, uplo)
+  subroutine matrix_vector_multiplication_complex_dp(A, b, c, uplo, tol)
     !> Input matrix \( \mathbf{A} \)
     complex(dp), intent(in), contiguous :: A(:, :)
     !> Input vector \( \mathbf{b} \)
@@ -99,20 +111,25 @@ contains
     !>
     !> Default is **uplo** = `'U'`.
     character(len=1), intent(in), optional :: uplo
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     character(len=1) :: uplo_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo 
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
-    call assert(is_hermitian(A), 'A needs to be a hermitian matrix.')
+    call assert(is_hermitian(A, tolerance), 'A needs to be a hermitian matrix.')
     call assert(size(A, dim=2) == size(b), 'Number of columns of A needs to be the same as number of elements of b.')
     call assert(size(A, dim=1) == size(c), 'Number of rows of A needs to be the same as number of elements of c.')
-#endif
 
-    call zhemv(uplo_, size(A, dim=1), zone, A, size(A, dim=1), b, storage_spacing, zzero, C, storage_spacing)
+    call zhemv(uplo_, size(A, dim=1), alpha_default_complex_dp, A, &
+    size(A, dim=1), b, storage_spacing, beta_default_complex_dp, C, storage_spacing)
   end subroutine matrix_vector_multiplication_complex_dp
 
 
@@ -121,7 +138,7 @@ contains
   !> \[
   !>    \mathbf{c} = \mathbf{A} \cdot \mathbf{b}.
   !> \]
-  subroutine matrix_vector_multiplication_real_complex_dp(A, b, c, uplo)
+  subroutine matrix_vector_multiplication_real_complex_dp(A, b, c, uplo, tol)
     !> Input matrix \( \mathbf{A} \)
     real(dp), intent(in), contiguous :: A(:, :)
     !> Input vector \( \mathbf{b} \)
@@ -137,20 +154,26 @@ contains
     !>
     !> Default is **uplo** = `'U'`.
     character(len=1), intent(in), optional :: uplo
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     character(len=1) :: uplo_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo 
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
-    call assert(is_hermitian(A), 'A needs to be a hermitian matrix.')
+    call assert(is_hermitian(A, tolerance), 'A needs to be a hermitian matrix.')
     call assert(size(A, dim=2) == size(b), 'Number of columns of A needs to be the same as number of elements of b.')
     call assert(size(A, dim=1) == size(c), 'Number of rows of A neecomplexds to be the same as number of elements of c.')
-#endif
 
-    call zhemv(uplo_, size(A, dim=1), zone, cmplx(A, 0.0_dp, kind=dp), size(A, dim=1), b, storage_spacing, zzero, C, storage_spacing)
+    call zhemv(uplo_, size(A, dim=1), alpha_default_complex_dp, &
+    cmplx(A, 0.0_dp, kind=dp), size(A, dim=1), b, storage_spacing, &
+    beta_default_complex_dp, C, storage_spacing)
   end subroutine matrix_vector_multiplication_real_complex_dp
 
 
@@ -159,7 +182,7 @@ contains
   !> \[
   !>    \mathbf{c} = \mathbf{A} \cdot \mathbf{b}.
   !> \]
-  subroutine matrix_vector_multiplication_complex_real_dp(A, b, c, uplo)
+  subroutine matrix_vector_multiplication_complex_real_dp(A, b, c, uplo, tol)
     !> Input matrix \( \mathbf{A} \)
     complex(dp), intent(in), contiguous :: A(:, :)
     !> Input vector \( \mathbf{b} \)
@@ -175,20 +198,26 @@ contains
     !>
     !> Default is **uplo** = `'U'`.
     character(len=1), intent(in), optional :: uplo
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     character(len=1) :: uplo_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo 
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
-    call assert(is_hermitian(A), 'A needs to be a hermitian matrix.')
+    call assert(is_hermitian(A, tolerance), 'A needs to be a hermitian matrix.')
     call assert(size(A, dim=2) == size(b), 'Number of columns of A needs to be the same as number of elements of b.')
     call assert(size(A, dim=1) == size(c), 'Number of rows of A needs to be the same as number of elements of c.')
-#endif
 
-    call zhemv(uplo_, size(A, dim=1), zone, A, size(A, dim=1), cmplx(b, 0.0_dp, kind=dp), storage_spacing, zzero, C, storage_spacing)
+    call zhemv(uplo_, size(A, dim=1), alpha_default_complex_dp, A, &
+    size(A, dim=1), cmplx(b, 0.0_dp, kind=dp), storage_spacing, &
+    beta_default_complex_dp, C, storage_spacing)
   end subroutine matrix_vector_multiplication_complex_real_dp
 
 
@@ -200,7 +229,7 @@ contains
   !>    \mathbf{C} = \mathbf{A} \cdot \mathbf{B},
   !> \]
   !> where one of both is symmetric.
-  subroutine matrix_matrix_multiplication_real_dp(A, B, C, uplo, side)
+  subroutine matrix_matrix_multiplication_real_dp(A, B, C, uplo, side, tol)
     !> Input matrices
     real(dp), intent(in), contiguous :: A(:, :), B(:, :)
     !> Output matrix
@@ -224,9 +253,12 @@ contains
     !> 
     !> Default is **side** = `'L'`.
     character(len=1), intent(in), optional :: side
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     logical :: is_side_L
     character(len=1) :: uplo_, side_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo
@@ -234,22 +266,27 @@ contains
     side_ = side_default
     if (present(side)) side_ = side
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
     call assert(any(side_ == ['L', 'l', 'R', 'r']), 'side needs to be one of "L", "l", "R" or "r".')
     call assert(size(A, dim=2) == size(B, dim=1), 'Number of columns of A needs to be the same as the number of rows of B.')
     call assert(size(C, dim=1) == size(A, dim=1), 'The number of rows of C must be equal to the number of rows of A.')
     call assert(size(C, dim=2) == size(B, dim=2), 'The number of columns of C must be equal to the number of columns of B.')
-#endif
 
     is_side_L = any(side_ == ['L', 'l'])
 
     if (is_side_L) then
-      call assert(is_hermitian(A), 'A needs to be a symmetric matrix.')
-      call dsymm(side_, uplo_, size(A, dim=1), size(B, dim=2), 1.0_dp, A, size(A, dim=1), B, size(B, dim=1), 0.0_dp, C, size(A, dim=1))
+      call assert(is_hermitian(A, tolerance), 'A needs to be a symmetric matrix.')
+      call dsymm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_real_dp, A, size(A, dim=1), B, size(B, dim=1), &
+      beta_default_real_dp, C, size(A, dim=1))
     else 
-      call assert(is_hermitian(B), 'B needs to be a symmetric matrix.')
-      call dsymm(side_, uplo_, size(A, dim=1), size(B, dim=2), 1.0_dp, B, size(B, dim=2), A, size(A, dim=1), 0.0_dp, C, size(A, dim=1))
+      call assert(is_hermitian(B, tolerance), 'B needs to be a symmetric matrix.')
+      call dsymm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_real_dp, B, size(B, dim=2), A, size(A, dim=1), &
+      beta_default_real_dp, C, size(A, dim=1))
     end if
   end subroutine matrix_matrix_multiplication_real_dp
 
@@ -260,7 +297,7 @@ contains
   !>    \mathbf{C} = \mathbf{A} \cdot \mathbf{B},
   !> \]
   !> where one of both is hermitian.
-  subroutine matrix_matrix_multiplication_complex_dp(A, B, C, uplo, side)
+  subroutine matrix_matrix_multiplication_complex_dp(A, B, C, uplo, side, tol)
     !> Input matrices
     complex(dp), intent(in), contiguous :: A(:, :), B(:, :)
     !> Output matrix
@@ -284,9 +321,12 @@ contains
     !> 
     !> Default is **side** = `'L'`.
     character(len=1), intent(in), optional :: side
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     logical :: is_side_L
     character(len=1) :: uplo_, side_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo
@@ -294,22 +334,27 @@ contains
     side_ = side_default
     if (present(side)) side_ = side
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
     call assert(any(side_ == ['L', 'l', 'R', 'r']), 'side needs to be one of "L", "l", "R" or "r".')
     call assert(size(A, dim=2) == size(B, dim=1), 'Number of columns of A needs to be the same as the number of rows of B.')
     call assert(size(C, dim=1) == size(A, dim=1), 'The number of rows of C must be equal to the number of rows of A.')
     call assert(size(C, dim=2) == size(B, dim=2), 'The number of columns of C must be equal to the number of columns of B.')
-#endif
 
     is_side_L = any(side_ == ['L', 'l'])
 
     if (is_side_L) then
-      call assert(is_hermitian(A), 'A needs to be a hermitian matrix.')
-      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), zone, A, size(A, dim=1), B, size(B, dim=1), zzero, C, size(A, dim=1))
+      call assert(is_hermitian(A, tolerance), 'A needs to be a hermitian matrix.')
+      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_complex_dp, A, size(A, dim=1), B, size(B, dim=1), &
+      beta_default_complex_dp, C, size(A, dim=1))
     else
-      call assert(is_hermitian(B), 'B needs to be a hermitian matrix.')
-      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), zone, B, size(B, dim=2), A, size(A, dim=1), zzero, C, size(A, dim=1))
+      call assert(is_hermitian(B, tolerance), 'B needs to be a hermitian matrix.')
+      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_complex_dp, B, size(B, dim=2), A, size(A, dim=1), &
+      beta_default_complex_dp, C, size(A, dim=1))
     end if
   end subroutine matrix_matrix_multiplication_complex_dp
 
@@ -320,7 +365,7 @@ contains
   !>    \mathbf{C} = \mathbf{A} \cdot \mathbf{B},
   !> \]
   !> where one of both is symmetric or hermitian respectively.
-  subroutine matrix_matrix_multiplication_real_complex_dp(A, B, C, uplo, side)
+  subroutine matrix_matrix_multiplication_real_complex_dp(A, B, C, uplo, side, tol)
     !> Real input matrix \( \mathbf{A} \)
     real(dp), intent(in), contiguous :: A(:, :)
     !> Complex input matrix \( \mathbf{B} \)
@@ -347,9 +392,12 @@ contains
     !> 
     !> Default is **side** = `'L'`.
     character(len=1), intent(in), optional :: side
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     logical :: is_side_L
     character(len=1) :: uplo_, side_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo
@@ -357,22 +405,27 @@ contains
     side_ = side_default
     if (present(side)) side_ = side
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
     call assert(any(side_ == ['L', 'l', 'R', 'r']), 'side needs to be one of "L", "l", "R" or "r".')
     call assert(size(A, dim=2) == size(B, dim=1), 'Number of columns of A needs to be the same as the number of rows of B.')
     call assert(size(C, dim=1) == size(A, dim=1), 'The number of rows of C must be equal to the number of rows of A.')
     call assert(size(C, dim=2) == size(B, dim=2), 'The number of columns of C must be equal to the number of columns of B.')
-#endif
 
     is_side_L = any(side_ == ['L', 'l'])
 
     if (is_side_L) then
-      call assert(is_hermitian(A), 'A needs to be a symmetric matrix.')
-      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), zone, cmplx(A, 0.0_dp, kind=dp), size(A, dim=1), B, size(B, dim=1), zzero, C, size(A, dim=1))
+      call assert(is_hermitian(A, tolerance), 'A needs to be a symmetric matrix.')
+      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_complex_dp, cmplx(A, 0.0_dp, kind=dp), size(A, dim=1), &
+      B, size(B, dim=1), beta_default_complex_dp, C, size(A, dim=1))
     else 
-      call assert(is_hermitian(B), 'B needs to be a hermitian matrix.')
-      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), zone, B, size(B, dim=2), cmplx(A, 0.0_dp, kind=dp), size(A, dim=1), zzero, C, size(A, dim=1))
+      call assert(is_hermitian(B, tolerance), 'B needs to be a hermitian matrix.')
+      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_complex_dp, B, size(B, dim=2), cmplx(A, 0.0_dp, kind=dp), &
+      size(A, dim=1), beta_default_complex_dp, C, size(A, dim=1))
     end if
   end subroutine matrix_matrix_multiplication_real_complex_dp
 
@@ -383,7 +436,7 @@ contains
   !>    \mathbf{C} = \mathbf{A} \cdot \mathbf{B},
   !> \]
   !> where one of both is hermitian or symmetric respectively.
-  subroutine matrix_matrix_multiplication_complex_real_dp(A, B, C, uplo, side)
+  subroutine matrix_matrix_multiplication_complex_real_dp(A, B, C, uplo, side, tol)
     !> Real input matrix \( \mathbf{A} \)
     complex(dp), intent(in), contiguous :: A(:, :)
     !> Complex input matrix \( \mathbf{B} \)
@@ -410,9 +463,12 @@ contains
     !> 
     !> Default is **side** = `'L'`.
     character(len=1), intent(in), optional :: side
+    !> Tolerance for checking if the matrix is hermitian
+    real(dp), intent(in), optional :: tol
 
     logical :: is_side_L
     character(len=1) :: uplo_, side_
+    real(dp) ::  tolerance
 
     uplo_ = uplo_default
     if (present(uplo)) uplo_ = uplo
@@ -420,22 +476,27 @@ contains
     side_ = side_default
     if (present(side)) side_ = side
 
-#ifdef USE_ASSERT
+    tolerance = tol_default
+    if ( present(tol) ) tolerance = tol
+
     call assert(any(uplo_ == ['U', 'u', 'L', 'l']), 'uplo needs to be one of "U", "u", "L", "l".')
     call assert(any(side_ == ['L', 'l', 'R', 'r']), 'side needs to be one of "L", "l", "R" or "r".')
     call assert(size(A, dim=2) == size(B, dim=1), 'Number of columns of A needs to be the same as the number of rows of B.')
     call assert(size(C, dim=1) == size(A, dim=1), 'The number of rows of C must be equal to the number of rows of A.')
     call assert(size(C, dim=2) == size(B, dim=2), 'The number of columns of C must be equal to the number of columns of B.')
-#endif
 
     is_side_L = any(side_ == ['L', 'l'])
 
     if (is_side_L) then
-      call assert(is_hermitian(A), 'A needs to be a symmetric matrix.')
-      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), zone, A, size(A, dim=1), cmplx(B, 0.0_dp, kind=dp), size(B, dim=1), zzero, C, size(A, dim=1))
+      call assert(is_hermitian(A, tolerance), 'A needs to be a symmetric matrix.')
+      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_complex_dp, A, size(A, dim=1), cmplx(B, 0.0_dp, kind=dp), &
+      size(B, dim=1), beta_default_complex_dp, C, size(A, dim=1))
     else 
-      call assert(is_hermitian(B), 'B needs to be a symmetric matrix.')
-      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), zone, cmplx(B, 0.0_dp, kind=dp), size(B, dim=2), A, size(A, dim=1), zzero, C, size(A, dim=1))
+      call assert(is_hermitian(B, tolerance), 'B needs to be a symmetric matrix.')
+      call zhemm(side_, uplo_, size(A, dim=1), size(B, dim=2), &
+      alpha_default_complex_dp, cmplx(B, 0.0_dp, kind=dp), size(B, dim=2), A, &
+      size(A, dim=1), beta_default_complex_dp, C, size(A, dim=1))
     end if
   end subroutine matrix_matrix_multiplication_complex_real_dp
 

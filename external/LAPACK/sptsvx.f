@@ -1,26 +1,26 @@
-*> \brief \b SPTSVX
+*> \brief <b> SPTSVX computes the solution to system of linear equations A * X = B for PT matrices</b>
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPTSVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sptsvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sptsvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sptsvx.f"> 
+*> Download SPTSVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sptsvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sptsvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sptsvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPTSVX( FACT, N, NRHS, D, E, DF, EF, B, LDB, X, LDX,
 *                          RCOND, FERR, BERR, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          FACT
 *       INTEGER            INFO, LDB, LDX, N, NRHS
@@ -31,7 +31,7 @@
 *      $                   E( * ), EF( * ), FERR( * ), WORK( * ),
 *      $                   X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -116,7 +116,7 @@
 *>
 *> \param[in,out] DF
 *> \verbatim
-*>          DF is or output) REAL array, dimension (N)
+*>          DF is REAL array, dimension (N)
 *>          If FACT = 'F', then DF is an input argument and on entry
 *>          contains the n diagonal elements of the diagonal matrix D
 *>          from the L*D*L**T factorization of A.
@@ -127,7 +127,7 @@
 *>
 *> \param[in,out] EF
 *> \verbatim
-*>          EF is or output) REAL array, dimension (N-1)
+*>          EF is REAL array, dimension (N-1)
 *>          If FACT = 'F', then EF is an input argument and on entry
 *>          contains the (n-1) subdiagonal elements of the unit
 *>          bidiagonal factor L from the L*D*L**T factorization of A.
@@ -215,23 +215,20 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
-*
-*> \ingroup realOTHERcomputational
+*> \ingroup realPTsolve
 *
 *  =====================================================================
       SUBROUTINE SPTSVX( FACT, N, NRHS, D, E, DF, EF, B, LDB, X, LDX,
      $                   RCOND, FERR, BERR, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          FACT

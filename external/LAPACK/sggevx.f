@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGGEVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sggevx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sggevx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sggevx.f"> 
+*> Download SGGEVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sggevx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sggevx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sggevx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          ALPHAR, ALPHAI, BETA, VL, LDVL, VR, LDVR, ILO,
 *                          IHI, LSCALE, RSCALE, ABNRM, BBNRM, RCONDE,
 *                          RCONDV, WORK, LWORK, IWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
 *       INTEGER            IHI, ILO, INFO, LDA, LDB, LDVL, LDVR, LWORK, N
@@ -36,7 +36,7 @@
 *      $                   RCONDE( * ), RCONDV( * ), RSCALE( * ),
 *      $                   VL( LDVL, * ), VR( LDVR, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -347,12 +347,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGEeigen
 *
@@ -391,10 +389,9 @@
      $                   IHI, LSCALE, RSCALE, ABNRM, BBNRM, RCONDE,
      $                   RCONDV, WORK, LWORK, IWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
@@ -847,6 +844,8 @@
 *
 *     Undo scaling if necessary
 *
+  130 CONTINUE
+*
       IF( ILASCL ) THEN
          CALL SLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHAR, N, IERR )
          CALL SLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHAI, N, IERR )
@@ -856,9 +855,7 @@
          CALL SLASCL( 'G', 0, 0, BNRMTO, BNRM, N, 1, BETA, N, IERR )
       END IF
 *
-  130 CONTINUE
       WORK( 1 ) = MAXWRK
-*
       RETURN
 *
 *     End of SGGEVX

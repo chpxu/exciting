@@ -1,19 +1,19 @@
-*> \brief \b ZLA_SYRCOND_X
+*> \brief \b ZLA_SYRCOND_X computes the infinity norm condition number of op(A)*diag(x) for symmetric indefinite matrices.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_SYRCOND_X + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_syrcond_x.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_syrcond_x.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_syrcond_x.f"> 
+*> Download ZLA_SYRCOND_X + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_syrcond_x.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_syrcond_x.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_syrcond_x.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       DOUBLE PRECISION FUNCTION ZLA_SYRCOND_X( UPLO, N, A, LDA, AF,
 *                                                LDAF, IPIV, X, INFO,
 *                                                WORK, RWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            N, LDA, LDAF, INFO
@@ -31,7 +31,7 @@
 *       COMPLEX*16         A( LDA, * ), AF( LDAF, * ), WORK( * ), X( * )
 *       DOUBLE PRECISION   RWORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -104,13 +104,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX*16 array, dimension (2*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] RWORK
+*> \param[out] RWORK
 *> \verbatim
 *>          RWORK is DOUBLE PRECISION array, dimension (N).
 *>     Workspace.
@@ -119,12 +119,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16SYcomputational
 *
@@ -133,10 +131,9 @@
      $                                         LDAF, IPIV, X, INFO,
      $                                         WORK, RWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -154,7 +151,7 @@
       INTEGER            KASE
       DOUBLE PRECISION   AINVNM, ANORM, TMP
       INTEGER            I, J
-      LOGICAL            UP
+      LOGICAL            UP, UPPER
       COMPLEX*16         ZDUM
 *     ..
 *     .. Local Arrays ..
@@ -181,8 +178,15 @@
       ZLA_SYRCOND_X = 0.0D+0
 *
       INFO = 0
-      IF( N.LT.0 ) THEN
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
          INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( LDAF.LT.MAX( 1, N ) ) THEN
+         INFO = -6
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZLA_SYRCOND_X', -INFO )
@@ -289,5 +293,7 @@
      $   ZLA_SYRCOND_X = 1.0D+0 / AINVNM
 *
       RETURN
+*
+*     End of ZLA_SYRCOND_X
 *
       END

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGESVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvx.f"> 
+*> Download CGESVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CGESVX( FACT, TRANS, N, NRHS, A, LDA, AF, LDAF, IPIV,
 *                          EQUED, R, C, B, LDB, X, LDX, RCOND, FERR, BERR,
 *                          WORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          EQUED, FACT, TRANS
 *       INTEGER            INFO, LDA, LDAF, LDB, LDX, N, NRHS
@@ -34,7 +34,7 @@
 *       COMPLEX            A( LDA, * ), AF( LDAF, * ), B( LDB, * ),
 *      $                   WORK( * ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -155,7 +155,7 @@
 *>
 *> \param[in,out] AF
 *> \verbatim
-*>          AF is or output) COMPLEX array, dimension (LDAF,N)
+*>          AF is COMPLEX array, dimension (LDAF,N)
 *>          If FACT = 'F', then AF is an input argument and on entry
 *>          contains the factors L and U from the factorization
 *>          A = P*L*U as computed by CGETRF.  If EQUED .ne. 'N', then
@@ -179,7 +179,7 @@
 *>
 *> \param[in,out] IPIV
 *> \verbatim
-*>          IPIV is or output) INTEGER array, dimension (N)
+*>          IPIV is INTEGER array, dimension (N)
 *>          If FACT = 'F', then IPIV is an input argument and on entry
 *>          contains the pivot indices from the factorization A = P*L*U
 *>          as computed by CGETRF; row i of the matrix was interchanged
@@ -196,7 +196,7 @@
 *>
 *> \param[in,out] EQUED
 *> \verbatim
-*>          EQUED is or output) CHARACTER*1
+*>          EQUED is CHARACTER*1
 *>          Specifies the form of equilibration that was done.
 *>          = 'N':  No equilibration (always true if FACT = 'N').
 *>          = 'R':  Row equilibration, i.e., A has been premultiplied by
@@ -211,7 +211,7 @@
 *>
 *> \param[in,out] R
 *> \verbatim
-*>          R is or output) REAL array, dimension (N)
+*>          R is REAL array, dimension (N)
 *>          The row scale factors for A.  If EQUED = 'R' or 'B', A is
 *>          multiplied on the left by diag(R); if EQUED = 'N' or 'C', R
 *>          is not accessed.  R is an input argument if FACT = 'F';
@@ -221,7 +221,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is or output) REAL array, dimension (N)
+*>          C is REAL array, dimension (N)
 *>          The column scale factors for A.  If EQUED = 'C' or 'B', A is
 *>          multiplied on the right by diag(C); if EQUED = 'N' or 'R', C
 *>          is not accessed.  C is an input argument if FACT = 'F';
@@ -336,12 +336,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexGEsolve
 *
@@ -350,10 +348,9 @@
      $                   EQUED, R, C, B, LDB, X, LDX, RCOND, FERR, BERR,
      $                   WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, TRANS

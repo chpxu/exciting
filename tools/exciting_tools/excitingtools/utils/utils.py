@@ -1,7 +1,13 @@
-"""General utility functions. Typically conversion/type-checking.
+"""General utility functions. Typically, conversion/type-checking.
 """
-from typing import Union, List, Optional, Callable
+import pathlib
 import re
+from typing import Union, List, Optional, Callable, Iterator
+
+
+def get_excitingtools_root() -> pathlib.Path:
+    """ Get the root directory of excitingtools. """
+    return pathlib.Path(__file__).parents[2]
 
 
 def can_be_float(value) -> bool:
@@ -84,4 +90,14 @@ def string_to_bool(string: str) -> bool:
         raise ValueError()
 
 
+def flatten_list(input_list: list) -> Iterator:
+    """ Flatten a list of lists and other elements.
 
+    :param input_list: input list
+    :return: an iterator for the flattened list
+    """
+    for x in input_list:
+        if isinstance(x, list):
+            yield from flatten_list(x)
+        else:
+            yield x

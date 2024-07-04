@@ -1,26 +1,26 @@
-*> \brief \b CLABRD
+*> \brief \b CLABRD reduces the first nb rows and columns of a general matrix to a bidiagonal form.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLABRD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clabrd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clabrd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clabrd.f"> 
+*> Download CLABRD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clabrd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clabrd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clabrd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CLABRD( M, N, NB, A, LDA, D, E, TAUQ, TAUP, X, LDX, Y,
 *                          LDY )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDX, LDY, M, N, NB
 *       ..
@@ -29,7 +29,7 @@
 *       COMPLEX            A( LDA, * ), TAUP( * ), TAUQ( * ), X( LDX, * ),
 *      $                   Y( LDY, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -111,7 +111,7 @@
 *>
 *> \param[out] TAUQ
 *> \verbatim
-*>          TAUQ is COMPLEX array dimension (NB)
+*>          TAUQ is COMPLEX array, dimension (NB)
 *>          The scalar factors of the elementary reflectors which
 *>          represent the unitary matrix Q. See Further Details.
 *> \endverbatim
@@ -152,12 +152,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -212,10 +210,9 @@
       SUBROUTINE CLABRD( M, N, NB, A, LDA, D, E, TAUQ, TAUP, X, LDX, Y,
      $                   LDY )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDX, LDY, M, N, NB
@@ -270,7 +267,7 @@
             ALPHA = A( I, I )
             CALL CLARFG( M-I+1, ALPHA, A( MIN( I+1, M ), I ), 1,
      $                   TAUQ( I ) )
-            D( I ) = ALPHA
+            D( I ) = REAL( ALPHA )
             IF( I.LT.N ) THEN
                A( I, I ) = ONE
 *
@@ -310,7 +307,7 @@
                ALPHA = A( I, I+1 )
                CALL CLARFG( N-I, ALPHA, A( I, MIN( I+2, N ) ),
      $                      LDA, TAUP( I ) )
-               E( I ) = ALPHA
+               E( I ) = REAL( ALPHA )
                A( I, I+1 ) = ONE
 *
 *              Compute X(i+1:m,i)
@@ -354,7 +351,7 @@
             ALPHA = A( I, I )
             CALL CLARFG( N-I+1, ALPHA, A( I, MIN( I+1, N ) ), LDA,
      $                   TAUP( I ) )
-            D( I ) = ALPHA
+            D( I ) = REAL( ALPHA )
             IF( I.LT.M ) THEN
                A( I, I ) = ONE
 *
@@ -388,7 +385,7 @@
                ALPHA = A( I+1, I )
                CALL CLARFG( M-I, ALPHA, A( MIN( I+2, M ), I ), 1,
      $                      TAUQ( I ) )
-               E( I ) = ALPHA
+               E( I ) = REAL( ALPHA )
                A( I+1, I ) = ONE
 *
 *              Compute Y(i+1:n,i)

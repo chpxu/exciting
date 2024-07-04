@@ -6,31 +6,30 @@ SOURCEDIRS=	\
 	../../src/testframework \
 	../../src/ \
 	../../src/simplified_input \
-    ../../src/lapack_wrappers \
+	../../src/lapack_wrappers \
         ../../src/lapack_wrappers/f95_interfaces \
         ../../src/lapack_wrappers/multiplication \
         ../../src/lapack_wrappers/decomposition \
         ../../src/lapack_wrappers/diagonalization \
-  	    ../../src/lapack_wrappers/utils \
-		../../src/lapack_wrappers/tensor_contraction \
-    ../../src/char_utils \
-    ../../src/writers \
-    ../../src/structure \
+  	../../src/lapack_wrappers/utils \
+	../../src/lapack_wrappers/tensor_contraction \
+	../../src/xstring \
+	../../src/writers \
+	../../src/structure \
 	../../src/src_advanced/ \
 	../../src/constants \
 	../../src/src_eigensystem/ \
 	../../src/errors_warnings \
-	../../src/char_utils \
-    ../../src/src_fermisurfdx/ \
+	../../src/src_fermisurfdx/ \
 	../../src/src_gw/ \
 	../../src/src_gw/src_vxc \
 	../../src/src_gw/src_tests \
 	../../src/src_hybrids/ \
-    ../../src/input \
+        ../../src/input \
 	../../src/src_inputparser/ \
 	../../src/src_LDAU/ \
 	../../src/src_lib/ \
-    ../../src/src_lib/bessel \
+        ../../src/src_lib/bessel \
 	../../src/math \
 	../../src/src_mixing/ \
 	../../src/src_mpi/ \
@@ -39,25 +38,40 @@ SOURCEDIRS=	\
 	../../src/src_optics/ \
 	../../src/src_phonon/ \
 	../../src/src_raman/ \
-    ../../src/src_rdmft/ \
+	../../src/src_rdmft/ \
 	../../src/src_stm/ \
-    ../../src/src_sym/ \
+	../../src/src_sym/ \
 	../../src/testframework \
-    ../../src/src_vdW/ \
+	../../src/src_vdW/ \
 	../../src/src_wannier \
 	../../src/src_xc/ \
-    ../../src/src_xml/ \
-    ../../src/src_xs/ \
-    ../../src/src_xs/modtetra \
-    ../../src/src_xs/src_rttddft \
-    ../../src/wavefunctions \
-    ../../src/sirius \
-    ../../src/read \
-    ../../src/potential \
-    ../../src/file_io \
-    ../../src/matrix_elements \
-    ../../src/dfpt
-	
+	../../src/src_xml/ \
+	../../src/src_xs/ \
+	../../src/src_xs/modtetra \
+	../../src/src_xs/src_rttddft \
+	../../src/wavefunctions \
+	../../src/sirius \
+	../../src/read \
+	../../src/basis \
+	../../src/potential \
+	../../src/file_io \
+	../../src/matrix_elements \
+	../../src/dfpt \
+	../../src/matrix_fourier_interpolation \
+	../../src/molecular_dynamics \
+  ../../src/src_iterative \
+  ../../src/xgrid \
+  ../../src/wfplot \
+  ../../src/xhdf5 \
+  ../../src/xhdf5/hdf5_wrappers \
+	../../src/xhdf5/utilities \
+  ../../src/svlo \
+  ../../src/xfftw \
+  ../../src/isdf \
+  ../../src/src_xs/fastBSE \
+  ../../src/src_xs/fastBSE/utils \
+  ../../src/src_xs/fastBSE/BSH 
+		
 GeneratedFiles = ../../src/src_inputparser/inputmodules.f90 ../../src/src_inputparser/speciesmodules.f90
 
 LIBXCMOD = ../../external/libXC/src/libxc.f90 ../../external/libXC/src/libxc_funcs.f90
@@ -95,7 +109,7 @@ tidy::
 # --------------------------------
 
 ifeq ($(USE_SYS_LAPACK), true)
-libs:: libfox libbzint.a fftlib.a libmsec.a leblaiklib.a libxc.a liblbfgs.a
+libs:: libfox libbzint.a fftlib.a libmsec.a leblaiklib.a libxc.a liblbfgs.a #libfftw3x_cdft.a
 endif
 
 ifeq ($(USE_SYS_LAPACK), false)
@@ -116,7 +130,7 @@ liblapack.a::
 	../../build/utilities/mkmf -t ./template.f77 -f -m Makefile.lapack -p liblapack.a \
 	../../external/LAPACK\
 	&& $(MAKE) -f Makefile.lapack liblapack.a 
-	
+
 libfox:lib/libFoX_common.a
 
 ifeq ($(HLRN),true)
@@ -160,6 +174,12 @@ leblaiklib.a::
 liblbfgs.a::
 	cd ../../external/Lbfgsb.3.0 && make
 	cp ../../external/Lbfgsb.3.0/liblbfgs.a ./
+
+#libfftw3x_cdft.a::
+#	cd "$(MKLROOT)"/interfaces/fftw3x_cdft && \
+#	$(MAKE) libintel64 INSTALL_DIR="$(THISDIR)/lib/intel64" mpi=intelmpi compiler=intel INSTALL_LIBNAME="libfftw3x_cdft" \
+#  TARGET_ARCH="-lmkl_cdft_core -lmkl_intel_ilp64"
+
 
 # --------------------------------
 # Internal libraries
@@ -210,3 +230,6 @@ cleanlibs:
 	-cd ../../external/FoX && make clean
 	-cd ../../external/leblaiklib && make clean
 	-cd ../../external/Lbfgsb.3.0 && make clean
+
+
+getthisdir:

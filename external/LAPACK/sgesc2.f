@@ -1,25 +1,25 @@
-*> \brief \b SGESC2
+*> \brief \b SGESC2 solves a system of linear equations using the LU factorization with complete pivoting computed by sgetc2.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGESC2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesc2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesc2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesc2.f"> 
+*> Download SGESC2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesc2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesc2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesc2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGESC2( N, A, LDA, RHS, IPIV, JPIV, SCALE )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, N
 *       REAL               SCALE
@@ -28,7 +28,7 @@
 *       INTEGER            IPIV( * ), JPIV( * )
 *       REAL               A( LDA, * ), RHS( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -90,18 +90,16 @@
 *> \verbatim
 *>          SCALE is REAL
 *>           On exit, SCALE contains the scale factor. SCALE is chosen
-*>           0 <= SCALE <= 1 to prevent owerflow in the solution.
+*>           0 <= SCALE <= 1 to prevent overflow in the solution.
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGEauxiliary
 *
@@ -114,10 +112,9 @@
 *  =====================================================================
       SUBROUTINE SGESC2( N, A, LDA, RHS, IPIV, JPIV, SCALE )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, N
@@ -151,7 +148,7 @@
 *     ..
 *     .. Executable Statements ..
 *
-*      Set constant to control owerflow
+*      Set constant to control overflow
 *
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' ) / EPS

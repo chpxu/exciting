@@ -1,26 +1,26 @@
-*> \brief \b DLARRK
+*> \brief \b DLARRK computes one eigenvalue of a symmetric tridiagonal matrix T to suitable accuracy.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLARRK + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarrk.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarrk.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarrk.f"> 
+*> Download DLARRK + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarrk.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarrk.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarrk.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLARRK( N, IW, GL, GU,
 *                           D, E2, PIVMIN, RELTOL, W, WERR, INFO)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER   INFO, IW, N
 *       DOUBLE PRECISION    PIVMIN, RELTOL, GL, GU, W, WERR
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   D( * ), E2( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -132,23 +132,20 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE DLARRK( N, IW, GL, GU,
      $                    D, E2, PIVMIN, RELTOL, W, WERR, INFO)
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, IW, N
@@ -178,6 +175,13 @@
       INTRINSIC          ABS, INT, LOG, MAX
 *     ..
 *     .. Executable Statements ..
+*
+*     Quick return if possible
+*
+      IF( N.LE.0 ) THEN
+         INFO = 0
+         RETURN
+      END IF
 *
 *     Get machine constants
       EPS = DLAMCH( 'P' )

@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CSTEIN + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cstein.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cstein.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cstein.f"> 
+*> Download CSTEIN + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cstein.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cstein.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cstein.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CSTEIN( N, D, E, M, W, IBLOCK, ISPLIT, Z, LDZ, WORK,
 *                          IWORK, IFAIL, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDZ, M, N
 *       ..
@@ -30,7 +30,7 @@
 *       REAL               D( * ), E( * ), W( * ), WORK( * )
 *       COMPLEX            Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -169,12 +169,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -182,10 +180,9 @@
       SUBROUTINE CSTEIN( N, D, E, M, W, IBLOCK, ISPLIT, Z, LDZ, WORK,
      $                   IWORK, IFAIL, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDZ, M, N
@@ -221,8 +218,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ISAMAX
-      REAL               SASUM, SLAMCH, SNRM2
-      EXTERNAL           ISAMAX, SASUM, SLAMCH, SNRM2
+      REAL               SLAMCH, SNRM2
+      EXTERNAL           ISAMAX, SLAMCH, SNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SLAGTF, SLAGTS, SLARNV, SSCAL, XERBLA
@@ -308,7 +305,7 @@
          BLKSIZ = BN - B1 + 1
          IF( BLKSIZ.EQ.1 )
      $      GO TO 60
-         GPIND = B1
+         GPIND = J1
 *
 *        Compute reorthogonalization criterion and stopping criterion.
 *
@@ -381,9 +378,10 @@
 *
 *           Normalize and scale the righthand side vector Pb.
 *
+            JMAX = ISAMAX( BLKSIZ, WORK( INDRV1+1 ), 1 )
             SCL = BLKSIZ*ONENRM*MAX( EPS,
      $            ABS( WORK( INDRV4+BLKSIZ ) ) ) /
-     $            SASUM( BLKSIZ, WORK( INDRV1+1 ), 1 )
+     $            ABS( WORK( INDRV1+JMAX ) )
             CALL SSCAL( BLKSIZ, SCL, WORK( INDRV1+1 ), 1 )
 *
 *           Solve the system LU = Pb.

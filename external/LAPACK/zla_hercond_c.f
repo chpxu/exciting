@@ -1,27 +1,27 @@
-*> \brief \b ZLA_HERCOND_C
+*> \brief \b ZLA_HERCOND_C computes the infinity norm condition number of op(A)*inv(diag(c)) for Hermitian indefinite matrices.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_HERCOND_C + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_hercond_c.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_hercond_c.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_hercond_c.f"> 
+*> Download ZLA_HERCOND_C + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_hercond_c.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_hercond_c.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_hercond_c.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       DOUBLE PRECISION FUNCTION ZLA_HERCOND_C( UPLO, N, A, LDA, AF, 
+*       DOUBLE PRECISION FUNCTION ZLA_HERCOND_C( UPLO, N, A, LDA, AF,
 *                                                LDAF, IPIV, C, CAPPLY,
 *                                                INFO, WORK, RWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       LOGICAL            CAPPLY
@@ -32,7 +32,7 @@
 *       COMPLEX*16         A( LDA, * ), AF( LDAF, * ), WORK( * )
 *       DOUBLE PRECISION   C ( * ), RWORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -111,13 +111,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX*16 array, dimension (2*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] RWORK
+*> \param[out] RWORK
 *> \verbatim
 *>          RWORK is DOUBLE PRECISION array, dimension (N).
 *>     Workspace.
@@ -126,24 +126,21 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16HEcomputational
 *
 *  =====================================================================
-      DOUBLE PRECISION FUNCTION ZLA_HERCOND_C( UPLO, N, A, LDA, AF, 
+      DOUBLE PRECISION FUNCTION ZLA_HERCOND_C( UPLO, N, A, LDA, AF,
      $                                         LDAF, IPIV, C, CAPPLY,
      $                                         INFO, WORK, RWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -161,7 +158,7 @@
 *     .. Local Scalars ..
       INTEGER            KASE, I, J
       DOUBLE PRECISION   AINVNM, ANORM, TMP
-      LOGICAL            UP
+      LOGICAL            UP, UPPER
       COMPLEX*16         ZDUM
 *     ..
 *     .. Local Arrays ..
@@ -188,8 +185,15 @@
       ZLA_HERCOND_C = 0.0D+0
 *
       INFO = 0
-      IF( N.LT.0 ) THEN
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
          INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( LDAF.LT.MAX( 1, N ) ) THEN
+         INFO = -6
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZLA_HERCOND_C', -INFO )
@@ -318,5 +322,7 @@
      $   ZLA_HERCOND_C = 1.0D+0 / AINVNM
 *
       RETURN
+*
+*     End of ZLA_HERCOND_C
 *
       END

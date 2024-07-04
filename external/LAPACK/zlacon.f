@@ -1,25 +1,25 @@
-*> \brief \b ZLACON
+*> \brief \b ZLACON estimates the 1-norm of a square matrix, using reverse communication for evaluating matrix-vector products.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLACON + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlacon.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlacon.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlacon.f"> 
+*> Download ZLACON + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlacon.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlacon.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlacon.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLACON( N, V, X, EST, KASE )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KASE, N
 *       DOUBLE PRECISION   EST
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16         V( N ), X( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -69,7 +69,7 @@
 *>          EST is DOUBLE PRECISION
 *>         On entry with KASE = 1 or 2 and JUMP = 3, EST should be
 *>         unchanged from the previous call to ZLACON.
-*>         On exit, EST is an estimate (a lower bound) for norm(A). 
+*>         On exit, EST is an estimate (a lower bound) for norm(A).
 *> \endverbatim
 *>
 *> \param[in,out] KASE
@@ -84,12 +84,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -114,10 +112,9 @@
 *  =====================================================================
       SUBROUTINE ZLACON( N, V, X, EST, KASE )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            KASE, N

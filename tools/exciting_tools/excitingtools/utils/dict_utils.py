@@ -1,11 +1,12 @@
 """ Dictionary Utilities.
 """
-from typing import Optional, Iterator, Union
-import json
-import numpy as np
 import copy
-from collections.abc import Mapping, Hashable, KeysView
+import json
 import sys
+from collections.abc import Mapping, Hashable, KeysView
+from typing import Iterator, Union
+
+import numpy as np
 
 
 def common_iterable(obj: Union[dict, list]):
@@ -143,7 +144,7 @@ def delete_nested_key(dictionary: dict, key_chain: list):
 
 def check_valid_keys(input_keys: Union[list, set, tuple, KeysView],
                      valid_keys: Union[list, set, tuple, KeysView],
-                     name: Optional[str] = ''):
+                     name: str = ''):
     """ Check that a given set of input keys are valid.
 
     :param input_keys: Input keys

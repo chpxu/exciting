@@ -5,6 +5,8 @@
 !> Exciting-specific constants
 module constants
   use precision, only: dp 
+  use iso_c_binding
+
   implicit none
   private  
 
@@ -92,5 +94,15 @@ module constants
   ! TODO(Alex) This should be moved. Not initialised with values and not parameter, hence not a constant 
   !> array of i**l values
   complex(8), public, allocatable :: zil (:)
+
+  !> Set of lower case alphabetic strings.
+  character(*), public, parameter :: lower_case_alphabet_set = 'abcdefghijklmnopqrstuvwxyz'
+  !> Set of upper case alphabetic strings.
+  character(*), public, parameter :: upper_case_alphabet_set = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  !> Set of digid strings.
+  character(*), public, parameter :: digit_set = '0123456789'
+
+  !> Value for unintialized c integers.
+  integer(c_int), public, parameter :: uninit_c_int = 9999999  
 
 end module  

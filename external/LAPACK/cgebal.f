@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGEBAL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgebal.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgebal.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgebal.f"> 
+*> Download CGEBAL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgebal.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgebal.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgebal.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOB
 *       INTEGER            IHI, ILO, INFO, LDA, N
@@ -28,7 +28,7 @@
 *       REAL               SCALE( * )
 *       COMPLEX            A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -117,12 +117,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexGEcomputational
 *
@@ -161,10 +159,9 @@
 *  =====================================================================
       SUBROUTINE CGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -190,27 +187,18 @@
       INTEGER            I, ICA, IEXC, IRA, J, K, L, M
       REAL               C, CA, F, G, R, RA, S, SFMAX1, SFMAX2, SFMIN1,
      $                   SFMIN2
-      COMPLEX            CDUM
 *     ..
 *     .. External Functions ..
       LOGICAL            SISNAN, LSAME
       INTEGER            ICAMAX
-      REAL               SLAMCH
-      EXTERNAL           SISNAN, LSAME, ICAMAX, SLAMCH
+      REAL               SLAMCH, SCNRM2
+      EXTERNAL           SISNAN, LSAME, ICAMAX, SLAMCH, SCNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CSSCAL, CSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, MAX, MIN, REAL
-*     ..
-*     .. Statement Functions ..
-      REAL               CABS1
-*     ..
-*     .. Statement Function definitions ..
-      CABS1( CDUM ) = ABS( REAL( CDUM ) ) + ABS( AIMAG( CDUM ) )
-*     ..
-*     .. Executable Statements ..
 *
 *     Test the input parameters
 *
@@ -325,15 +313,9 @@
       NOCONV = .FALSE.
 *
       DO 200 I = K, L
-         C = ZERO
-         R = ZERO
 *
-         DO 150 J = K, L
-            IF( J.EQ.I )
-     $         GO TO 150
-            C = C + CABS1( A( J, I ) )
-            R = R + CABS1( A( I, J ) )
-  150    CONTINUE
+         C = SCNRM2( L-K+1, A( K, I ), 1 )
+         R = SCNRM2( L-K+1, A( I , K ), LDA )
          ICA = ICAMAX( L, A( 1, I ), 1 )
          CA = ABS( A( ICA, I ) )
          IRA = ICAMAX( N-K+1, A( I, K ), LDA )

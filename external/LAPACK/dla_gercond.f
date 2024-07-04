@@ -1,27 +1,27 @@
-*> \brief \b DLA_GERCOND
+*> \brief \b DLA_GERCOND estimates the Skeel condition number for a general matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLA_GERCOND + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dla_gercond.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dla_gercond.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dla_gercond.f"> 
+*> Download DLA_GERCOND + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dla_gercond.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dla_gercond.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dla_gercond.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       DOUBLE PRECISION FUNCTION DLA_GERCOND ( TRANS, N, A, LDA, AF,
-*                                               LDAF, IPIV, CMODE, C,
-*                                               INFO, WORK, IWORK )
-* 
+*       DOUBLE PRECISION FUNCTION DLA_GERCOND( TRANS, N, A, LDA, AF,
+*                                              LDAF, IPIV, CMODE, C,
+*                                              INFO, WORK, IWORK )
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            N, LDA, LDAF, INFO, CMODE
@@ -31,7 +31,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), AF( LDAF, * ), WORK( * ),
 *      $                   C( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -123,13 +123,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is DOUBLE PRECISION array, dimension (3*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] IWORK
+*> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (N).
 *>     Workspace.
@@ -138,24 +138,21 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGEcomputational
 *
 *  =====================================================================
-      DOUBLE PRECISION FUNCTION DLA_GERCOND ( TRANS, N, A, LDA, AF,
-     $                                        LDAF, IPIV, CMODE, C,
-     $                                        INFO, WORK, IWORK )
+      DOUBLE PRECISION FUNCTION DLA_GERCOND( TRANS, N, A, LDA, AF,
+     $                                       LDAF, IPIV, CMODE, C,
+     $                                       INFO, WORK, IWORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -325,5 +322,7 @@
      $   DLA_GERCOND = ( 1.0D+0 / AINVNM )
 *
       RETURN
+*
+*     End of DLA_GERCOND
 *
       END

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTGSEN + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtgsen.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtgsen.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtgsen.f"> 
+*> Download DTGSEN + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtgsen.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtgsen.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtgsen.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DTGSEN( IJOB, WANTQ, WANTZ, SELECT, N, A, LDA, B, LDB,
 *                          ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, M, PL,
 *                          PR, DIF, WORK, LWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            WANTQ, WANTZ
 *       INTEGER            IJOB, INFO, LDA, LDB, LDQ, LDZ, LIWORK, LWORK,
@@ -35,7 +35,7 @@
 *      $                   B( LDB, * ), BETA( * ), DIF( * ), Q( LDQ, * ),
 *      $                   WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -222,7 +222,7 @@
 *> \verbatim
 *>          PL is DOUBLE PRECISION
 *> \endverbatim
-
+*>
 *> \param[out] PR
 *> \verbatim
 *>          PR is DOUBLE PRECISION
@@ -248,8 +248,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array,
-*>          dimension (MAX(1,LWORK)) 
+*>          WORK is DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
@@ -300,12 +299,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -452,10 +449,9 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, M, PL,
      $                   PR, DIF, WORK, LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ
@@ -542,6 +538,7 @@
 *
       M = 0
       PAIR = .FALSE.
+      IF( .NOT.LQUERY .OR. IJOB.NE.0 ) THEN
       DO 10 K = 1, N
          IF( PAIR ) THEN
             PAIR = .FALSE.
@@ -561,6 +558,7 @@
             END IF
          END IF
    10 CONTINUE
+      END IF
 *
       IF( IJOB.EQ.1 .OR. IJOB.EQ.2 .OR. IJOB.EQ.4 ) THEN
          LWMIN = MAX( 1, 4*N+16, 2*M*( N-M ) )

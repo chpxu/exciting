@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZUNGBR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zungbr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zungbr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zungbr.f"> 
+*> Download ZUNGBR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zungbr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zungbr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zungbr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZUNGBR( VECT, M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          VECT
 *       INTEGER            INFO, K, LDA, LWORK, M, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16         A( LDA, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -145,22 +145,19 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GBcomputational
 *
 *  =====================================================================
       SUBROUTINE ZUNGBR( VECT, M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          VECT
@@ -179,12 +176,11 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, WANTQ
-      INTEGER            I, IINFO, J, LWKOPT, MN, NB
+      INTEGER            I, IINFO, J, LWKOPT, MN
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZUNGLQ, ZUNGQR
@@ -223,8 +219,8 @@
                CALL ZUNGQR( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( M.GT.1 ) THEN
-                  CALL ZUNGQR( M-1, M-1, M-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL ZUNGQR( M-1, M-1, M-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          ELSE
@@ -232,18 +228,20 @@
                CALL ZUNGLQ( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( N.GT.1 ) THEN
-                  CALL ZUNGLQ( N-1, N-1, N-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL ZUNGLQ( N-1, N-1, N-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          END IF
-         LWKOPT = WORK( 1 )
+         LWKOPT = INT( DBLE( WORK( 1 ) ) )
+         LWKOPT = MAX (LWKOPT, MN)
       END IF
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZUNGBR', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
+         WORK( 1 ) = LWKOPT
          RETURN
       END IF
 *

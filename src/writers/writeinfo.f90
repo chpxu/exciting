@@ -15,6 +15,7 @@ Subroutine writeinfo (fnum)
       use constants, only: twopi
       use mod_misc, only: filext, versionname, version, compiler_version, githash, &
                           notelns, notes
+      use mod_muffin_tin, only: idx_species_fixed_rmt
 #ifdef TETRA
       Use modtetra
 #endif
@@ -130,7 +131,11 @@ Subroutine writeinfo (fnum)
          If (input%structure%autormt) Then
             Write (fnum,*)
             Write (fnum, '(" Automatic determination of muffin-tin radii :")')
-            Write (fnum, '("     global rmt scale", T45, ": ", F18.10)') input%structure%autormtscaling
+            If (idx_species_fixed_rmt > 0) Then 
+               Write (fnum, '("     index of species with fixed rmt  ", T45, ": ", I7)') idx_species_fixed_rmt 
+            Else 
+               Write (fnum, '("     global rmt scale", T45, ": ", F18.10)') input%structure%autormtscaling
+            End if
          End If
          If (input%groundstate%frozencore) Then
             Write (fnum,*)
@@ -256,6 +261,7 @@ Subroutine writeinfo (fnum)
 
       Write (fnum,*)
       Write (fnum, '(" R^MT_min * |G+k|_max (rgkmax)",T45,": ", F16.8)') input%groundstate%rgkmax
+      If (input%groundstate%useAPWprecision) Write (fnum, '(" APWprecision ",T45,": ", F16.8)') input%groundstate%APWprecision
       if (input%groundstate%outputlevelnumber>0) then
          If ((input%groundstate%isgkmax .Ge. 1) .And. (input%groundstate%isgkmax .Le. nspecies)) Then
             Write (fnum, '(" Species with R^MT_min",T45,": ", I7, " (", A, ")")') &

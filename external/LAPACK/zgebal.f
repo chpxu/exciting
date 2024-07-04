@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGEBAL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgebal.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgebal.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgebal.f"> 
+*> Download ZGEBAL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgebal.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgebal.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgebal.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOB
 *       INTEGER            IHI, ILO, INFO, LDA, N
@@ -28,7 +28,7 @@
 *       DOUBLE PRECISION   SCALE( * )
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -83,10 +83,12 @@
 *>
 *> \param[out] ILO
 *> \verbatim
+*>          ILO is INTEGER
 *> \endverbatim
 *>
 *> \param[out] IHI
 *> \verbatim
+*>          IHI is INTEGER
 *>          ILO and IHI are set to INTEGER such that on exit
 *>          A(i,j) = 0 if i > j and j = 1,...,ILO-1 or I = IHI+1,...,N.
 *>          If JOB = 'N' or 'S', ILO = 1 and IHI = N.
@@ -116,12 +118,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GEcomputational
 *
@@ -160,10 +160,9 @@
 *  =====================================================================
       SUBROUTINE ZGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -189,27 +188,18 @@
       INTEGER            I, ICA, IEXC, IRA, J, K, L, M
       DOUBLE PRECISION   C, CA, F, G, R, RA, S, SFMAX1, SFMAX2, SFMIN1,
      $                   SFMIN2
-      COMPLEX*16         CDUM
 *     ..
 *     .. External Functions ..
       LOGICAL            DISNAN, LSAME
       INTEGER            IZAMAX
-      DOUBLE PRECISION   DLAMCH
-      EXTERNAL           DISNAN, LSAME, IZAMAX, DLAMCH
+      DOUBLE PRECISION   DLAMCH, DZNRM2
+      EXTERNAL           DISNAN, LSAME, IZAMAX, DLAMCH, DZNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZDSCAL, ZSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DIMAG, MAX, MIN
-*     ..
-*     .. Statement Functions ..
-      DOUBLE PRECISION   CABS1
-*     ..
-*     .. Statement Function definitions ..
-      CABS1( CDUM ) = ABS( DBLE( CDUM ) ) + ABS( DIMAG( CDUM ) )
-*     ..
-*     .. Executable Statements ..
 *
 *     Test the input parameters
 *
@@ -324,15 +314,9 @@
       NOCONV = .FALSE.
 *
       DO 200 I = K, L
-         C = ZERO
-         R = ZERO
 *
-         DO 150 J = K, L
-            IF( J.EQ.I )
-     $         GO TO 150
-            C = C + CABS1( A( J, I ) )
-            R = R + CABS1( A( I, J ) )
-  150    CONTINUE
+         C = DZNRM2( L-K+1, A( K, I ), 1 )
+         R = DZNRM2( L-K+1, A( I, K ), LDA )
          ICA = IZAMAX( L, A( 1, I ), 1 )
          CA = ABS( A( ICA, I ) )
          IRA = IZAMAX( N-K+1, A( I, K ), LDA )

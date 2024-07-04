@@ -1,40 +1,40 @@
-*> \brief \b ZGEQRT2
+*> \brief \b ZGEQRT2 computes a QR factorization of a general real or complex matrix using the compact WY representation of Q.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGEQRT2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgeqrt2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgeqrt2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgeqrt2.f"> 
+*> Download ZGEQRT2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgeqrt2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgeqrt2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgeqrt2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGEQRT2( M, N, A, LDA, T, LDT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER   INFO, LDA, LDT, M, N
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX*16   A( LDA, * ), T( LDT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> ZGEQRT2 computes a QR factorization of a complex M-by-N matrix A, 
-*> using the compact WY representation of Q. 
+*> ZGEQRT2 computes a QR factorization of a complex M-by-N matrix A,
+*> using the compact WY representation of Q.
 *> \endverbatim
 *
 *  Arguments:
@@ -92,12 +92,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complex16GEcomputational
 *
@@ -127,10 +125,9 @@
 *  =====================================================================
       SUBROUTINE ZGEQRT2( M, N, A, LDA, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, LDA, LDT, M, N
@@ -157,10 +154,10 @@
 *     Test the input arguments
 *
       INFO = 0
-      IF( M.LT.0 ) THEN
-         INFO = -1
-      ELSE IF( N.LT.0 ) THEN
+      IF( N.LT.0 ) THEN
          INFO = -2
+      ELSE IF( M.LT.N ) THEN
+         INFO = -1
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -4
       ELSE IF( LDT.LT.MAX( 1, N ) ) THEN
@@ -170,7 +167,7 @@
          CALL XERBLA( 'ZGEQRT2', -INFO )
          RETURN
       END IF
-*      
+*
       K = MIN( M, N )
 *
       DO I = 1, K
@@ -188,13 +185,13 @@
 *
 *           W(1:N-I) := A(I:M,I+1:N)^H * A(I:M,I) [W = T(:,N)]
 *
-            CALL ZGEMV( 'C',M-I+1, N-I, ONE, A( I, I+1 ), LDA, 
+            CALL ZGEMV( 'C',M-I+1, N-I, ONE, A( I, I+1 ), LDA,
      $                  A( I, I ), 1, ZERO, T( 1, N ), 1 )
 *
 *           A(I:M,I+1:N) = A(I:m,I+1:N) + alpha*A(I:M,I)*W(1:N-1)^H
 *
             ALPHA = -CONJG(T( I, 1 ))
-            CALL ZGERC( M-I+1, N-I, ALPHA, A( I, I ), 1, 
+            CALL ZGERC( M-I+1, N-I, ALPHA, A( I, I ), 1,
      $           T( 1, N ), 1, A( I, I+1 ), LDA )
             A( I, I ) = AII
          END IF
@@ -207,7 +204,7 @@
 *        T(1:I-1,I) := alpha * A(I:M,1:I-1)**H * A(I:M,I)
 *
          ALPHA = -T( I, 1 )
-         CALL ZGEMV( 'C', M-I+1, I-1, ALPHA, A( I, 1 ), LDA, 
+         CALL ZGEMV( 'C', M-I+1, I-1, ALPHA, A( I, 1 ), LDA,
      $               A( I, I ), 1, ZERO, T( 1, I ), 1 )
          A( I, I ) = AII
 *
@@ -220,7 +217,7 @@
             T( I, I ) = T( I, 1 )
             T( I, 1) = ZERO
       END DO
-   
+
 *
 *     End of ZGEQRT2
 *

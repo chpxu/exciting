@@ -1,9 +1,10 @@
 """ Eigenvalue class.
 """
 import warnings
+from itertools import permutations
 from typing import List, Union, Optional
-import numpy as np
 
+import numpy as np
 from excitingtools.dataclasses.data_structs import PointIndex, BandIndices, NumberOfStates
 
 
@@ -132,3 +133,32 @@ class EigenValues:
         ik_cbm = k_indices[1] - 1
 
         return self.all_eigenvalues[ik_cbm, i_cbm] - self.all_eigenvalues[ik_vbm, i_vbm]
+
+    def get_transition_energy(self, valence_k_point: point_type, conduction_k_point: point_type) -> float:
+        """Determine transition energy between two k-points in the valence band top and conduction band bottom,
+        respectively.
+
+        This function accounts for all different permutations in which the k-points can be found within the exciting
+        eigenvalue output files and determines band indices using occupation values.
+
+        :param valence_k_point: k-point for valence band in fractional coordinates.
+        :param conduction_k_point: k-point for conduction band in fractional coordinates.
+        :return: Transition energy in Hartree.
+        """
+        indices_valence = [self.get_index(k_point) for k_point in permutations(valence_k_point)]
+        try:
+            ik = next(i for i in indices_valence if i != self.NO_MATCH)
+        except StopIteration:
+            raise ValueError(f'Requested valence k-point {valence_k_point} not present.')
+
+        indices_conduction = [self.get_index(k_point) for k_point in permutations(conduction_k_point)]
+        try:
+            jk = next(i for i in indices_conduction if i != self.NO_MATCH)
+        except StopIteration:
+            raise ValueError(f'Requested conduction k-point {conduction_k_point} not present.')
+
+        iVBM = np.where(self.occupations[ik - 1] == 0)[0][0] + self.state_range.first_state - 1
+        jCBm = np.where(self.occupations[jk - 1] == 0)[0][0] + self.state_range.first_state
+
+        return self.band_gap(BandIndices(iVBM, jCBm), k_indices=[ik, jk])
+

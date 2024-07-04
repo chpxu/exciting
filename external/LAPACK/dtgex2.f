@@ -1,26 +1,26 @@
-*> \brief \b DTGEX2
+*> \brief \b DTGEX2 swaps adjacent diagonal blocks in an upper (quasi) triangular matrix pair by an orthogonal equivalence transformation.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTGEX2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtgex2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtgex2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtgex2.f"> 
+*> Download DTGEX2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtgex2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtgex2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtgex2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
 *                          LDZ, J1, N1, N2, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            WANTQ, WANTZ
 *       INTEGER            INFO, J1, LDA, LDB, LDQ, LDZ, LWORK, N, N1, N2
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), Q( LDQ, * ),
 *      $                   WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -176,12 +176,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup doubleGEauxiliary
 *
@@ -221,10 +219,9 @@
       SUBROUTINE DTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
      $                   LDZ, J1, N1, N2, WORK, LWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ
@@ -250,10 +247,11 @@
       PARAMETER          ( WANDS = .TRUE. )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            DTRONG, WEAK
+      LOGICAL            STRONG, WEAK
       INTEGER            I, IDUM, LINFO, M
-      DOUBLE PRECISION   BQRA21, BRQA21, DDUM, DNORM, DSCALE, DSUM, EPS,
-     $                   F, G, SA, SB, SCALE, SMLNUM, SS, THRESH, WS
+      DOUBLE PRECISION   BQRA21, BRQA21, DDUM, DNORMA, DNORMB, DSCALE,
+     $                   DSUM, EPS, F, G, SA, SB, SCALE, SMLNUM,
+     $                   THRESHA, THRESHB
 *     ..
 *     .. Local Arrays ..
       INTEGER            IWORK( LDST )
@@ -293,7 +291,7 @@
       END IF
 *
       WEAK = .FALSE.
-      DTRONG = .FALSE.
+      STRONG = .FALSE.
 *
 *     Make a local copy of selected block
 *
@@ -310,11 +308,14 @@
       DSUM = ONE
       CALL DLACPY( 'Full', M, M, S, LDST, WORK, M )
       CALL DLASSQ( M*M, WORK, 1, DSCALE, DSUM )
+      DNORMA = DSCALE*SQRT( DSUM )
+      DSCALE = ZERO
+      DSUM = ONE
       CALL DLACPY( 'Full', M, M, T, LDST, WORK, M )
       CALL DLASSQ( M*M, WORK, 1, DSCALE, DSUM )
-      DNORM = DSCALE*SQRT( DSUM )
+      DNORMB = DSCALE*SQRT( DSUM )
 *
-*     THRES has been changed from 
+*     THRES has been changed from
 *        THRESH = MAX( TEN*EPS*SA, SMLNUM )
 *     to
 *        THRESH = MAX( TWENTY*EPS*SA, SMLNUM )
@@ -322,7 +323,8 @@
 *     "Bug" reported by Ondra Kamenik, confirmed by Julie Langou, fixed by
 *     Jim Demmel and Guillaume Revy. See forum post 1783.
 *
-      THRESH = MAX( TWENTY*EPS*DNORM, SMLNUM )
+      THRESHA = MAX( TWENTY*EPS*DNORMA, SMLNUM )
+      THRESHB = MAX( TWENTY*EPS*DNORMB, SMLNUM )
 *
       IF( M.EQ.2 ) THEN
 *
@@ -333,8 +335,8 @@
 *
          F = S( 2, 2 )*T( 1, 1 ) - T( 2, 2 )*S( 1, 1 )
          G = S( 2, 2 )*T( 1, 2 ) - T( 2, 2 )*S( 1, 2 )
-         SB = ABS( T( 2, 2 ) )
-         SA = ABS( S( 2, 2 ) )
+         SA = ABS( S( 2, 2 ) ) * ABS( T( 1, 1 ) )
+         SB = ABS( S( 1, 1 ) ) * ABS( T( 2, 2 ) )
          CALL DLARTG( F, G, IR( 1, 2 ), IR( 1, 1 ), DDUM )
          IR( 2, 1 ) = -IR( 1, 2 )
          IR( 2, 2 ) = IR( 1, 1 )
@@ -356,18 +358,20 @@
          LI( 2, 2 ) = LI( 1, 1 )
          LI( 1, 2 ) = -LI( 2, 1 )
 *
-*        Weak stability test:
-*           |S21| + |T21| <= O(EPS * F-norm((S, T)))
+*        Weak stability test: |S21| <= O(EPS F-norm((A)))
+*                           and  |T21| <= O(EPS F-norm((B)))
 *
-         WS = ABS( S( 2, 1 ) ) + ABS( T( 2, 1 ) )
-         WEAK = WS.LE.THRESH
+         WEAK = ABS( S( 2, 1 ) ) .LE. THRESHA .AND.
+     $      ABS( T( 2, 1 ) ) .LE. THRESHB
          IF( .NOT.WEAK )
      $      GO TO 70
 *
          IF( WANDS ) THEN
 *
 *           Strong stability test:
-*             F-norm((A-QL**T*S*QR, B-QL**T*T*QR)) <= O(EPS*F-norm((A,B)))
+*               F-norm((A-QL**H*S*QR)) <= O(EPS*F-norm((A)))
+*               and
+*               F-norm((B-QL**H*T*QR)) <= O(EPS*F-norm((B)))
 *
             CALL DLACPY( 'Full', M, M, A( J1, J1 ), LDA, WORK( M*M+1 ),
      $                   M )
@@ -378,6 +382,7 @@
             DSCALE = ZERO
             DSUM = ONE
             CALL DLASSQ( M*M, WORK( M*M+1 ), 1, DSCALE, DSUM )
+            SA = DSCALE*SQRT( DSUM )
 *
             CALL DLACPY( 'Full', M, M, B( J1, J1 ), LDB, WORK( M*M+1 ),
      $                   M )
@@ -385,10 +390,12 @@
      $                  WORK, M )
             CALL DGEMM( 'N', 'T', M, M, M, -ONE, WORK, M, IR, LDST, ONE,
      $                  WORK( M*M+1 ), M )
+            DSCALE = ZERO
+            DSUM = ONE
             CALL DLASSQ( M*M, WORK( M*M+1 ), 1, DSCALE, DSUM )
-            SS = DSCALE*SQRT( DSUM )
-            DTRONG = SS.LE.THRESH
-            IF( .NOT.DTRONG )
+            SB = DSCALE*SQRT( DSUM )
+            STRONG = SA.LE.THRESHA .AND. SB.LE.THRESHB
+            IF( .NOT.STRONG )
      $         GO TO 70
          END IF
 *
@@ -439,6 +446,8 @@
      $                IR( N2+1, N1+1 ), LDST, T, LDST, T( N1+1, N1+1 ),
      $                LDST, LI, LDST, SCALE, DSUM, DSCALE, IWORK, IDUM,
      $                LINFO )
+         IF( LINFO.NE.0 )
+     $      GO TO 70
 *
 *        Compute orthogonal matrix QL:
 *
@@ -538,14 +547,14 @@
 *
 *        Decide which method to use.
 *          Weak stability test:
-*             F-norm(S21) <= O(EPS * F-norm((S, T)))
+*             F-norm(S21) <= O(EPS * F-norm((S)))
 *
-         IF( BQRA21.LE.BRQA21 .AND. BQRA21.LE.THRESH ) THEN
+         IF( BQRA21.LE.BRQA21 .AND. BQRA21.LE.THRESHA ) THEN
             CALL DLACPY( 'F', M, M, SCPY, LDST, S, LDST )
             CALL DLACPY( 'F', M, M, TCPY, LDST, T, LDST )
             CALL DLACPY( 'F', M, M, IRCOP, LDST, IR, LDST )
             CALL DLACPY( 'F', M, M, LICOP, LDST, LI, LDST )
-         ELSE IF( BRQA21.GE.THRESH ) THEN
+         ELSE IF( BRQA21.GE.THRESHA ) THEN
             GO TO 70
          END IF
 *
@@ -556,7 +565,9 @@
          IF( WANDS ) THEN
 *
 *           Strong stability test:
-*              F-norm((A-QL*S*QR**T, B-QL*T*QR**T)) <= O(EPS*F-norm((A,B)))
+*               F-norm((A-QL**H*S*QR)) <= O(EPS*F-norm((A)))
+*               and
+*               F-norm((B-QL**H*T*QR)) <= O(EPS*F-norm((B)))
 *
             CALL DLACPY( 'Full', M, M, A( J1, J1 ), LDA, WORK( M*M+1 ),
      $                   M )
@@ -567,6 +578,7 @@
             DSCALE = ZERO
             DSUM = ONE
             CALL DLASSQ( M*M, WORK( M*M+1 ), 1, DSCALE, DSUM )
+            SA = DSCALE*SQRT( DSUM )
 *
             CALL DLACPY( 'Full', M, M, B( J1, J1 ), LDB, WORK( M*M+1 ),
      $                   M )
@@ -574,10 +586,12 @@
      $                  WORK, M )
             CALL DGEMM( 'N', 'N', M, M, M, -ONE, WORK, M, IR, LDST, ONE,
      $                  WORK( M*M+1 ), M )
+            DSCALE = ZERO
+            DSUM = ONE
             CALL DLASSQ( M*M, WORK( M*M+1 ), 1, DSCALE, DSUM )
-            SS = DSCALE*SQRT( DSUM )
-            DTRONG = ( SS.LE.THRESH )
-            IF( .NOT.DTRONG )
+            SB = DSCALE*SQRT( DSUM )
+            STRONG = SA.LE.THRESHA .AND. SB.LE.THRESHB
+            IF( .NOT.STRONG )
      $         GO TO 70
 *
          END IF
@@ -595,9 +609,7 @@
 *
 *        Standardize existing 2-by-2 blocks.
 *
-         DO 50 I = 1, M*M
-            WORK(I) = ZERO
-   50    CONTINUE
+         CALL DLASET( 'Full', M, M, ZERO, ZERO, WORK, M )
          WORK( 1 ) = ONE
          T( 1, 1 ) = ONE
          IDUM = LWORK - M*M - 2
@@ -668,7 +680,7 @@
      $                  A( J1, I ), LDA, ZERO, WORK, M )
             CALL DLACPY( 'Full', M, N-I+1, WORK, M, A( J1, I ), LDA )
             CALL DGEMM( 'T', 'N', M, N-I+1, M, ONE, LI, LDST,
-     $                  B( J1, I ), LDA, ZERO, WORK, M )
+     $                  B( J1, I ), LDB, ZERO, WORK, M )
             CALL DLACPY( 'Full', M, N-I+1, WORK, M, B( J1, I ), LDB )
          END IF
          I = J1 - 1

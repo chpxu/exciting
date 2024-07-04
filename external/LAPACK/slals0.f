@@ -1,19 +1,19 @@
-*> \brief \b SLALS0
+*> \brief \b SLALS0 applies back multiplying factors in solving the least squares problem using divide and conquer SVD approach. Used by sgelsd.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLALS0 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slals0.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slals0.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slals0.f"> 
+*> Download SLALS0 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slals0.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slals0.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slals0.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SLALS0( ICOMPQ, NL, NR, SQRE, NRHS, B, LDB, BX, LDBX,
 *                          PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
 *                          POLES, DIFL, DIFR, Z, K, C, S, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDB, LDBX, LDGCOL,
 *      $                   LDGNUM, NL, NR, NRHS, SQRE
@@ -33,7 +33,7 @@
 *      $                   DIFR( LDGNUM, * ), GIVNUM( LDGNUM, * ),
 *      $                   POLES( LDGNUM, * ), WORK( * ), Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -247,12 +247,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realOTHERcomputational
 *
@@ -268,10 +266,9 @@
      $                   PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
      $                   POLES, DIFL, DIFR, Z, K, C, S, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDB, LDBX, LDGCOL,
@@ -311,6 +308,7 @@
 *     Test the input parameters.
 *
       INFO = 0
+      N = NL + NR + 1
 *
       IF( ( ICOMPQ.LT.0 ) .OR. ( ICOMPQ.GT.1 ) ) THEN
          INFO = -1
@@ -320,11 +318,7 @@
          INFO = -3
       ELSE IF( ( SQRE.LT.0 ) .OR. ( SQRE.GT.1 ) ) THEN
          INFO = -4
-      END IF
-*
-      N = NL + NR + 1
-*
-      IF( NRHS.LT.1 ) THEN
+      ELSE IF( NRHS.LT.1 ) THEN
          INFO = -5
       ELSE IF( LDB.LT.N ) THEN
          INFO = -7

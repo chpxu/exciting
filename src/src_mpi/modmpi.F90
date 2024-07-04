@@ -33,6 +33,7 @@
 !> Main exciting MPI module, in the process of being depreciated
 module modmpi
   use trace, only: trace_back
+  use asserts, only: assert
 #ifdef MPI
   use mpi
 #endif
@@ -165,6 +166,7 @@ contains
       if(mpi_env%rank == 0) then
          if(present(message)) write(error_unit, *) trim(adjustl(message))
       end if
+      call barrier( mpi_env )
       call mpi_abort(mpi_env%comm, error_code, mpi_env%ierr)
 #else
       if(present(message)) write(error_unit, *) trim(adjustl(message))
@@ -297,29 +299,13 @@ contains
       integer(4), intent(in), optional :: nprocs
       integer(4) :: np
 
-      ! Sanity checks
-      if( myrank < 0 ) then
-        write(*,*) "nofset (Error): myrank < 0"
-        call terminate
-      end if
-      if( set < 1 ) then
-        write(*,*) "nofset (Error): set < 1"
-        call terminate
-      end if
-      if(present(nprocs)) then
-        np = nprocs
-        if(np < 1) then
-          write(*,*) "nofset (Error): np < 1"
-          call terminate
-        end if
-      else
-        np = mpiglobal%procs
-      end if
-      if(np < myrank+1) then
-        write(*,*) "nofset (Error): np < myrank+1"
-        call terminate
-      end if
+      np = mpiglobal%procs
+      if(present(nprocs)) np = nprocs
 
+      call assert(myrank >= 0, "myrank < 0.")
+      call assert(set >= 1, "set < 1.")
+      call assert(np >= myrank + 1, "np < myrank+1")
+      
       ! Compute number of elements on current rank
       nofset = set / np
       if((mod(set, np) > myrank)) nofset = nofset + 1
@@ -362,28 +348,12 @@ contains
       integer(4), intent(in), optional :: nprocs
       integer(4) :: i, np
 
-      ! Sanity checks
-      if( myrank < 0 ) then
-        write(*,*) "firstofset (Error): myrank < 0"
-        call terminate
-      end if
-      if( set < 1 ) then
-        write(*,*) "firstofset (Error): set < 1"
-        call terminate
-      end if
-      if(present(nprocs)) then
-        np = nprocs
-        if(np < 1) then
-          write(*,*) "firstofset (Error): np < 1"
-          call terminate
-        end if
-      else
-        np = mpiglobal%procs
-      end if
-      if(np < myrank+1) then
-        write(*,*) "firstofset (Error): np < myrank+1"
-        call terminate
-      end if
+      np = mpiglobal%procs
+      if(present(nprocs)) np = nprocs
+
+      call assert(myrank >= 0, "myrank < 0.")
+      call assert(set >= 1, "set < 1.")
+      call assert(np >= myrank + 1, "np < myrank+1")
 
       ! Compute first element index on current rank
       firstofset = 1
@@ -430,28 +400,12 @@ contains
       integer(4), intent(in), optional :: nprocs
       integer(4) :: i, np
 
-      ! Sanity checks
-      if( myrank < 0 ) then
-        write(*,*) "lastofset (Error): myrank < 0"
-        call terminate
-      end if
-      if( set < 1 ) then
-        write(*,*) "lastofset (Error): set < 1"
-        call terminate
-      end if
-      if(present(nprocs)) then
-        np = nprocs
-        if(np < 1) then
-          write(*,*) "lastofset (Error): np < 1"
-          call terminate
-        end if
-      else
-        np = mpiglobal%procs
-      end if
-      if(np < myrank+1) then
-        write(*,*) "lastofset (Error): np < myrank+1"
-        call terminate
-      end if
+      np = mpiglobal%procs
+      if(present(nprocs)) np = nprocs
+
+      call assert(myrank >= 0, "myrank < 0.")
+      call assert(set >= 1, "set < 1.")
+      call assert(np >= myrank + 1, "np < myrank+1")
 
       ! Compute last element index on this rank
       lastofset = 0

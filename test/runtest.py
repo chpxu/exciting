@@ -8,15 +8,15 @@ For more details, type `python3 runtest.py --help`
 import argparse as ap
 import warnings
 import os
-from typing import List, Union
+from typing import Generator, List, Union
 
 from src.exciting_settings.constants import settings as exciting_settings, Defaults
+from src.io.file_system import get_test_directories
 from src.runner.execute import set_job_environment
 from src.runner.profile import BuildType, build_type_str_to_enum, build_type_enum_to_str
-from src.runner.set_tests import get_test_directories, partial_test_name_matches
+from src.runner.set_tests import partial_test_name_matches, get_test_cases_from_config, set_tests_to_run
 from src.runner.test import run_tests
 from src.tester.report import skipped_test_summary
-from src.runner.set_tests import get_test_cases_from_config, set_tests_to_run
 
 
 def warning_on_one_line(message, category, filename, lineno, file=None, line=None):
@@ -37,10 +37,6 @@ def option_parser(settings: Defaults):
     p = ap.ArgumentParser(
         description="Usage: python3 runtest.py -t <tests> -e <executable> -np <NP> -omp <omp> "
                     "-handle-errors -run-failing-tests -repeat-tests <N>")
-
-    help_action = "Defines what action is done. " \
-                  + "'run' for running tests (default); " \
-                  + "'ref' for (re)running all references; "
 
     help_test = "Tests to run. This can be some partial string match, such as `PBE`, or a full path " \
                 "`groundstate/LDA_PW-PbTiO3`. The test suite will run any test which contain this " \
@@ -176,7 +172,7 @@ def set_test_names_from_cmd_line(test_farm: str, input_tests: List[str]) -> List
     if not input_tests:
         return []
 
-    all_test_dirs = get_test_directories(test_farm)
+    all_test_dirs: Generator = get_test_directories(test_farm)
     tests_to_run = partial_test_name_matches(all_test_dirs, input_tests)
 
     if not tests_to_run:

@@ -1,19 +1,19 @@
-*> \brief \b DLASQ3
+*> \brief \b DLASQ3 checks for deflation, computes a shift and calls dqds. Used by sbdsqr.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLASQ3 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq3.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasq3.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq3.f"> 
+*> Download DLASQ3 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq3.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasq3.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq3.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DLASQ3( I0, N0, Z, PP, DMIN, SIGMA, DESIG, QMAX, NFAIL,
 *                          ITER, NDIV, IEEE, TTYPE, DMIN1, DMIN2, DN, DN1,
 *                          DN2, G, TAU )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            IEEE
 *       INTEGER            I0, ITER, N0, NDIV, NFAIL, PP
@@ -31,7 +31,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -58,9 +58,9 @@
 *>         Last index.
 *> \endverbatim
 *>
-*> \param[in] Z
+*> \param[in,out] Z
 *> \verbatim
-*>          Z is DOUBLE PRECISION array, dimension ( 4*N )
+*>          Z is DOUBLE PRECISION array, dimension ( 4*N0 )
 *>         Z holds the qd array.
 *> \endverbatim
 *>
@@ -68,8 +68,8 @@
 *> \verbatim
 *>          PP is INTEGER
 *>         PP=0 for ping, PP=1 for pong.
-*>         PP=2 indicates that flipping was applied to the Z array   
-*>         and that the initial tests for deflation should not be 
+*>         PP=2 indicates that flipping was applied to the Z array
+*>         and that the initial tests for deflation should not be
 *>         performed.
 *> \endverbatim
 *>
@@ -97,22 +97,22 @@
 *>         Maximum value of q.
 *> \endverbatim
 *>
-*> \param[out] NFAIL
+*> \param[in,out] NFAIL
 *> \verbatim
 *>          NFAIL is INTEGER
-*>         Number of times shift was too big.
+*>         Increment NFAIL by 1 each time the shift was too big.
 *> \endverbatim
 *>
-*> \param[out] ITER
+*> \param[in,out] ITER
 *> \verbatim
 *>          ITER is INTEGER
-*>         Number of iterations.
+*>         Increment ITER by 1 for each iteration.
 *> \endverbatim
 *>
-*> \param[out] NDIV
+*> \param[in,out] NDIV
 *> \verbatim
 *>          NDIV is INTEGER
-*>         Number of divisions.
+*>         Increment NDIV by 1 for each division.
 *> \endverbatim
 *>
 *> \param[in] IEEE
@@ -168,12 +168,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -182,10 +180,9 @@
      $                   ITER, NDIV, IEEE, TTYPE, DMIN1, DMIN2, DN, DN1,
      $                   DN2, G, TAU )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE
@@ -267,8 +264,8 @@
          Z( NN-3 ) = Z( NN-7 )
          Z( NN-7 ) = S
       END IF
-      IF( Z( NN-5 ).GT.Z( NN-3 )*TOL2 ) THEN
-         T = HALF*( ( Z( NN-7 )-Z( NN-3 ) )+Z( NN-5 ) )
+      T = HALF*( ( Z( NN-7 )-Z( NN-3 ) )+Z( NN-5 ) )
+      IF( Z( NN-5 ).GT.Z( NN-3 )*TOL2.AND.T.NE.ZERO ) THEN
          S = Z( NN-3 )*( Z( NN-5 ) / T )
          IF( S.LE.T ) THEN
             S = Z( NN-3 )*( Z( NN-5 ) /
@@ -286,7 +283,7 @@
       GO TO 10
 *
    50 CONTINUE
-      IF( PP.EQ.2 ) 
+      IF( PP.EQ.2 )
      $   PP = 0
 *
 *     Reverse the qd-array, if warranted.
@@ -331,21 +328,21 @@
 *
    70 CONTINUE
 *
-      CALL DLASQ5( I0, N0, Z, PP, TAU, DMIN, DMIN1, DMIN2, DN,
-     $             DN1, DN2, IEEE )
+      CALL DLASQ5( I0, N0, Z, PP, TAU, SIGMA, DMIN, DMIN1, DMIN2, DN,
+     $             DN1, DN2, IEEE, EPS )
 *
       NDIV = NDIV + ( N0-I0+2 )
       ITER = ITER + 1
 *
 *     Check status.
 *
-      IF( DMIN.GE.ZERO .AND. DMIN1.GT.ZERO ) THEN
+      IF( DMIN.GE.ZERO .AND. DMIN1.GE.ZERO ) THEN
 *
 *        Success.
 *
          GO TO 90
 *
-      ELSE IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND. 
+      ELSE IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND.
      $         Z( 4*( N0-1 )-PP ).LT.TOL*( SIGMA+DN1 ) .AND.
      $         ABS( DN ).LT.TOL*SIGMA ) THEN
 *
@@ -389,7 +386,7 @@
             GO TO 70
          END IF
       ELSE
-*            
+*
 *        Possible underflow. Play it safe.
 *
          GO TO 80

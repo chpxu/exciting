@@ -1,25 +1,25 @@
-*> \brief \b SGETC2
+*> \brief \b SGETC2 computes the LU factorization with complete pivoting of the general n-by-n matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGETC2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgetc2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgetc2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgetc2.f"> 
+*> Download SGETC2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgetc2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgetc2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgetc2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGETC2( N, A, LDA, IPIV, JPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, N
 *       ..
@@ -27,7 +27,7 @@
 *       INTEGER            IPIV( * ), JPIV( * )
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -85,7 +85,7 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>           = 0: successful exit
-*>           > 0: if INFO = k, U(k, k) is likely to produce owerflow if
+*>           > 0: if INFO = k, U(k, k) is likely to produce overflow if
 *>                we try to solve for x in Ax = b. So U is perturbed to
 *>                avoid the overflow.
 *> \endverbatim
@@ -93,12 +93,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup realGEauxiliary
 *
@@ -111,10 +109,9 @@
 *  =====================================================================
       SUBROUTINE SGETC2( N, A, LDA, IPIV, JPIV, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, N
@@ -146,13 +143,31 @@
 *     ..
 *     .. Executable Statements ..
 *
+      INFO = 0
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
 *     Set constants to control overflow
 *
-      INFO = 0
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' ) / EPS
       BIGNUM = ONE / SMLNUM
       CALL SLABAD( SMLNUM, BIGNUM )
+*
+*     Handle the case N=1 by itself
+*
+      IF( N.EQ.1 ) THEN
+         IPIV( 1 ) = 1
+         JPIV( 1 ) = 1
+         IF( ABS( A( 1, 1 ) ).LT.SMLNUM ) THEN
+            INFO = 1
+            A( 1, 1 ) = SMLNUM
+         END IF
+         RETURN
+      END IF
 *
 *     Factorize A using complete pivoting.
 *     Set pivots less than SMIN to SMIN.
@@ -203,6 +218,11 @@
          INFO = N
          A( N, N ) = SMIN
       END IF
+*
+*     Set last pivots to N
+*
+      IPIV( N ) = N
+      JPIV( N ) = N
 *
       RETURN
 *

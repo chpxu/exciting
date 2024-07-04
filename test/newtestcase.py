@@ -144,7 +144,7 @@ def check_clear_test_name(target_test: str):
     """
 
     # Tests in test farm
-    current_tests = get_test_directories(settings.test_farm, basename=False)
+    current_tests = list(get_test_directories(settings.test_farm, basename=False))
 
     # Test already exists in current operating directory
     if os.path.isdir(target_test):

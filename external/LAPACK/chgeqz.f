@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHGEQZ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chgeqz.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chgeqz.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chgeqz.f"> 
+*> Download CHGEQZ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chgeqz.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chgeqz.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chgeqz.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CHGEQZ( JOB, COMPQ, COMPZ, N, ILO, IHI, H, LDH, T, LDT,
 *                          ALPHA, BETA, Q, LDQ, Z, LDZ, WORK, LWORK,
 *                          RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          COMPQ, COMPZ, JOB
 *       INTEGER            IHI, ILO, INFO, LDH, LDQ, LDT, LDZ, LWORK, N
@@ -32,7 +32,7 @@
 *      $                   Q( LDQ, * ), T( LDT, * ), WORK( * ),
 *      $                   Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -44,18 +44,18 @@
 *> using the single-shift QZ method.
 *> Matrix pairs of this type are produced by the reduction to
 *> generalized upper Hessenberg form of a complex matrix pair (A,B):
-*> 
+*>
 *>    A = Q1*H*Z1**H,  B = Q1*T*Z1**H,
-*> 
+*>
 *> as computed by CGGHRD.
-*> 
+*>
 *> If JOB='S', then the Hessenberg-triangular pair (H,T) is
 *> also reduced to generalized Schur form,
-*> 
+*>
 *>    H = Q*S*Z**H,  T = Q*P*Z**H,
-*> 
+*>
 *> where Q and Z are unitary matrices and S and P are upper triangular.
-*> 
+*>
 *> Optionally, the unitary matrix Q from the generalized Schur
 *> factorization may be postmultiplied into an input matrix Q1, and the
 *> unitary matrix Z may be postmultiplied into an input matrix Z1.
@@ -63,9 +63,9 @@
 *> the matrix pair (A,B) to generalized Hessenberg form, then the output
 *> matrices Q1*Q and Z1*Z are the unitary factors from the generalized
 *> Schur factorization of (A,B):
-*> 
+*>
 *>    A = (Q1*Q)*S*(Z1*Z)**H,  B = (Q1*Q)*P*(Z1*Z)**H.
-*> 
+*>
 *> To avoid overflow, eigenvalues of the matrix pair (H,T)
 *> (equivalently, of (A,B)) are computed as a pair of complex values
 *> (alpha,beta).  If beta is nonzero, lambda = alpha / beta is an
@@ -190,12 +190,12 @@
 *> \param[in,out] Q
 *> \verbatim
 *>          Q is COMPLEX array, dimension (LDQ, N)
-*>          On entry, if COMPZ = 'V', the unitary matrix Q1 used in the
+*>          On entry, if COMPQ = 'V', the unitary matrix Q1 used in the
 *>          reduction of (A,B) to generalized Hessenberg form.
-*>          On exit, if COMPZ = 'I', the unitary matrix of left Schur
-*>          vectors of (H,T), and if COMPZ = 'V', the unitary matrix of
+*>          On exit, if COMPQ = 'I', the unitary matrix of left Schur
+*>          vectors of (H,T), and if COMPQ = 'V', the unitary matrix of
 *>          left Schur vectors of (A,B).
-*>          Not referenced if COMPZ = 'N'.
+*>          Not referenced if COMPQ = 'N'.
 *> \endverbatim
 *>
 *> \param[in] LDQ
@@ -261,12 +261,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexGEcomputational
 *
@@ -284,10 +282,9 @@
      $                   ALPHA, BETA, Q, LDQ, Z, LDZ, WORK, LWORK,
      $                   RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ, JOB
@@ -319,13 +316,14 @@
       REAL               ABSB, ANORM, ASCALE, ATOL, BNORM, BSCALE, BTOL,
      $                   C, SAFMIN, TEMP, TEMP2, TEMPR, ULP
       COMPLEX            ABI22, AD11, AD12, AD21, AD22, CTEMP, CTEMP2,
-     $                   CTEMP3, ESHIFT, RTDISC, S, SHIFT, SIGNBC, T1,
-     $                   U12, X
+     $                   CTEMP3, ESHIFT, S, SHIFT, SIGNBC,
+     $                   U12, X, ABI12, Y
 *     ..
 *     .. External Functions ..
+      COMPLEX            CLADIV
       LOGICAL            LSAME
       REAL               CLANHS, SLAMCH
-      EXTERNAL           LSAME, CLANHS, SLAMCH
+      EXTERNAL           CLADIV, LSAME, CLANHS, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLARTG, CLASET, CROT, CSCAL, XERBLA
@@ -350,6 +348,7 @@
          ILSCHR = .TRUE.
          ISCHUR = 2
       ELSE
+         ILSCHR = .TRUE.
          ISCHUR = 0
       END IF
 *
@@ -363,6 +362,7 @@
          ILQ = .TRUE.
          ICOMPQ = 3
       ELSE
+         ILQ = .TRUE.
          ICOMPQ = 0
       END IF
 *
@@ -376,6 +376,7 @@
          ILZ = .TRUE.
          ICOMPZ = 3
       ELSE
+         ILZ = .TRUE.
          ICOMPZ = 0
       END IF
 *
@@ -453,7 +454,7 @@
                CALL CSCAL( J-1, SIGNBC, T( 1, J ), 1 )
                CALL CSCAL( J, SIGNBC, H( 1, J ), 1 )
             ELSE
-               H( J, J ) = H( J, J )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( J, J ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, J ), 1 )
@@ -514,7 +515,9 @@
          IF( ILAST.EQ.ILO ) THEN
             GO TO 60
          ELSE
-            IF( ABS1( H( ILAST, ILAST-1 ) ).LE.ATOL ) THEN
+            IF( ABS1( H( ILAST, ILAST-1 ) ).LE.MAX( SAFMIN, ULP*( 
+     $         ABS1( H( ILAST, ILAST ) ) + ABS1( H( ILAST-1, ILAST-1 ) 
+     $         ) ) ) ) THEN
                H( ILAST, ILAST-1 ) = CZERO
                GO TO 60
             END IF
@@ -534,7 +537,9 @@
             IF( J.EQ.ILO ) THEN
                ILAZRO = .TRUE.
             ELSE
-               IF( ABS1( H( J, J-1 ) ).LE.ATOL ) THEN
+               IF( ABS1( H( J, J-1 ) ).LE.MAX( SAFMIN, ULP*( 
+     $            ABS1( H( J, J ) ) + ABS1( H( J-1, J-1 ) ) 
+     $            ) ) ) THEN
                   H( J, J-1 ) = CZERO
                   ILAZRO = .TRUE.
                ELSE
@@ -665,7 +670,7 @@
                CALL CSCAL( ILAST+1-IFRSTM, SIGNBC, H( IFRSTM, ILAST ),
      $                     1 )
             ELSE
-               H( ILAST, ILAST ) = H( ILAST, ILAST )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( ILAST, ILAST ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, ILAST ), 1 )
@@ -729,22 +734,34 @@
             AD22 = ( ASCALE*H( ILAST, ILAST ) ) /
      $             ( BSCALE*T( ILAST, ILAST ) )
             ABI22 = AD22 - U12*AD21
+            ABI12 = AD12 - U12*AD11
 *
-            T1 = HALF*( AD11+ABI22 )
-            RTDISC = SQRT( T1**2+AD12*AD21-AD11*AD22 )
-            TEMP = REAL( T1-ABI22 )*REAL( RTDISC ) +
-     $             AIMAG( T1-ABI22 )*AIMAG( RTDISC )
-            IF( TEMP.LE.ZERO ) THEN
-               SHIFT = T1 + RTDISC
-            ELSE
-               SHIFT = T1 - RTDISC
+            SHIFT = ABI22
+            CTEMP = SQRT( ABI12 )*SQRT( AD21 )
+            TEMP = ABS1( CTEMP )
+            IF( CTEMP.NE.ZERO ) THEN
+               X = HALF*( AD11-SHIFT )
+               TEMP2 = ABS1( X )
+               TEMP = MAX( TEMP, ABS1( X ) )
+               Y = TEMP*SQRT( ( X / TEMP )**2+( CTEMP / TEMP )**2 )
+               IF( TEMP2.GT.ZERO ) THEN
+                  IF( REAL( X / TEMP2 )*REAL( Y )+
+     $                AIMAG( X / TEMP2 )*AIMAG( Y ).LT.ZERO )Y = -Y
+               END IF
+               SHIFT = SHIFT - CTEMP*CLADIV( CTEMP, ( X+Y ) )
             END IF
          ELSE
 *
 *           Exceptional shift.  Chosen for no particularly good reason.
 *
-            ESHIFT = ESHIFT + CONJG( ( ASCALE*H( ILAST-1, ILAST ) ) /
-     $               ( BSCALE*T( ILAST-1, ILAST-1 ) ) )
+            IF( ( IITER / 20 )*20.EQ.IITER .AND. 
+     $         BSCALE*ABS1(T( ILAST, ILAST )).GT.SAFMIN ) THEN
+               ESHIFT = ESHIFT + ( ASCALE*H( ILAST,
+     $            ILAST ) )/( BSCALE*T( ILAST, ILAST ) )
+            ELSE
+               ESHIFT = ESHIFT + ( ASCALE*H( ILAST,
+     $            ILAST-1 ) )/( BSCALE*T( ILAST-1, ILAST-1 ) )
+            END IF
             SHIFT = ESHIFT
          END IF
 *
@@ -849,7 +866,7 @@
                CALL CSCAL( J-1, SIGNBC, T( 1, J ), 1 )
                CALL CSCAL( J, SIGNBC, H( 1, J ), 1 )
             ELSE
-               H( J, J ) = H( J, J )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( J, J ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, J ), 1 )

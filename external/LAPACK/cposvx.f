@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CPOSVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cposvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cposvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cposvx.f"> 
+*> Download CPOSVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cposvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cposvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cposvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CPOSVX( FACT, UPLO, N, NRHS, A, LDA, AF, LDAF, EQUED,
 *                          S, B, LDB, X, LDX, RCOND, FERR, BERR, WORK,
 *                          RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          EQUED, FACT, UPLO
 *       INTEGER            INFO, LDA, LDAF, LDB, LDX, N, NRHS
@@ -32,7 +32,7 @@
 *       COMPLEX            A( LDA, * ), AF( LDAF, * ), B( LDB, * ),
 *      $                   WORK( * ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -155,7 +155,7 @@
 *>
 *> \param[in,out] AF
 *> \verbatim
-*>          AF is or output) COMPLEX array, dimension (LDAF,N)
+*>          AF is COMPLEX array, dimension (LDAF,N)
 *>          If FACT = 'F', then AF is an input argument and on entry
 *>          contains the triangular factor U or L from the Cholesky
 *>          factorization A = U**H*U or A = L*L**H, in the same storage
@@ -182,7 +182,7 @@
 *>
 *> \param[in,out] EQUED
 *> \verbatim
-*>          EQUED is or output) CHARACTER*1
+*>          EQUED is CHARACTER*1
 *>          Specifies the form of equilibration that was done.
 *>          = 'N':  No equilibration (always true if FACT = 'N').
 *>          = 'Y':  Equilibration was done, i.e., A has been replaced by
@@ -193,7 +193,7 @@
 *>
 *> \param[in,out] S
 *> \verbatim
-*>          S is or output) REAL array, dimension (N)
+*>          S is REAL array, dimension (N)
 *>          The scale factors for A; not accessed if EQUED = 'N'.  S is
 *>          an input argument if FACT = 'F'; otherwise, S is an output
 *>          argument.  If FACT = 'F' and EQUED = 'Y', each element of S
@@ -292,12 +292,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \ingroup complexPOsolve
 *
@@ -306,10 +304,9 @@
      $                   S, B, LDB, X, LDX, RCOND, FERR, BERR, WORK,
      $                   RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO
