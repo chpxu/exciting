@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #_______________________________________________________________________________
 
@@ -16,7 +16,9 @@ import sys
 import os
 
 import matplotlib.style
-if matplotlib.__version__.split(".")[0]=="2": matplotlib.style.use('classic')
+
+if matplotlib.__version__.split(".")[0]=="2": 
+    matplotlib.style.use('classic')
 
 #-------------------------------------------------------------------------------
 
@@ -51,8 +53,8 @@ dpipng = int(shell_value('DPIPNG',ev_list,300)[0])
 narg  = len(sys.argv)-1
 
 if (narg < 1): 
-    print "\nIncorrect number of arguments. **Usage**:\n\n",
-    print "PLOT-relaxdistance.py DIRECTORYNAME [ATOM1 ATOM2 YMIN YMAX]\n"
+    print ("\nIncorrect number of arguments. **Usage**:\n\n")
+    print ("PLOT-relaxdistance.py DIRECTORYNAME [ATOM1 ATOM2 YMIN YMAX]\n")
     sys.exit()
 
 label = str(sys.argv[1])
@@ -84,9 +86,9 @@ else:
         for i in range(3): cell.append(axis_matrix[i][i])
         count = False
         for i in range(3):
-	    for j in range(3):
-                if (i!=j):
-		    if ( abs(axis_matrix[i][j]) > 0.00000001): count = True
+            for j in range(3):
+                    if (i!=j):
+                        if ( abs(axis_matrix[i][j]) > 0.00000001): count = True
         if (count): sys.exit("\n"+"ERROR: Lattice type non implemented!\n")
         
 xlabel  = u'Optimization steps'

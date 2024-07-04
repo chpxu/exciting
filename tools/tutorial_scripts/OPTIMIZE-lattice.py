@@ -26,8 +26,8 @@ import glob
 
 INFOlist = sorted(glob.glob('INFO_*'))
 if (len(INFOlist) == 0):
-    os.system('OPTIMIZE-setup.py')
+    os.system('python $EXCITINGTOOLS/OPTIMIZE-setup.py')
 elif(len(INFOlist) == 1):
-    os.system('OPTIMIZE-analyze.py')
+    os.system('python $EXCITINGTOOLS/OPTIMIZE-analyze.py')
 else:
     sys.exit('\n.... Oops ERROR: There are more than one INFO file in this directory !?!?!?\n')

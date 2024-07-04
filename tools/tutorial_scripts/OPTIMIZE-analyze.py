@@ -430,7 +430,7 @@ if (mod == 'VOL'):
     plt.text(0.3,0.75, 'E$_{min}$ = '+str(round(E0,7))+' [Ha]'         , transform = ax.transAxes)
     plt.text(0.3,0.70, 'V$_{min}$ = '+str(round(V0,4))+u' [Bohr\u00B3]', transform = ax.transAxes)
     plt.text(0.3,0.65, 'B$_0$ = '+str(round(B0*ToGPa,3))+' [GPa]'      , transform = ax.transAxes)
-    plt.text(0.3,0.60, 'B$^\prime$ = '+str(round(Bp,3))                , transform = ax.transAxes)
+    plt.text(0.3,0.60, 'B$^\\prime$ = '+str(round(Bp,3))                , transform = ax.transAxes)
 
     vmn  = min(min(vi), V0)
     vmx  = max(max(vi), V0)
@@ -444,12 +444,12 @@ if (mod == 'VOL'):
     y0 = [] ; y0 = ei
 
 if (mod != 'VOL'):
-    xlabel    = 'Physical strain $\epsilon$'
+    xlabel    = 'Physical strain $\\epsilon$'
     ylabel    = 'Energy [Ha]'
     fit_label = '4th order polynomial fit'
 
     plt.text(0.3,0.75, 'E$_{min}$ = '+str(round(e_min, 7))+' [Ha]', transform = ax.transAxes)
-    plt.text(0.3,0.70, '$\epsilon_{min}$  = '+str(round(s_min,5)) , transform = ax.transAxes)
+    plt.text(0.3,0.70, '$\\epsilon_{min}$  = '+str(round(s_min,5)) , transform = ax.transAxes)
 
     xx = [] ; xx = s_fit
     yy = [] ; yy = e_fit

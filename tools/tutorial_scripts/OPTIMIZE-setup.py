@@ -74,7 +74,7 @@ LC_Dic = {              \
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Checking the input file exist ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!
-INF = raw_input('\n>>>> Please enter the exciting input file name: ')
+INF = input('\n>>>> Please enter the exciting input file name: ')
 if (os.path.exists(INF) == False):
     sys.exit('\n     ... Oops ERROR: There is NO '+ INF +' file !?!?!?    \n')
 #--------------------------------------------------------------------------------------------------
@@ -86,9 +86,9 @@ os.system('sgroup sgroup.in 1>sgroup.out 2>sgroup.err; rm -f sgroup.in ')
 if (os.path.getsize('sgroup.err') != 0):
     fer  = open('sgroup.err', 'r')
     lines= fer.readlines()
-    print '\n     ... Oops '+ lines[0]
+    print ('\n     ... Oops '+ lines[0])
     for i in range(1, len(lines)):
-        print '                 '+ lines[i]
+        print ('                 '+ lines[i])
     print
     fer.close()
     sys.exit()
@@ -141,8 +141,8 @@ elif(207 <= SGN and SGN <= 230): # Cubic I
 
 else: sys.exit('\n     ... Oops ERROR: WRONG Space-Group Number !?!?!?    \n')
 
-print '\n     '+ SGN_explanation +'\
-       \n     '+ LC_Dic[LC] +' structure in the Laue classification.'
+print( '\n     '+ SGN_explanation +'\
+       \n     '+ LC_Dic[LC] +' structure in the Laue classification.')
 
 #--------------------------------------------------------------------------------------------------
 
@@ -236,9 +236,9 @@ if (LC=='HI' or\
     LC=='RII'or\
     LC=='TI' or\
     LC=='TII'):
-    print '\n     Which parameter would you like to optimize?'\
+    print ('\n     Which parameter would you like to optimize?'\
           '\n     1 ... volume                               '\
-          '\n     2 ... c/a ratio with constant volume       '
+          '\n     2 ... c/a ratio with constant volume       ')
     num = input(">>>> Please choose '1' or '2': ")
     if (num != 1 and num != 2):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' \n")
@@ -246,10 +246,10 @@ if (LC=='HI' or\
     if (num == 2 ): dirn = 'COA'
 
 if (LC=='O'):
-    print '\n     Which parameter would you like to optimize?'\
+    print ('\n     Which parameter would you like to optimize?'\
           '\n     1 ... volume                               '\
           '\n     2 ... b/a ratio with constant volume       '\
-          '\n     3 ... c/a ratio with constant volume       '
+          '\n     3 ... c/a ratio with constant volume       ')
     num = input(">>>> Please choose '1' or '2' or '3': ")
     if (num != 1 and num != 2 and num != 3):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' or '3'\n")
@@ -258,11 +258,11 @@ if (LC=='O'):
     if (num == 3 ): dirn = 'COA'
 
 if (LC=='M'):
-    print '\n     Which parameter would you like to optimize?'\
+    print ('\n     Which parameter would you like to optimize?'\
           '\n     1 ... volume                               '\
           '\n     2 ... b/a ratio with constant volume       '\
           '\n     3 ... c/a ratio with constant volume       '\
-          '\n     4 ... gamma angle with constant volume     '
+          '\n     4 ... gamma angle with constant volume     ')
     num = input(">>>> Please choose '1' or '2' or '3' or '4': ")
     if (num != 1 and num != 2 and num != 3 and num != 4):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' or '3' or '4'\n")
@@ -272,13 +272,13 @@ if (LC=='M'):
     if (num == 4 ): dirn = 'GAMMA'
 
 if (LC=='N'):
-    print '\n     Which parameter would you like to optimize?'\
+    print ('\n     Which parameter would you like to optimize?'\
           '\n     1 ... volume                               '\
           '\n     2 ... b/a ratio with constant volume       '\
           '\n     3 ... c/a ratio with constant volume       '\
           '\n     4 ... alpha angle with constant volume     '\
           '\n     5 ... beta  angle with constant volume     '\
-          '\n     6 ... gamma angle with constant volume     '
+          '\n     6 ... gamma angle with constant volume     ')
     num = input(">>>> Please choose '1' or '2' or '3' or '4' or '5' or '6': ")
     if (num != 1 and num != 2 and num != 3 and num != 4 and num != 5 and num != 6):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' or '3' or '4' or '5' or '6'\n")
@@ -309,10 +309,10 @@ if (1 < mdr or mdr < 0):
     sys.exit('\n     ... Oops ERROR: The maximum physical strain is OUT of range !!!!!!\n')
 
 mdr = round(mdr, 4)
-print '     The maximum physical strain is '+ str(mdr)
+print( '     The maximum physical strain is '+ str(mdr))
 
 NoP = input('\n>>>> Please enter the number of the distorted structures [odd number > 4]: ')
-NoP = int(abs(NoP))
+NoP = abs(int(NoP))
 
 if (NoP < 5):
     sys.exit('\n     ... Oops ERROR: The NUMBER of the distorted structures < 5 !!!!!!    \n')
@@ -321,7 +321,7 @@ if (99 < NoP):
 
 if (NoP%2 == 0):
     NoP   += 1
-print '     The number of the distorted structures is '+ str(NoP) + '\n'
+print ('     The number of the distorted structures is '+ str(NoP) + '\n')
 
 ptn = int((NoP-1)/2)
 
@@ -333,11 +333,11 @@ if (mdr/ptn <= 0.00001):
 
 #%!%!%--- Making the INFO file ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
 INFO = open('INFO_'+ dirn , 'w')
-print >>INFO, 'Space-group number              =', SGN       ,\
+print('Space-group number              =', SGN       ,\
             '\nStructure type                  =', LC_Dic[LC],\
             '\nMaximum physical strain         =', mdr       ,\
-            '\nNumber of distorted structures  =', NoP
-INFO.close
+            '\nNumber of distorted structures  =', NoP, file=INFO)
+INFO.close()
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%#
@@ -405,7 +405,7 @@ for s in range(-ptn, ptn+1):
     os.chdir('../')
 #--------------------------------------------------------------------------------------------------
 
-print>>fdis,'\n   Distorted parameters: END'
+print('\n   Distorted parameters: END', file=fdis)
 fdis.close()
 
 os.mkdir(dirn.lower()+'-xml')

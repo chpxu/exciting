@@ -82,7 +82,7 @@ if (os.path.exists('xlabel')):
 #-------------------------------------------------------------------------------
 
 current = os.environ['PWD']
-ev_list = os.environ.keys()
+ev_list = list(os.environ.keys())
 
 rundir = shell_value('EXCITINGRUNDIR',ev_list,current)[0]
 rlabel = shell_value('RLABEL',ev_list,"rundir-")[0]

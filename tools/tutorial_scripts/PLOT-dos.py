@@ -282,9 +282,10 @@ def check_number_of_plots(nop,nmax):
     un update of the colors list could be necessary.
     no_leg = input_options['no_legend']
     '''
+    # bug: add brackets
     if ( nop>nmax ):
-        print "\n WARNING: Number of plots = "+str(nop)+" is larger than "+str(nmax)+" !"
-        print   "          Updating the list of colors may be necessary.\n"
+        print ("\nWARNING: Number of plots = "+str(nop)+" is larger than "+str(nmax)+"!")
+        print  ("Updating the list of colors may be necessary.\n")
     return
 
 #END_DEF++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -534,7 +535,7 @@ def main(input_options):
             sc = spin_color[number_of_plots-1-i]
             fc = fill_color[number_of_plots-1-i]
         leg_spin = ["",""]
-        if ( no_reverse_spin and not phonon ): leg_spin = ["$\uparrow$","$\downarrow$"]
+        if ( no_reverse_spin and not phonon ): leg_spin = ["$\\uparrow$","$\\downarrow$"]
         llab = set_legend_label(leg_label[i],npspin,leg_spin,local_single,0)
         if ( not no_fill ): ax1.fill_between(ene[i], dos[i], color=fc, alpha=transparency)
         ax1.plot(ene[i], dos[i], color=lc, lw=line_thickness, label=llab)
@@ -589,14 +590,14 @@ def main(input_options):
     
     props = dict(boxstyle="Round, pad=0.2", facecolor="beige", 
                  edgecolor='palegoldenrod', lw=5,alpha=0.9)   
-  
+  # bug: need to escape \ with \\
     if ( global_spin and not no_reverse_spin ):  
         if ( ymin<0.0 ):
-            ax1.text(xpos_spin, 0.08/sy, "spin$\downarrow$", size="30", #color="darkblue",
+            ax1.text(xpos_spin, 0.08/sy, "spin$\\downarrow$", size="30", #color="darkblue",
                      transform=ax1.transAxes, ha=ha_spin, va='center', 
                      rotation=0, bbox = props)
         if ( ymax>0.0 ):  
-            ax1.text(xpos_spin, 1-0.08/sy, "spin$\uparrow$", size="30", #color="darkblue",
+            ax1.text(xpos_spin, 1-0.08/sy, "spin$\\uparrow$", size="30", #color="darkblue",
                      transform=ax1.transAxes, ha=ha_spin, va='center', 
                      rotation=0, bbox = props) 
             
