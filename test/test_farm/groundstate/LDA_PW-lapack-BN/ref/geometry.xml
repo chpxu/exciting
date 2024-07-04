@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<input>
+  <title>H</title>
+  <structure speciespath=".">
+    <crystal>
+      <basevect>   4.695969006       0.000000000       0.000000000</basevect>
+      <basevect>  -2.347984503       4.066828455       0.000000000</basevect>
+      <basevect>   0.000000000       0.000000000       20.00000000</basevect>
+    </crystal>
+    <species speciesfile="N.xml" rmt="1.3000">
+      <atom coord="0.0000000000      0.0000000000      0.0000000000"/>
+    </species>
+    <species speciesfile="B.xml" rmt="1.3000">
+      <atom coord="0.6666666667      0.3333333333      0.0000000000"/>
+    </species>
+  </structure>
+</input>

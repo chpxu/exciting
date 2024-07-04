@@ -1,0 +1,266 @@
+{
+  "wf1d-0001-0001.dat": {
+    "path": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }, 
+    "|psi|^2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "Re(psi)": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "Im(psi)": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }
+  },
+  "wf2d-0001-0001.xsf": {
+    "grid": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }, 
+    "origin": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point1": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "module squared": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "real": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "imaginary": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }
+  },
+  "wf3d-0001-0001.xsf": {
+    "grid": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }, 
+    "origin": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point1": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point3": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "module squared": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "real": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "imaginary": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }
+  },
+  "wf3d-0001-0001.cube": {
+    "n_atoms": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "n_1": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "n_2": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "n_3": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "origin": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "v_increment_1": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "v_increment_2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "v_increment_3": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "atom_number": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "charge": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "coordinate": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "cube_data": {
+      "tol": 1e-05,
+      "unit": "null"
+    }
+  },
+  "wf1d-0003-0001.dat": {
+    "path": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }, 
+    "|psi|^2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "Re(psi)": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "Im(psi)": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }
+  },
+  "wf2d-0003-0001.xsf": {
+    "grid": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }, 
+    "origin": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point1": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "module squared": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "real": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "imaginary": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }
+  },
+  "wf3d-0003-0001.xsf": {
+    "grid": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }, 
+    "origin": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point1": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "point3": {
+      "tol": 1e-06,
+      "unit": "a.u."
+    },
+    "module squared": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "real": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "imaginary": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    }
+  },
+  "wf3d-0003-0001.cube": {
+    "n_atoms": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "n_1": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "n_2": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "n_3": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "origin": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "v_increment_1": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "v_increment_2": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "v_increment_3": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "atom_number": {
+      "tol": 0,
+      "unit": "null"
+    }, 
+    "charge": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "coordinate": {
+      "tol": 1e-05,
+      "unit": "a.u."
+    },
+    "cube_data": {
+      "tol": 1e-05,
+      "unit": "null"
+    }
+  }
+}

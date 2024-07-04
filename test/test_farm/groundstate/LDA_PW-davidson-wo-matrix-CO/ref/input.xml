@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<input>
+
+
+  <title>CO molecule</title>
+
+
+  <structure speciespath="." cartesian="true">
+    <crystal scale="7" >
+      <basevect> 1.0     0.0     0.0 </basevect>
+      <basevect> 0.0     1.0     0.0 </basevect>
+      <basevect> 0.0     0.0     1.0 </basevect>
+    </crystal>
+    <species speciesfile="C.xml" rmt="1.0">
+      <atom coord="0.00000000000  0.00000000000  2.1319888603" />
+    </species>
+    <species speciesfile="O.xml" rmt="1.0">
+      <atom coord="0.000000000000	0.000000000000	 0.000000000000" />
+    </species>
+  </structure>
+
+
+  <groundstate 
+    do='fromscratch'
+    lradstep='1'
+    ngridk="1 1 1"
+    rgkmax="6"
+    gmaxvr="18" 
+    maxscl="30"
+    epschg="1d-7"
+    epsengy="1d-7"
+    lmaxmat="8"
+    lmaxapw="8"
+    lmaxvr="8"
+    mixer="msec"
+    radialgridtype="cubic-2"
+    ValenceRelativity="zora"
+    swidth="0.001"
+    nempty="2"
+    mixerswitch="1"
+    xctype="LDA_PW"
+    outputlevel="high"
+    nosym="false"
+>
+ <solver
+    type='Davidson'
+    constructHS='false'
+    evaltol='1d-15'
+    />
+  </groundstate>
+  <relax/>
+</input>
+
