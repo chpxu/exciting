@@ -1,4 +1,4 @@
-This codebase is
+This is a modified version of `exciting` code base where the files in `tools/tutorial_scripts` have ad-hoc updates to work with Python 3 whilst the module system is being created.
 
 
 The exciting FP-LAPW Code
