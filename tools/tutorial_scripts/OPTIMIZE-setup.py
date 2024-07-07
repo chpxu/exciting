@@ -80,7 +80,7 @@ if (os.path.exists(INF) == False):
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Calculating the Space-Group Number and classifying it ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!
-os.system('$EXCITINGTOOLS/exciting2sgroup.py '+ INF +' sgroup.in')
+os.system('python3 $EXCITINGTOOLS/exciting2sgroup.py '+ INF +' sgroup.in')
 os.system('sgroup sgroup.in 1>sgroup.out 2>sgroup.err; rm -f sgroup.in ')
 
 if (os.path.getsize('sgroup.err') != 0):
@@ -147,31 +147,6 @@ print( '\n     '+ SGN_explanation +'\
 #--------------------------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #%!%!%--- Reading the input file ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
 INOBJ= open(INF, 'r')
 doc  = ET.parse(INOBJ)
@@ -179,7 +154,7 @@ root = doc.getroot()
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Reading the scale, stretch, and base vectors from the input file and calculate the volume
-scale = map(float,doc.xpath('/input/structure/crystal/@scale'))
+scale = list(map(float,doc.xpath('/input/structure/crystal/@scale')))
 if (scale==[]):
     ascale=1.
 else:
@@ -194,7 +169,7 @@ else:
 basevectsn = doc.xpath('//basevect/text()')
 bv = []
 for basevect in basevectsn:
-    bv.append(map(float,basevect.split()))
+    bv.append(list(map(float,basevect.split())))
 
 M_old= np.array(bv)
 D    = np.linalg.det(M_old)
@@ -240,10 +215,10 @@ if (LC=='HI' or\
           '\n     1 ... volume                               '\
           '\n     2 ... c/a ratio with constant volume       ')
     num = input(">>>> Please choose '1' or '2': ")
-    if (num != 1 and num != 2):
+    if (num != '1' and num != '2'):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' \n")
-    if (num == 1 ): dirn = 'VOL'
-    if (num == 2 ): dirn = 'COA'
+    if (num == '1' ): dirn = 'VOL'
+    if (num == '2'): dirn = 'COA'
 
 if (LC=='O'):
     print ('\n     Which parameter would you like to optimize?'\
@@ -251,11 +226,11 @@ if (LC=='O'):
           '\n     2 ... b/a ratio with constant volume       '\
           '\n     3 ... c/a ratio with constant volume       ')
     num = input(">>>> Please choose '1' or '2' or '3': ")
-    if (num != 1 and num != 2 and num != 3):
+    if (num != '1' and num != '2' and num != '3'):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' or '3'\n")
-    if (num == 1 ): dirn = 'VOL'
-    if (num == 2 ): dirn = 'BOA'
-    if (num == 3 ): dirn = 'COA'
+    if (num == '1' ): dirn = 'VOL'
+    if (num == '2' ): dirn = 'BOA'
+    if (num == '3' ): dirn = 'COA'
 
 if (LC=='M'):
     print ('\n     Which parameter would you like to optimize?'\
@@ -264,12 +239,12 @@ if (LC=='M'):
           '\n     3 ... c/a ratio with constant volume       '\
           '\n     4 ... gamma angle with constant volume     ')
     num = input(">>>> Please choose '1' or '2' or '3' or '4': ")
-    if (num != 1 and num != 2 and num != 3 and num != 4):
+    if (num != '1' and num != '2' and num != '3' and num != '4'):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' or '3' or '4'\n")
-    if (num == 1 ): dirn = 'VOL'
-    if (num == 2 ): dirn = 'BOA'
-    if (num == 3 ): dirn = 'COA'
-    if (num == 4 ): dirn = 'GAMMA'
+    if (num == '1' ): dirn = 'VOL'
+    if (num == '2' ): dirn = 'BOA'
+    if (num == '3' ): dirn = 'COA'
+    if (num == '4' ): dirn = 'GAMMA'
 
 if (LC=='N'):
     print ('\n     Which parameter would you like to optimize?'\
@@ -280,14 +255,14 @@ if (LC=='N'):
           '\n     5 ... beta  angle with constant volume     '\
           '\n     6 ... gamma angle with constant volume     ')
     num = input(">>>> Please choose '1' or '2' or '3' or '4' or '5' or '6': ")
-    if (num != 1 and num != 2 and num != 3 and num != 4 and num != 5 and num != 6):
+    if (num != '1' and num != '2' and num != '3' and num != '4' and num != '5' and num != '6'):
         sys.exit("\n     ... Oops ERROR: Choose '1' or '2' or '3' or '4' or '5' or '6'\n")
-    if (num == 1 ): dirn = 'VOL'
-    if (num == 2 ): dirn = 'BOA'
-    if (num == 3 ): dirn = 'COA'
-    if (num == 4 ): dirn = 'ALPHA'
-    if (num == 5 ): dirn = 'BETA'
-    if (num == 6 ): dirn = 'GAMMA'
+    if (num == '1' ): dirn = 'VOL'
+    if (num == '2' ): dirn = 'BOA'
+    if (num == '3' ): dirn = 'COA'
+    if (num == '4' ): dirn = 'ALPHA'
+    if (num == '5' ): dirn = 'BETA'
+    if (num == '6' ): dirn = 'GAMMA'
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Directory Management ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
@@ -302,8 +277,8 @@ os.chdir(dirn)
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Reading the maximum physical strain and number of distorted structures ---%!%!%!%!%!%!%!%
-mdr = input('\n>>>> Please enter the maximum physical strain value  '\
-            '\n     The suggested value is between 0.001 and 0.050: ')
+mdr = float(input('\n>>>> Please enter the maximum physical strain value  '\
+            '\n     The suggested value is between 0.001 and 0.050: '))
 
 if (1 < mdr or mdr < 0):
     sys.exit('\n     ... Oops ERROR: The maximum physical strain is OUT of range !!!!!!\n')
@@ -345,7 +320,7 @@ INFO.close()
 #%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%#
 
 fdis = open(dirn.lower()+'-Parameters', 'w')
-print >>fdis,dirn+', Deformation Matrix = ' + Def_matrix[dirn]
+print(dirn+', Deformation Matrix = ' + Def_matrix[dirn], file=fdis)
 
 cont= 0
 for s in range(-ptn, ptn+1):
@@ -385,10 +360,10 @@ for s in range(-ptn, ptn+1):
     if (9  < cont and cont < 100): dirn_num = dirn.lower() + '_' + str(cont)
 
     bsvct = doc.xpath('//crystal/basevect')
-    print>>fdis, '\n'+dirn_num+', Physical strain = '+ str(eps)
+    print('\n'+dirn_num+', Physical strain = '+ str(eps), file=fdis)
     for j in range(3):
         bdummy = '%22.16f'%(M_new[j,0]) + '%22.16f'%(M_new[j,1]) + '%22.16f'%(M_new[j,2])+' '
-        print>>fdis, 'V' + str(j+1) + ' --=> ' + bdummy
+        print('V' + str(j+1) + ' --=> ' + bdummy, file=fdis)
         bsvct[j].text = bdummy
 
     os.mkdir(dirn_num)
@@ -400,7 +375,7 @@ for s in range(-ptn, ptn+1):
     OUTOBJ.write(ET.tostring(root, method         ='xml',
                                    pretty_print   =True ,
                                    xml_declaration=False ,
-                                   encoding       ='UTF-8'))
+                                   encoding       ='UTF-8').decode())
     OUTOBJ.close()
     os.chdir('../')
 #--------------------------------------------------------------------------------------------------
