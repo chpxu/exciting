@@ -125,8 +125,8 @@ if (mod == 'VOL'):
         os.chdir(vol_num)
 
         if (os.path.exists('INFO.OUT') == False):
-            print'\n     ... Oops NOTICE: There is NO "INFO.OUT" file in "'+ vol_num + \
-            '" directory !?!?!?    \n'
+            print('\n     ... Oops NOTICE: There is NO "INFO.OUT" file in "'+ vol_num + \
+            '" directory !?!?!?    \n')
 
         for line in open('INFO.OUT','r'):
             if (line.find('Unit cell volume')>=0): 
@@ -142,7 +142,7 @@ if (mod == 'VOL'):
     
     fvol = open('energy-vs-volume', 'w')
     for i in range(len(energy)):
-        print >>fvol, volume[i],'   ', energy[i]
+        print(volume[i],'   ', energy[i], file=fvol)
     fvol.close()
 
     data = np.loadtxt('energy-vs-volume')
@@ -150,9 +150,10 @@ if (mod == 'VOL'):
     if (len(ei) < 3): sys.exit('\n     ... Oops ERROR: EOS fit needs at least 3 points.    \n')
 
     #%!%!%!%!--- Reading the EOS type ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!
-    eos = raw_input('\n>>>> Murnaghan or Birch-Murnaghan EOS: [M/B] ').upper()
+    eos = input('\n>>>> Murnaghan or Birch-Murnaghan EOS: [M/B] ').upper()
     if (eos != 'B' and eos != 'M'): sys.exit("\n    ... Oops ERROR: Choose 'B' or 'M' \n")
     if (eos == 'B'): eos = 'BM'
+    print('eos = ', eos)
     #----------------------------------------------------------------------------------------------
 
     #%!%!%!%!--- FIT CALCULATIONS ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!
@@ -164,22 +165,23 @@ if (mod == 'VOL'):
 
     p0 = [E0, V0, B0, Bp]
 
-    viei = sorted([zip(vi, ei)])
+    viei = sorted(zip(vi, ei))
+    print(viei[0])
     v, e = np.array(viei).T
 
     p1, fopt, direc, n_iter, n_funcalls, warnflag = \
     fmin_powell(snr, p0, args=(v, e), full_output=True, disp=0)
     E0, V0, B0, Bp = p1
 
-    print\
+    print(\
     '\n =====================================================================',\
     '\n Fit accuracy:',\
-    '\n     Log(Final residue in [Ha]): '+str(round(log10(sqrt(fopt)),2)),'\n'\
+    '\n     Log(Final residue in [Ha]): '+str(round(np.log10(np.sqrt(fopt)),2)),'\n'\
     '\n Final parameters:'                                \
     '\n     E_min = ' + str(round(E0,7))      +' [Ha]'    \
     '\n     V_min = ' + str(round(V0,4))      +' [Bohr^3]'\
     '\n     B_0   = ' + str(round(B0*ToGPa,3))+' [GPa]'   \
-    "\n     B'    = " + str(round(Bp,3))      +'\n'
+    "\n     B'    = " + str(round(Bp,3))      +'\n')
 
     str_V = []
     str_de= []
@@ -222,24 +224,24 @@ if (mod == 'VOL'):
     outf = open(eos + '_eos.out', 'w')
 
     if (eos=='M'):
-        print >>outf,' === Murnaghan eos ==============================='
+        print(' === Murnaghan eos ===============================', file=outf)
     else:
-        print >>outf,' === Birch-Murnaghan eos ========================='
+        print(' === Birch-Murnaghan eos =========================', file=outf)
 
-    print >>outf,                                                               \
+    print(                                                               \
       ' Fit accuracy:',                                                         \
-    '\n     Log(Final residue in [Ha]): '+str(round(log10(sqrt(fopt)),2)),  '\n'\
+    '\n     Log(Final residue in [Ha]): '+str(round(np.log10(np.sqrt(fopt)),2)),  '\n'\
     '\n Final parameters:'                                                      \
     '\n     E_min = ' + str(round(E0,7))      +' [Ha]'                          \
     '\n     V_min = ' + str(round(V0,4))      +' [Bohr^3]'                      \
     '\n     B_0   = ' + str(round(B0*ToGPa,3))+' [GPa]'                         \
     "\n     B'    = " + str(round(Bp,3))      +                                 \
     '\n =================================================\n'\
-    '\n Volume' + ((len_Vi-3)*' ') + 'E_dft-E_eos     Pressure [GPa]'
+    '\n Volume' + ((len_Vi-3)*' ') + 'E_dft-E_eos     Pressure [GPa]', file=outf)
 
     for i in range(len(ei)):
-        print >>outf, str_V[i]  + ((len_Vi -len(str_V[i]  ))*' ') + '    ' \
-                    + str_de[i] + ((len_dei-len(str_de[i]))*' ') + '    ' + str_P[i]
+        print(str_V[i]  + ((len_Vi -len(str_V[i]  ))*' ') + '    ' \
+                    + str_de[i] + ((len_dei-len(str_de[i]))*' ') + '    ' + str_P[i], file=outf)
 
     outf.close()
     #----------------------------------------------------------------------------------------------
@@ -249,7 +251,7 @@ if (mod == 'VOL'):
     doc  = ET.parse(INOBJ)
     root = doc.getroot()
 
-    scale = map(float,doc.xpath('/input/structure/crystal/@scale'))
+    scale = list(map(float,doc.xpath('/input/structure/crystal/@scale')))
     if (scale==[]):
         ascale=1.
     else:
@@ -264,7 +266,7 @@ if (mod == 'VOL'):
     basevectsn = doc.xpath('//basevect/text()')
     bv = []
     for basevect in basevectsn:
-        bv.append(map(float,basevect.split()))
+        bv.append(list(map(float,basevect.split())))
 
     M_old= np.array(bv)
     D    = np.linalg.det(M_old)
@@ -286,13 +288,16 @@ if (mod == 'VOL'):
 
     #---Writing the structure file-----------------------------------------------------------------
     OUTOBJ = open(eos+'-optimized.xml', 'w')
-    OUTOBJ.write(ET.tostring(root, method         ='xml',
+    #### this method is used a lot for decoding
+    OUTOBJSTR = ET.tostring(root, method         ='xml',
                                    pretty_print   =True ,
                                    xml_declaration=False ,
-                                   encoding       ='UTF-8'))
+                                   encoding       ='UTF-8')
+    OUTOBJ.write(OUTOBJSTR.decode())
+    #### 
     OUTOBJ.close()
-    print   ' Optimized lattice parameter saved into the file: "' + eos + '-optimized.xml".'\
-          '\n =====================================================================\n'
+    print(' Optimized lattice parameter saved into the file: "' + eos + '-optimized.xml".'\
+          '\n =====================================================================\n')
 #--------------------------------------------------------------------------------------------------
 if (mod != 'VOL'):
 
@@ -303,14 +308,14 @@ if (mod != 'VOL'):
         if (9  < i and i <  100): dir_num = mod.lower() + '_' + str(i)
 
         if (os.path.exists(dir_num) == False):
-            print '\n    ... Oops NOTICE: There is NO '+ dir_num +' directory !?!?!?    \n'
+            print ('\n    ... Oops NOTICE: There is NO '+ dir_num +' directory !?!?!?    \n')
             break
 
         os.chdir(dir_num)
 
         if (os.path.exists('INFO.OUT') == False):
-            print '\n     ... Oops NOTICE: There is NO "INFO.OUT" file in "'+ dir_num + \
-            '" directory !?!?!?    \n'
+            print ('\n     ... Oops NOTICE: There is NO "INFO.OUT" file in "'+ dir_num + \
+            '" directory !?!?!?    \n')
 
         s = i-(NoP+1)/2
         r = 2*mdr*s/(NoP-1)
@@ -321,7 +326,7 @@ if (mod != 'VOL'):
         else:
             strain =    str(round(r,10))
 
-        print >>fee, strain,'   ', readenergy()
+        print(strain,'   ', readenergy(), file=fee)
         os.chdir('../')
 
     fee.close()
@@ -397,9 +402,9 @@ if (mod != 'VOL'):
                                    encoding       ='UTF-8'))
     OUTOBJ.close()
 
-    print '\n ====================================================================='\
+    print ('\n ====================================================================='\
           '\n Optimized lattice parameter saved into the file: "'+ mod.lower() +'-optimized.xml".'\
-          '\n =====================================================================\n'
+          '\n =====================================================================\n')
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- PLOT DEFINITIONS ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
