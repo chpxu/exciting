@@ -333,7 +333,7 @@ if (mod != 'VOL'):
 
     data = np.loadtxt('energy-vs-strain')
     si, ei = data.T
-    vs = sorted([zip(si, ei)])
+    vs = sorted(zip(si, ei))
     s, e = np.array(vs).T
     if (len(e) < 5):
         sys.exit('\n     ... Oops ERROR: 4th order polynomial fit needs at least 5 points.\n')
@@ -361,7 +361,7 @@ if (mod != 'VOL'):
     basevectsn = doc.xpath('//basevect/text()')
     bv = []
     for basevect in basevectsn:
-        bv.append(map(float,basevect.split()))
+        bv.append(list(map(float,basevect.split())))
 
     M_old= np.array(bv)
 
@@ -399,7 +399,7 @@ if (mod != 'VOL'):
     OUTOBJ.write(ET.tostring(root, method         ='xml',
                                    pretty_print   =True ,
                                    xml_declaration=False ,
-                                   encoding       ='UTF-8'))
+                                   encoding       ='UTF-8').decode())
     OUTOBJ.close()
 
     print ('\n ====================================================================='\
