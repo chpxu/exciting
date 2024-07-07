@@ -12,9 +12,9 @@ import os
 
 narg  = len(sys.argv)-1
 
-if (narg < 2): 
-    print ("\nIncorrect number of arguments. **Usage**:\n\n")
-    print ("exciting2sgroup.py excitingINPUTFILE.xml sgroup.in \n")
+if (narg != 2): 
+    print("\nIncorrect number of arguments. **Usage**:\n\n")
+    print("exciting2sgroup.py excitingINPUTFILE.xml sgroup.in \n")
     sys.exit()
 
 xmlinput = str(sys.argv[1])
@@ -78,11 +78,16 @@ beta  = NU.arccos(NU.dot(avec,cvec)/a/c)/NU.pi*180.
 gamma = NU.arccos(NU.dot(avec,bvec)/a/b)/NU.pi*180.
 
 line = (fmt%a)+(fmt%b)+(fmt%c)+(fmt%alpha)+(fmt%beta)+(fmt%gamma)
-for i in range(len(line.split())): 
-    print(line.split()[i],"", file=outputfl)
+print("line = ", line)
+print(line.strip(),"", file=outputfl)
+
+# for i in range(len(line.split())):
+#     line_write = line.split()[i]
+#     print(line_write,"", file=outputfl)
 # print(file=outputfl)
 
-# print(file=outputfl)
+print("", file=outputfl)
+
 print(len(input_doc.xpath('//species/atom')), file=outputfl)
 
 xml_species = input_doc.xpath('//species')
@@ -91,12 +96,11 @@ for i in range(len(xml_species)):
     xml_atom = xml_species[i].findall('atom')
     for j in range(len(xml_atom)):   
         atom = NU.array(list(map(float,xml_atom[j].get("coord").split())))
-        # print(atom)
         if (inp_cartesian == "true"): atom = NU.dot(NL.inv(NU.transpose(AM)),atom)
-        line = (amt%atom[0])
-        print(line.strip(), file=outputfl)
-        for k in range(1,len(atom)): print (amt%atom[k], file=outputfl)
-        # print(file=outputfl)
+        line = ""
+        for k in range(0,len(atom)):
+            line = line+(amt%atom[k])
+        print (line.strip(), file=outputfl)
         print(xml_species[i].get("speciesfile"), file=outputfl)
 
 #-------------------------------------------------------------------------------

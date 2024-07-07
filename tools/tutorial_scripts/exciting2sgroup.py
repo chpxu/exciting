@@ -12,9 +12,9 @@ import os
 
 narg  = len(sys.argv)-1
 
-if (narg < 2): 
-    print "\nIncorrect number of arguments. **Usage**:\n\n",
-    print "exciting2sgroup.py excitingINPUTFILE.xml sgroup.in \n"
+if (narg != 2): 
+    print("\nIncorrect number of arguments. **Usage**:\n\n")
+    print("exciting2sgroup.py excitingINPUTFILE.xml sgroup.in \n")
     sys.exit()
 
 xmlinput = str(sys.argv[1])
@@ -41,19 +41,19 @@ inp_cartesian = "false"
 xml_cartesian = input_doc.xpath('//structure/@cartesian')
 if (len(xml_cartesian) > 0): inp_cartesian = xml_cartesian[0]
 
-xml_scale = map(float,input_doc.xpath('//crystal/@scale'))
+xml_scale = list(map(float,input_doc.xpath('//crystal/@scale')))
 if (len(xml_scale) > 0): inp_scale = float(xml_scale[0])
 
 xml_stretch = input_doc.xpath('//crystal/@stretch')
 if (len(xml_stretch) > 0): 
     xml_stretch[0] = xml_stretch[0].replace('d', 'e')
     xml_stretch[0] = xml_stretch[0].replace('D', 'e')
-    inp_stretch = NU.array(map(float,xml_stretch[0].split()))
+    inp_stretch = NU.array(list(map(float,xml_stretch[0].split())))
     
 xml_basevect = input_doc.xpath('//basevect/text()')
 inp_basevect = []
 for i in xml_basevect:
-    inp_basevect.append(map(float,i.split()))
+    inp_basevect.append(list(map(float,i.split())))
 axis_matrix = NU.array(inp_basevect) 
 
 #-------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ for i in range(len(AM)): AM[i] = NU.dot(inp_stretch[i],AM[i])
 fmt = '%16.10f'
 amt = '%15.9f'
 
-print >>outputfl, "P"
+print("P", file=outputfl)
 
 a = NL.norm(AM[0]) ; avec = AM[0]
 b = NL.norm(AM[1]) ; bvec = AM[1]
@@ -78,24 +78,30 @@ beta  = NU.arccos(NU.dot(avec,cvec)/a/c)/NU.pi*180.
 gamma = NU.arccos(NU.dot(avec,bvec)/a/b)/NU.pi*180.
 
 line = (fmt%a)+(fmt%b)+(fmt%c)+(fmt%alpha)+(fmt%beta)+(fmt%gamma)
-for i in range(len(line.split())): print >>outputfl, line.split()[i],"",
-print >>outputfl
+print("line = ", line)
+print(line.strip(),"", file=outputfl)
 
-print >>outputfl 
-print >>outputfl, len(input_doc.xpath('//species/atom'))
+# for i in range(len(line.split())):
+#     line_write = line.split()[i]
+#     print(line_write,"", file=outputfl)
+# print(file=outputfl)
+
+print("", file=outputfl)
+
+print(len(input_doc.xpath('//species/atom')), file=outputfl)
 
 xml_species = input_doc.xpath('//species')
 
 for i in range(len(xml_species)):
     xml_atom = xml_species[i].findall('atom')
     for j in range(len(xml_atom)):   
-        atom = NU.array(map(float,xml_atom[j].get("coord").split()))
+        atom = NU.array(list(map(float,xml_atom[j].get("coord").split())))
         if (inp_cartesian == "true"): atom = NU.dot(NL.inv(NU.transpose(AM)),atom)
-        line = (amt%atom[0])
-        print >>outputfl, line.strip(),
-        for k in range(1,len(atom)): print >>outputfl, (amt%atom[k]),
-        print >>outputfl
-        print >>outputfl, xml_species[i].get("speciesfile")
+        line = ""
+        for k in range(0,len(atom)):
+            line = line+(amt%atom[k])
+        print (line.strip(), file=outputfl)
+        print(xml_species[i].get("speciesfile"), file=outputfl)
 
 #-------------------------------------------------------------------------------
 
