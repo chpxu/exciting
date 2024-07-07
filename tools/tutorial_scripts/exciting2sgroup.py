@@ -60,7 +60,8 @@ axis_matrix = NU.array(inp_basevect)
 
 AM = axis_matrix
 AM = NU.dot(inp_scale,AM)
-for i in range(len(AM)): AM[i] = NU.dot(inp_stretch[i],AM[i])
+for i in range(len(AM)): 
+    AM[i] = NU.dot(inp_stretch[i],AM[i])
 
 #-------------------------------------------------------------------------------
 
@@ -78,7 +79,6 @@ beta  = NU.arccos(NU.dot(avec,cvec)/a/c)/NU.pi*180.
 gamma = NU.arccos(NU.dot(avec,bvec)/a/b)/NU.pi*180.
 
 line = (fmt%a)+(fmt%b)+(fmt%c)+(fmt%alpha)+(fmt%beta)+(fmt%gamma)
-print("line = ", line)
 print(line.strip(),"", file=outputfl)
 
 # for i in range(len(line.split())):

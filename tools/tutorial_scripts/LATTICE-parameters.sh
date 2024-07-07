@@ -7,7 +7,8 @@ len=${#TMP}
 if [ "$len" -gt 0 ] ; then IXML=$TMP ; fi
 #
 echo $IXML
-python2 "$EXCITINGTOOLS/exciting2sgroup.py" $IXML sgroup.in 
+# python3 -c 'import sys; print(sys.version)'
+python3 "$EXCITINGTOOLS/exciting2sgroup.py" "$IXML" sgroup.in 
 sgroup sgroup.in 1>sgroup.out 2>sgroup.err 
 #
 sym=$(cat sgroup.out| head -n1) 
