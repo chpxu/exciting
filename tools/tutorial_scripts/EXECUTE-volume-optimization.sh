@@ -71,7 +71,7 @@ for input in $input_list ; do
     rm -Rf $CURRENT/$WORKDIR/rundir-$suffix
     mv $XCRUNDIR $CURRENT/$WORKDIR/rundir-$suffix
     cd $CURRENT/$WORKDIR
-    if [ $aloop = 1 ]; then PLOT-energy.py ; fi
+    if [ $aloop = 1 ]; then python3 $EXCITINGTOOLS/PLOT-energy.py ; fi
     cd $RUNDIR
     echo
     echo "Run completed for file" $input "-------------------------------------"
