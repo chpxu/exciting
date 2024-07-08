@@ -20,7 +20,7 @@ if (str(os.path.exists('input.xml'))=='False'):
 
 maximum_strain = 0.05
 strain_points = input("\nEnter the number of volume values >>>> ")
-strain_points = int(abs(strain_points))
+strain_points = abs(int(strain_points))
 if (3 > strain_points or strain_points > 99): 
     sys.exit("ERROR: Number of volume values is out of range [3-99]!\n")
 
@@ -29,11 +29,13 @@ if (3 > strain_points or strain_points > 99):
 input_obj = open("input.xml","r")
 input_doc = etree.parse(input_obj)
 input_rut = input_doc.getroot()
- 
-xml_scale = map(float,input_doc.xpath('/input/structure/crystal/@scale'))
+print(etree.tostring(input_rut))
+#convert map to list 
+xml_scale = list(map(float,input_doc.xpath('/input/structure/crystal/@scale')))
 if (xml_scale == []): 
     ref_scale = 1.0
 else: 
+    # ref_scale = float(xml_scale[0])
     ref_scale = float(xml_scale[0])
 
 str_stretch = input_doc.xpath('/input/structure/crystal/@stretch')
@@ -44,7 +46,8 @@ else: xml_stretch=numpy.array(map(float,str_stretch[0].split()))
 lst_basevect = input_doc.xpath('//basevect/text()')
 xml_basevect = []
 for ind_basevect in lst_basevect:
-    xml_basevect.append(map(float,ind_basevect.split()))
+    # append list instead of map to make 2D 
+    xml_basevect.append(list(map(float,ind_basevect.split())))
 
 axis_matrix = numpy.array(xml_basevect) 
 determinant = numpy.linalg.det(axis_matrix)
@@ -80,7 +83,8 @@ for i in range(0,strain_points):
     output_str = open(strainfile,"w")
     fmt = '%20.8f'
     vol=(1.+eta)**3*volume
-    print >>output_str, (fmt%vol)
+    # print >> output_str, (fmt%vol)
+    print(fmt%vol, file=output_str)
     output_str.close()
 
     if (abs(eta) < 0.000001): eta=0.000001
@@ -95,14 +99,16 @@ for i in range(0,strain_points):
     if (i+1 < 10): outputfile = 'input-0'+str(i+1)+'.xml'
     else: outputfile = 'input-'+str(i+1)+'.xml'
     output_obj = open(outputfile,"w")
-    output_obj.write(etree.tostring(input_rut, method='xml',
+    # Fix conversion from bytes to str properly.
+    out_xml = etree.tostring(input_rut, method='xml',
                                                pretty_print=True,
                                                xml_declaration=False,
-                                               encoding='UTF-8'))
+                                               encoding='UTF-8')
+    pretty_outxml = out_xml.decode()
+    # print(out_xml)
+    output_obj.write(pretty_outxml)
     output_obj.close()
 
 #-------------------------------------------------------------------------------
 
 os.chdir('../')
-print 
-
