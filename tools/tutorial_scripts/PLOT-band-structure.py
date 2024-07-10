@@ -168,6 +168,7 @@ def option_parser():
     if ( len(args.eboundary) >= 1 ): input_options['emin'] = args.eboundary[0]
     input_options['emax'] = None
     if ( len(args.eboundary) >= 2 ): input_options['emax'] = args.eboundary[1]
+    print("type: ", type(input_options['emax']))
     
     input_options['sx'] = 1.0    
     if ( len(args.scale_box) >= 1 ): input_options['sx'] = args.scale_box[0]
@@ -516,13 +517,13 @@ def main(input_options):
     xplot_size = 16*sx
     yplot_size = 9*sy
     
-    line_thickness = "3.0"
-    sline_thickness = "1.4"
-    axes_thickness = "4.0"
+    line_thickness = 3.0
+    sline_thickness = 1.4
+    axes_thickness = 4.0
     
     if ( phonon ):
-        line_thickness = "4.0"
-        axes_thickness = "5.0"
+        line_thickness = 4.0
+        axes_thickness = 5.0
     
     leg_size = 30
     if ( number_of_plots>=3 ): leg_size = 27
