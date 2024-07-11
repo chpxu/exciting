@@ -1,6 +1,11 @@
 #!/bin/bash
 #
-EXECUTABLE=$EXCITINGROOT/bin/exciting_mpismp
+function run_exciting() {
+
+mpirun -n 8 "$1/bin/exciting_smp"
+}
+
+# EXECUTABLE=
 
 label=`ls -d *_??`
 for dirn in $label ; do
@@ -8,7 +13,8 @@ for dirn in $label ; do
     cp -f $dirn.xml input.xml
     echo
     echo 'SCF calculation of "'$dirn'" starts --------------------------------'
-    time mpirun -n 4 $EXECUTABLE | tee output.screen
+    # time $EXECUTABLE | tee output.screen
+    time $EXCITINGROOT/bin/exciting_smp | tee output.screen
     cd ../
 done
 echo 

@@ -1,7 +1,7 @@
 #!/bin/bash    
 #_______________________________________________________________________________
 #
-EXECUTABLE=$EXCITINGROOT/bin/exciting_mpismp
+EXECUTABLE=$EXCITINGROOT/bin/exciting_smp
 #
 CURRENT=$PWD
 #-------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ for input in $input_list ; do
     cd     $XCRUNDIR
     cp $CURRENT/$WORKDIR/$input input.xml
 #
-    time mpirun -np 8 $EXECUTABLE | tee output.screen
+    time $EXECUTABLE | tee output.screen
 #
     suffix=$(echo $input | cut -c7-8)
 #
