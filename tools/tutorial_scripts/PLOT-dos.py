@@ -397,9 +397,9 @@ def main(input_options):
     xplot_size = 16*sx
     yplot_size = 9*sy
     
-    line_thickness = "3.0"
-    sline_thickness = "2.0"
-    axes_thickness = "4.0"
+    line_thickness = 3.0
+    sline_thickness = 2.0
+    axes_thickness = 4.0
     leg_size = 30
     if ( number_of_plots>=3 ): leg_size = 27
     
