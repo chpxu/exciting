@@ -127,8 +127,8 @@ elif(3 <= SGN and SGN <= 15):    # Monoclinic
         SGN == 12 or \
         SGN == 15):
 
-        print '\n ... Oops PRBLM: The monoclinic unique axis cannot be specified '
-        unique_axis = raw_input('\n>>>> Please enter the monoclinic uique axis [a, b, or c]: ')
+        print ('\n ... Oops PRBLM: The monoclinic unique axis cannot be specified. ')
+        unique_axis = input('\n>>>> Please enter the monoclinic uique axis [a, b, or c]: ')
         if (unique_axis != 'a' or \
             unique_axis != 'b' or \
             unique_axis != 'c'):
@@ -182,15 +182,15 @@ elif(207 <= SGN and SGN <= 230): # Cubic I
 else: sys.exit('\n ... Oops ERROR: WRONG Space-Group Number !?!?!?    \n')
 
 if (LC != 'M'):
-    print '\n     '+ SGN_line     +'                                      \
+    print ('\n     '+ SGN_line     +'                                      \
            \n     '+ Laue_dic[LC] +' structure in the Laue classification.\
-           \n     This structure has '+ str(SCs) +' independent stress components.'
+           \n     This structure has '+ str(SCs) +' independent stress components.')
 
 if (LC == 'M'):
-    print '\n     '+ SGN_line[0:SGN_line.find('[')] +'                            \
+    print ('\n     '+ SGN_line[0:SGN_line.find('[')] +'                            \
            \n     '+ Laue_dic[LC] +' structure in the Laue classification.        \
            \n     This structure has '+ str(SCs) +' independent stress components.\
-           \n     The monoclinic unique axis is "' + unique_axis + '".'
+           \n     The monoclinic unique axis is "' + unique_axis + '".')
 
 #--------------------------------------------------------------------------------------------------
 
@@ -202,12 +202,12 @@ if (1 < mdr or mdr < 0):
     sys.exit('\n ... Oops ERROR: The maximum physical strain is out of range !!!!!!\n')
 
 mdr = round(mdr, 3)
-print '     The maximum amount of strain is '+ str(mdr) + '\n'
+print ('     The maximum amount of strain is '+ str(mdr) + '\n')
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Reading the number of the distorted structures ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
 NoP = input('>>>> Please enter the number of the distorted structures [odd number > 4]: ')
-NoP = int(abs(NoP))
+NoP = abs(int(NoP))
 
 if (NoP < 5):
     sys.exit('\n ... Oops ERROR: The NUMBER of the distorted structures < 5 !!!!!!    \n')
@@ -216,7 +216,7 @@ if (99 < NoP):
 
 if (NoP%2 == 0):
     NoP   += 1
-print '     The number of the distorted structures is '+ str(NoP) + '\n'
+print ('     The number of the distorted structures is '+ str(NoP) + '\n')
 
 ptn = int((NoP-1)/2)
 
@@ -242,7 +242,7 @@ if (stretchstr == []): stretch = [1.,1.,1.]
 basevectsn = doc.xpath('//basevect/text()')
 bv = []
 for basevect in basevectsn:
-    bv.append(map(float,basevect.split()))
+    bv.append(list(map(float,basevect.split())))
 
 M_old= np.array(bv)
 D    = np.linalg.det(M_old)
@@ -251,14 +251,13 @@ V0   = abs(stretch[0]*stretch[1]*stretch[2]*scale[0]**3*D)
 
 #%!%!%--- Writing the "INFO_ElaStic" file ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!
 INFO = open('INFO_Stress','w')
-print >>INFO,'Space-group number              =', SGN          ,\
+print('Space-group number              =', SGN          ,\
            '\nVolume of equilibrium unit cell =', V0, '[a.u^3]',\
            '\nMaximum physical strain         =', mdr          ,\
-           '\nNumber of distorted structures  =', NoP
+           '\nNumber of distorted structures  =', NoP, file=INFO)
 
 if (LC == 'M'):
-    print >>INFO,\
-             'Monoclinic unique axis          =', unique_axis
+    print( 'Monoclinic unique axis          =', unique_axis, file=INFO)
 
 INFO.close
 #--------------------------------------------------------------------------------------------------
@@ -319,7 +318,7 @@ for i in def_list:
     os.mkdir(Dstn)
     os.chdir(Dstn)
 
-    print>>fdis, Dstn + ', Deformation Matrix = ' + def_str_dic [i] + '\n'
+    print(Dstn + ', Deformation Matrix = ' + def_str_dic [i] + '\n', file=fdis)
 
     cont2 = 0
     for s in range(-ptn, ptn+1):
@@ -361,14 +360,14 @@ for i in def_list:
         else:
             Dstn_cont2 = Dstn+ '_' +str(cont2)
 
-        print>>fdis, Dstn_cont2 + ',  eps = ' + str(r)
+        print(Dstn_cont2 + ',  eps = ' + str(r), file=fdis)
 
         bsvct = doc.xpath('//crystal/basevect')
         for j in range(3):
             bdummy = '%22.16f'%(M_new[j,0]) + '%22.16f'%(M_new[j,1]) + '%22.16f'%(M_new[j,2])+' '
-            print>>fdis, 'V' + str(j+1) + ' --=> ' + bdummy
+            print('V' + str(j+1) + ' --=> ' + bdummy, file=fdis)
             bsvct[j].text = bdummy
-        print>>fdis
+        print("", file=fdis)
 
         os.mkdir(Dstn_cont2)
         os.chdir(Dstn_cont2)
@@ -384,7 +383,7 @@ for i in def_list:
         # -----------------------------------------------------------------------------------------
         os.chdir('../')
     os.chdir('../')
-print>>fdis,'   Distorted parameters: END'
+print('   Distorted parameters: END', file=fdis)
 fdis.close()
 os.system('mkdir Structures_exciting; cp Dst??/Dst??_??/Dst??_??.xml Structures_exciting/')
 #--------------------------------------------------------------------------------------------------
