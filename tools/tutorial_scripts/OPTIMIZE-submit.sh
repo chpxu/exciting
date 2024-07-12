@@ -14,7 +14,7 @@ for dirn in $label ; do
     echo
     echo 'SCF calculation of "'$dirn'" starts --------------------------------'
     # time $EXECUTABLE | tee output.screen
-    time $EXCITINGROOT/bin/exciting_smp | tee output.screen
+    time mpirun $EXCITINGROOT/bin/exciting_purempi | tee output.screen
     cd ../
 done
 echo 
