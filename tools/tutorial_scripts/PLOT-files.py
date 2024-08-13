@@ -427,8 +427,8 @@ def main(input_options):
     xplot_size = 14*sx
     yplot_size = 9*sy
     
-    line_thickness = "4.0"
-    axes_thickness = "4.0"
+    line_thickness = 4.0
+    axes_thickness = 4.0
     
     leg_size = 30
     if ( number_of_plots>=3 ): leg_size = 27
@@ -461,7 +461,7 @@ def main(input_options):
     plt.rcParams['axes.edgecolor']  = 'black'
     plt.rcParams['axes.labelsize']  = 40      # fontsize of the x any y labels
     plt.rcParams['axes.labelcolor'] = 'black'
-    plt.rcParams['axes.axisbelow']  = 'True'  # axis gridlines and ticks are below
+    plt.rcParams['axes.axisbelow']  = True  # axis gridlines and ticks are below
                                               # the axes elements (lines, text, etc)
     plt.rcParams['legend.fontsize'] = leg_size
     plt.rcParams['xtick.major.pad'] = 10

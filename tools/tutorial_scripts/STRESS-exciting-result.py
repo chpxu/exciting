@@ -864,10 +864,10 @@ print(' _______________________________________________\n', file=fo)
 print(' Hydrostatic pressure:  P =', round(P*Tokbar, 1), '[kbar]', file=fo)
 print(' _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n')
 print(' Stress tensor [kbar]:\n', file=fo)
-for i in range(0,3):
-    print >>fo, "   [",
-    for j in range(0,3): print >>fo, '%13.1f'%(S[i,j]*Tokbar),
-    print >>fo, "]"    
+for i` in range(0,3):
+    p`rint >>fo, "   [",
+    f`or j in range(0,3): print >>fo, '%13.1f'%(S[i,j]*Tokbar),
+    p`rint >>fo, "]"    
 print >>fo, ' _______________________________________________\n'
 print >>fo, ' Hydrostatic pressure:  P =', round(P*ToGPa, 2), '[Gpa]'
 print >>fo, ' _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n'
