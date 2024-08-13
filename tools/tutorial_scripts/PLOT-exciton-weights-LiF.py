@@ -42,7 +42,10 @@ tmp[-1] = 'png'
 outname1 = inname+'.png'
 tmp[-1] = 'pdf'
 outname2 = inname+'.pdf'
-
+tmp[-1] = 'eps'
+outname3 = inname+'.eps'
+tmp[-1] = 'svg'
+outname4 = inname+'.svg'
 ###################
 # Read input data #
 ###################
@@ -68,9 +71,9 @@ mpl.rcParams['axes.labelsize'] = '30'     # fontsize of the x any y labels
 mpl.rcParams['axes.labelcolor'] = 'black'
 mpl.rcParams['axes.axisbelow'] = 'True'   # whether axis gridlines and ticks are below
                                           # the axes elements (lines, text, etc)
-mpl.rcParams['legend.fontsize'] = '25'
-plt.rcParams['xtick.major.pad'] = '10'
-plt.rcParams['ytick.major.pad'] = '10'
+mpl.rcParams['legend.fontsize'] = 25
+plt.rcParams['xtick.major.pad'] = 10
+plt.rcParams['ytick.major.pad'] = 10
 
 plt.rcParams.update({'mathtext.default':'regular'})
 
@@ -109,10 +112,11 @@ ax2.set_yticks( [0, 0])
 ax2.set_yticklabels( ('$\\mathregular{E_{F}}$', ''))
 
 ax1.grid( True)
-plt.title( "LiF excitonic weights", fontsize=mpl.rcParams['ytick.labelsize'], y=1.03)
+plt.title( "", fontsize=mpl.rcParams['ytick.labelsize'], y=1.03)
 
 fig.savefig( outname1, format='png', dpi=300, bbox_inches='tight')
+fig.savefig(outname3, format="eps",bbox_inches='tight')
 fig.savefig( outname2, format='pdf', bbox_inches='tight')
-
+fig.savefig(outname4, format="svg", bbox_inches='tight')
 #plt.show()
 sys.exit()    
