@@ -4,7 +4,7 @@
 BUILD_TARGETS=wxml_lib wcml_lib sax_lib dom_lib
 
 VPATH=
-compile_prefix=/user/gela9597/exciting2/external/FoX/objs
+compile_prefix=/user/gela9597/exciting/external/FoX/objs
 install_prefix=/usr/local
 LIB_DIR=$(compile_prefix)/lib
 MOD_DIR=$(compile_prefix)/finclude

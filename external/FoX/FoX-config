@@ -1,6 +1,6 @@
 #!/bin/sh
 
-comp_prefix=/user/gela9597/exciting2/external/FoX/objs
+comp_prefix=/user/gela9597/exciting/external/FoX/objs
 moddir=`echo $comp_prefix/finclude`
 libdir=`echo $comp_prefix/lib`
 version=4.0.4

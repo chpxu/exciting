@@ -331,7 +331,7 @@ Copyright (C) 2006 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/user/gela9597/exciting2/external/FoX'
+ac_pwd='/user/gela9597/exciting/external/FoX'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='/usr/bin/mkdir -p'
@@ -549,7 +549,7 @@ s,@INSTALL_SCRIPT@,|#_!!_#|${INSTALL},g
 s,@INSTALL_DATA@,|#_!!_#|${INSTALL} -m 644,g
 s,@CYGPATH_W@,|#_!!_#|echo,g
 s,@VPATH@,|#_!!_#|,g
-s,@OBJSDIR@,|#_!!_#|/user/gela9597/exciting2/external/FoX/objs,g
+s,@OBJSDIR@,|#_!!_#|/user/gela9597/exciting/external/FoX/objs,g
 s,@FC_MOD_FLAG@,|#_!!_#|-I,g
 s,@FC_MODEXT@,|#_!!_#|mod,g
 s,@FC_MODUPPERCASE@,|#_!!_#|no,g

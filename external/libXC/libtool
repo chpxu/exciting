@@ -75,7 +75,7 @@ build=x86_64-unknown-linux-gnu
 build_os=linux-gnu
 
 # A sed program that does not truncate output.
-SED="/usr/bin//sed"
+SED="/usr/bin/sed"
 
 # Sed that helps us avoid accidentally triggering echo(1) options like -n.
 Xsed="$SED -e 1s/^X//"
@@ -272,7 +272,7 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/cm/shared/uniol/sw/zen4/13.1/libfabric/1.16.1-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/UCX/1.14.0-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/numactl/2.0.16-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/binutils/2.40-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/zlib/1.2.13-GCCcore-13.1.0/lib64 /cm/shared/apps/slurm/current/lib64 /cm/shared/uniol/sw/zen4/13.1/GCCcore/13.1.0/lib/gcc/x86_64-pc-linux-gnu/13.1.0 /cm/shared/uniol/sw/zen4/13.1/GCCcore/13.1.0/lib64 /lib64 /usr/lib64 /cm/shared/uniol/sw/zen4/13.1/impi/2021.9.0-intel-compilers-2023.1.0/mpi/2021.9.0/libfabric/lib /cm/shared/uniol/sw/zen4/13.1/impi/2021.9.0-intel-compilers-2023.1.0/mpi/2021.9.0/lib/release /cm/shared/uniol/sw/zen4/13.1/impi/2021.9.0-intel-compilers-2023.1.0/mpi/2021.9.0/lib /cm/shared/uniol/sw/zen4/13.1/imkl-FFTW/2023.1.0-iimpi-2023a/lib /cm/shared/uniol/sw/zen4/13.1/imkl/2023.1.0/mkl/2023.1.0/lib/intel64 /cm/shared/uniol/sw/zen4/13.1/imkl/2023.1.0/compiler/2023.1.0/linux/compiler/lib/intel64_lin /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/tbb/2021.9.0/lib/intel64/gcc4.8 /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/compiler/2023.1.0/linux/compiler/lib/intel64_lin /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/compiler/2023.1.0/linux/lib/x64 /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/compiler/2023.1.0/linux/lib /cm/shared/apps/slurm/current/lib64/slurm "
+sys_lib_search_path_spec="/cm/shared/uniol/sw/zen4/13.1/UCX/1.14.0-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/libfabric/1.21.0-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/numactl/2.0.16-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/binutils/2.40-GCCcore-13.1.0/lib64 /cm/shared/uniol/sw/zen4/13.1/zlib/1.2.13-GCCcore-13.1.0/lib64 /cm/shared/apps/slurm/current/lib64 /cm/shared/uniol/sw/zen4/13.1/GCCcore/13.1.0/lib/gcc/x86_64-pc-linux-gnu/13.1.0 /cm/shared/uniol/sw/zen4/13.1/GCCcore/13.1.0/lib64 /lib64 /usr/lib64 /cm/shared/uniol/sw/zen4/13.1/impi/2021.9.0-intel-compilers-2023.1.0/mpi/2021.9.0/libfabric/lib /cm/shared/uniol/sw/zen4/13.1/impi/2021.9.0-intel-compilers-2023.1.0/mpi/2021.9.0/lib/release /cm/shared/uniol/sw/zen4/13.1/impi/2021.9.0-intel-compilers-2023.1.0/mpi/2021.9.0/lib /cm/shared/uniol/sw/zen4/13.1/imkl-FFTW/2023.1.0-iimpi-2023a/lib /cm/shared/uniol/sw/zen4/13.1/imkl/2023.1.0/mkl/2023.1.0/lib/intel64 /cm/shared/uniol/sw/zen4/13.1/imkl/2023.1.0/compiler/2023.1.0/linux/compiler/lib/intel64_lin /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/tbb/2021.9.0/lib/intel64/gcc4.8 /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/compiler/2023.1.0/linux/compiler/lib/intel64_lin /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/compiler/2023.1.0/linux/lib/x64 /cm/shared/uniol/sw/zen4/13.1/intel-compilers/2023.1.0/compiler/2023.1.0/linux/lib /cm/shared/apps/slurm/current/lib64/slurm "
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/atlas /usr/lib64//bind9-export/ /opt/mellanox/hcoll/lib           /opt/mellanox/sharp/lib "
